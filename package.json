@@ -18,7 +18,9 @@
     "migrate:rollback": "knex migrate:rollback",
     "seed:run": "knex seed:run",
     "swagger": "node ./swaggerAutoGen.js",
-    "commit": "cz"
+    "commit": "cz",
+    "prepare": "husky install",
+    "test": "jest"
   },
   "keywords": [],
   "author": "",
@@ -48,6 +50,7 @@
     "eslint-config-prettier": "^8.5.0",
     "eslint-plugin-prettier": "^4.2.1",
     "husky": "^8.0.1",
+    "jest": "^29.2.2",
     "nodemon": "^2.0.20",
     "prettier": "^2.7.1",
     "swagger-autogen": "^2.22.0"
