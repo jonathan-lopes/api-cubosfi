@@ -1,6 +1,6 @@
-const knex = require('../database/connection');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
+const knex = require('../database/connection');
 const schemaLogin = require('../validations/schemaLogin');
 const { BadRequestError } = require('../helpers/apiErrors');
 
