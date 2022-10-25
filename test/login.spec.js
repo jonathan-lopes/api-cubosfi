@@ -1,23 +1,6 @@
 const request = require('supertest');
 const app = require('../src/server');
-const knex = require('../src/database/connection');
-const bcrypt = require('bcrypt');
-
-const createSut = async () => {
-  const user = {
-    name: 'testman',
-    email: 'testman@email.com',
-    password: await bcrypt.hash('testman1234', +process.env.SALT_ROUNDS),
-  };
-
-  await knex('users').insert(user);
-
-  return { name: user.name, email: user.email, password: 'testman1234' };
-};
-
-const clear = async () => {
-  await knex('users').del().where({ email: 'testman@email.com' });
-};
+const { clear, createSut } = require('./helpers/utils');
 
 describe('Enpoint login', () => {
   afterEach(async () => await clear());
