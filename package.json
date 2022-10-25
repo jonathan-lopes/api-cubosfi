@@ -20,8 +20,8 @@
     "swagger": "node ./swaggerAutoGen.js",
     "commit": "cz",
     "prepare": "husky install",
-    "test": "jest",
-    "test:silent": "jest --watchAll --silent --noStackTrace  --detectOpenHandles"
+    "test": "jest --detectOpenHandles",
+    "test:silent": "jest --watchAll --silent --noStackTrace --detectOpenHandles"
   },
   "keywords": [],
   "author": "",
