@@ -2,44 +2,32 @@ const knex = require('../database/connection');
 const bcrypt = require('bcrypt');
 const schemaRegisterUser = require('../validations/schemaRegisterUser');
 const schemaEditUser = require('../validations/schemaEditUser');
+const { CrudError, ConflictError } = require('../helpers/apiErrors');
 
 const registerUser = async (req, res) => {
   const { name, email, password } = req.body;
 
-  try {
-    await schemaRegisterUser.validate({ name, email, password });
-  } catch (error) {
-    return res.status(400).json({ message: error.message });
+  await schemaRegisterUser.validate({ name, email, password });
+
+  const userEmail = await knex('users').where({ email }).first();
+
+  if (userEmail) {
+    throw new ConflictError('E-mail já cadastrado');
   }
 
-  try {
-    const userEmail = await knex('users').where({ email }).first();
+  const pwdCrypt = await bcrypt.hash(password, Number(process.env.SALT_ROUNDS));
 
-    if (userEmail) {
-      return res.status(400).json({ message: 'E-mail já cadastrado' });
-    }
+  const insertUser = await knex('users').insert({
+    name,
+    email,
+    password: pwdCrypt,
+  });
 
-    const pwdCrypt = await bcrypt.hash(
-      password,
-      Number(process.env.SALT_ROUNDS),
-    );
-
-    const insertUser = await knex('users').insert({
-      name,
-      email,
-      password: pwdCrypt,
-    });
-
-    if (!insertUser) {
-      return res
-        .status(500)
-        .json({ message: 'Não foi possível cadastrar o usuário' });
-    }
-
-    return res.status(201).json();
-  } catch (error) {
-    return res.status(500).json({ message: error.message });
+  if (!insertUser) {
+    throw new CrudError('Não foi possível cadastrar o usuário');
   }
+
+  return res.status(201).json();
 };
 
 const userDetail = async (req, res) => {
@@ -51,57 +39,47 @@ const editUser = async (req, res) => {
   const { user } = req;
   const { name, email, cpf, phone, password } = req.body;
 
-  try {
-    await schemaEditUser.validate({ name, email, cpf, phone, password });
-  } catch (error) {
-    return res.status(400).json({ message: error.message });
+  await schemaEditUser.validate({ name, email, cpf, phone, password });
+
+  const userEmail = await knex('users')
+    .whereRaw('email = ? AND id <> ?', [email, user.id])
+    .first();
+
+  if (userEmail) {
+    throw new ConflictError('E-mail já cadastrado');
   }
 
-  try {
-    const userEmail = await knex('users')
-      .whereRaw('email = ? AND id <> ?', [email, user.id])
-      .first();
+  const userCpf = await knex('users')
+    .whereRaw('cpf = ? AND id <> ?', [cpf, user.id])
+    .first();
 
-    if (userEmail) {
-      return res.status(400).json({ message: 'E-mail já cadastrado' });
-    }
-
-    const userCpf = await knex('users')
-      .whereRaw('cpf = ? AND id <> ?', [cpf, user.id])
-      .first();
-
-    if (userCpf) {
-      return res.status(400).json({ message: 'CPF já cadastrado' });
-    }
-
-    const body = {
-      name,
-      email,
-      cpf,
-      phone,
-    };
-
-    if (password) {
-      const pwdCrypt = await bcrypt.hash(
-        password,
-        Number(process.env.SALT_ROUNDS),
-      );
-
-      body.password = pwdCrypt;
-    }
-
-    const updateUser = await knex('users').update(body).where({ id: user.id });
-
-    if (!updateUser) {
-      return res
-        .status(500)
-        .json({ message: 'Não foi possível atualizar o usuário' });
-    }
-
-    return res.status(204).json();
-  } catch (error) {
-    return res.status(500).json({ message: error.message });
+  if (userCpf) {
+    throw new ConflictError('CPF já cadastrado');
   }
+
+  const body = {
+    name,
+    email,
+    cpf,
+    phone,
+  };
+
+  if (password) {
+    const pwdCrypt = await bcrypt.hash(
+      password,
+      Number(process.env.SALT_ROUNDS),
+    );
+
+    body.password = pwdCrypt;
+  }
+
+  const updateUser = await knex('users').update(body).where({ id: user.id });
+
+  if (!updateUser) {
+    throw new CrudError('Não foi possível atualizar o usuário');
+  }
+
+  return res.status(204).json();
 };
 
 module.exports = { registerUser, userDetail, editUser };

@@ -1,32 +1,39 @@
 const knex = require('../database/connection');
 const jwt = require('jsonwebtoken');
+const { UnauthorizedError, NotFoundError } = require('../helpers/apiErrors');
 
 const verifyLogin = async (req, res, next) => {
   const { authorization } = req.headers;
 
   if (!authorization) {
-    return res.status(401).json({ message: 'Não autorizado' });
+    throw new UnauthorizedError('Não autorizado');
   }
 
-  try {
-    const token = authorization.replace('Bearer ', '').trim();
+  const token = authorization.replace('Bearer ', '').trim();
 
-    const { id } = jwt.verify(token, process.env.JWT_SECRET);
-
-    const existingUser = await knex('users').where({ id }).first();
-
-    if (!existingUser) {
-      return res.status(404).json({ message: 'Usuario não encontrado' });
+  const { id } = jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
+    if (err) {
+      if (err.name === 'JsonWebTokenError') {
+        throw new UnauthorizedError('Token malformado');
+      } else if (err.name === 'TokenExpiredError') {
+        throw new UnauthorizedError('Token expirou');
+      }
     }
 
-    const { password: _, ...loggedUser } = existingUser;
+    return decoded;
+  });
 
-    req.user = loggedUser;
+  const existingUser = await knex('users').where({ id }).first();
 
-    next();
-  } catch (error) {
-    return res.status(400).json({ message: error.message });
+  if (!existingUser) {
+    throw new NotFoundError('Usuário não encontrado');
   }
+
+  const { password: _, ...loggedUser } = existingUser;
+
+  req.user = loggedUser;
+
+  next();
 };
 
 module.exports = verifyLogin;
