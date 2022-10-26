@@ -1,29 +1,29 @@
 const { Router } = require('express');
 const verifyLogin = require('../middleware/verifyLogin');
-const userControllers = require('../controllers/users');
-const customerControllers = require('../controllers/customers');
-const billingControllers = require('../controllers/billings');
-const login = require('../controllers/login');
+const userControllers = require('../controllers/usersController');
+const customerControllers = require('../controllers/customersController');
+const billingControllers = require('../controllers/billingsController');
+const loginController = require('../controllers/loginController');
 
 const routes = Router();
 
-routes.post('/user', userControllers.registerUser);
-routes.post('/login', login);
+routes.post('/user', userControllers.create);
+routes.post('/login', loginController);
 
 routes.use(verifyLogin);
 
-routes.get('/user', userControllers.userDetail);
-routes.put('/user', userControllers.editUser);
+routes.get('/user', userControllers.getUser);
+routes.put('/user', userControllers.update);
 
-routes.post('/customer', customerControllers.registerCustomer);
-routes.get('/customers', customerControllers.listCustomers);
-routes.get('/customer/:id', customerControllers.detailCustomer);
-routes.put('/customer/:id', customerControllers.updateCustomer);
+routes.post('/customer', customerControllers.create);
+routes.get('/customers', customerControllers.getAll);
+routes.get('/customer/:id', customerControllers.getOne);
+routes.put('/customer/:id', customerControllers.update);
 
-routes.post('/billing', billingControllers.registerBilling);
-routes.get('/billings', billingControllers.listBillings);
-routes.delete('/billing/:id', billingControllers.deleteBilling);
-routes.get('/billing/:id', billingControllers.detailBilling);
-routes.put('/billing/:id', billingControllers.editBilling);
+routes.post('/billing', billingControllers.create);
+routes.get('/billings', billingControllers.getAll);
+routes.delete('/billing/:id', billingControllers.del);
+routes.get('/billing/:id', billingControllers.getOne);
+routes.put('/billing/:id', billingControllers.update);
 
 module.exports = routes;
