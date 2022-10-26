@@ -1,10 +1,10 @@
 const request = require('supertest');
-const app = require('../src/server');
 const jwt = require('jsonwebtoken');
+const app = require('../src/server');
 const { createSut, clear } = require('./helpers/utils');
 
 describe('Middleware verify login', () => {
-  afterEach(async () => await clear());
+  afterEach(async () => clear());
 
   it('should return status code 401 (unauthorized) if token is not sent ', async () => {
     await createSut();
@@ -22,7 +22,7 @@ describe('Middleware verify login', () => {
 
     const response = await request(app)
       .get('/user')
-      .set('Authorization', `Bearer ${'aaa' + responseLogin.body.token}`);
+      .set('Authorization', `Bearer ${`aaa${responseLogin.body.token}`}`);
 
     expect(response.status).toBe(401);
     expect(response.body).toHaveProperty('message', 'Token malformado');
