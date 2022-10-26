@@ -10,5 +10,8 @@
   "parserOptions": {
     "ecmaVersion": "latest"
   },
-  "rules": {}
+  "rules": {
+    "camelcase": "off",
+    "no-restricted-syntax": "off"
+  }
 }
