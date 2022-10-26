@@ -1,5 +1,5 @@
-const knex = require('../database/connection');
 const jwt = require('jsonwebtoken');
+const knex = require('../database/connection');
 const { UnauthorizedError, NotFoundError } = require('../helpers/apiErrors');
 
 const verifyLogin = async (req, res, next) => {
