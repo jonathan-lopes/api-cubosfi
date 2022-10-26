@@ -7,7 +7,7 @@ const {
   NotFoundError,
 } = require('../helpers/apiErrors');
 
-const registerCustomer = async (req, res) => {
+const create = async (req, res) => {
   const {
     name,
     email,
@@ -41,9 +41,18 @@ const registerCustomer = async (req, res) => {
     throw new ConflictError('E-mail já cadastrado');
   }
 
+  const customerCpf = await knex('customers').where({ cpf }).first();
+
   if (customerCpf) {
     throw new ConflictError('CPF já cadastrado');
   }
+
+  const body = {
+    name,
+    email,
+    cpf,
+    phone,
+  };
 
   if (cep || address || complement || district || city || uf) {
     addressId = await knex('adresses')
@@ -73,20 +82,25 @@ const registerCustomer = async (req, res) => {
   return res.status(201).json();
 };
 
-const listCustomers = async (req, res) => {
+const getAll = async (req, res) => {
   const customersList = [];
   const customers = await knex('customers');
 
-  for (let customer of customers) {
-    const bills = await knex('billings')
-      .select('id', 'status', 'due')
-      .where({ customer_id: customer.id });
+  const billsData = await knex('billings').select(
+    'id',
+    'status',
+    'due',
+    'customer_id',
+  );
 
-    for (const bill of bills) {
-      if (paymentStatus.isOverdue(bill.due, bill.status)) {
-        bill.status = 'overdue';
-      }
+  for (const bill of billsData) {
+    if (paymentStatus.isOverdue(bill.due, bill.status)) {
+      bill.status = 'overdue';
     }
+  }
+
+  for (let customer of customers) {
+    const bills = billsData.filter((bill) => bill.customer_id === customer.id);
 
     customer = { ...customer, billings: bills };
     customersList.push(customer);
@@ -95,7 +109,7 @@ const listCustomers = async (req, res) => {
   return res.status(200).json(customersList);
 };
 
-const detailCustomer = async (req, res) => {
+const getOne = async (req, res) => {
   const { id } = req.params;
 
   const customer = await knex('customers').where({ id }).first();
@@ -116,7 +130,7 @@ const detailCustomer = async (req, res) => {
   return res.status(200).json(detailedCustomer);
 };
 
-const updateCustomer = async (req, res) => {
+const update = async (req, res) => {
   const {
     name,
     email,
@@ -169,7 +183,7 @@ const updateCustomer = async (req, res) => {
 
   const customerAddressIdReturning = await knex('customers')
     .update(body)
-    .where('id', id)
+    .where({ id })
     .returning('address_id');
 
   if (customerAddressIdReturning === 0) {
@@ -197,8 +211,8 @@ const updateCustomer = async (req, res) => {
 };
 
 module.exports = {
-  registerCustomer,
-  listCustomers,
-  detailCustomer,
-  updateCustomer,
+  create,
+  getAll,
+  getOne,
+  update,
 };
