@@ -6,8 +6,7 @@ const editBillingSchema = yup.object().shape({
   status: yup
     .string()
     .matches(validateStatus, 'status devem ser paid ou pending')
-    .required()
-    .default(),
+    .required(),
   value: yup.number().integer().required(),
   due: yup.date().required(),
 });

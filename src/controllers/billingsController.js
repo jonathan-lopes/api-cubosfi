@@ -1,6 +1,6 @@
 const knex = require('../database/connection');
-const schemaRegisterBillings = require('../validations/schemaRegisterBillings');
-const schemaEditBillings = require('../validations/schemaEditBilling');
+const schemaRegisterBilling = require('../validations/schemaRegisterBillings');
+const schemaEditBilling = require('../validations/schemaEditBilling');
 const { isPending } = require('../helpers/paymentStatus');
 const {
   CrudError,
@@ -8,7 +8,7 @@ const {
   NotFoundError,
 } = require('../helpers/apiErrors');
 
-const registerBilling = async (req, res) => {
+const create = async (req, res) => {
   const { customer_id, description, status, value, due } = req.body;
 
   const body = {
@@ -19,7 +19,7 @@ const registerBilling = async (req, res) => {
     due,
   };
 
-  await schemaRegisterBillings.validate(body);
+  await schemaRegisterBilling.validate(body);
 
   const insertBilling = await knex('billings').insert(body);
 
@@ -30,7 +30,7 @@ const registerBilling = async (req, res) => {
   return res.status(201).json();
 };
 
-const listBillings = async (req, res) => {
+const getAll = async (req, res) => {
   const billings = await knex('billings')
     .join('customers', 'billings.customer_id', '=', 'customers.id')
     .select('customers.name', 'customers.cpf', 'billings.*');
@@ -38,7 +38,7 @@ const listBillings = async (req, res) => {
   return res.status(200).json(billings);
 };
 
-const deleteBilling = async (req, res) => {
+const del = async (req, res) => {
   const { id } = req.params;
 
   const billing = await knex('billings').where({ id }).first();
@@ -56,7 +56,7 @@ const deleteBilling = async (req, res) => {
   throw new BadRequestError('Esta cobrança não pode ser excluída!');
 };
 
-const detailBilling = async (req, res) => {
+const getOne = async (req, res) => {
   const { id } = req.params;
 
   const detailedBilling = await knex('billings').where({ id }).first();
@@ -68,9 +68,8 @@ const detailBilling = async (req, res) => {
   return res.status(200).json(detailedBilling);
 };
 
-const editBilling = async (req, res) => {
+const update = async (req, res) => {
   const { description, status, value, due } = req.body;
-
   const { id } = req.params;
 
   const body = {
@@ -80,11 +79,11 @@ const editBilling = async (req, res) => {
     due,
   };
 
-  await schemaEditBillings.validate(body);
+  await schemaEditBilling.validate(body);
 
-  const updateBilling = await knex('billings').update(body).where({ id: id });
+  const updateBilling = await knex('billings').update(body).where({ id });
 
-  if (updateBilling === 0) {
+  if (!updateBilling) {
     throw new CrudError('Não foi possível atualizar a cobrança');
   }
 
@@ -92,9 +91,9 @@ const editBilling = async (req, res) => {
 };
 
 module.exports = {
-  registerBilling,
-  listBillings,
-  deleteBilling,
-  detailBilling,
-  editBilling,
+  create,
+  getAll,
+  del,
+  getOne,
+  update,
 };

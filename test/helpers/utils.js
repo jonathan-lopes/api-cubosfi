@@ -1,5 +1,5 @@
-const knex = require('../../src/database/connection');
 const bcrypt = require('bcrypt');
+const knex = require('../../src/database/connection');
 
 const createSut = async () => {
   const user = {

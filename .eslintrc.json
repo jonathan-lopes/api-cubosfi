@@ -4,14 +4,14 @@
     "es2021": true,
     "node": true
   },
-  "extends": ["airbnb-base", "prettier", "plugin:prettier/recommended"],
+  "extends": ["airbnb-base", "plugin:prettier/recommended"],
+
   "overrides": [],
-  "plugins": ["prettier"],
   "parserOptions": {
     "ecmaVersion": "latest"
   },
   "rules": {
-    "ignoreRestSiblings": true,
-    "prettier/prettier": ["error"]
+    "camelcase": "off",
+    "no-restricted-syntax": "off"
   }
 }

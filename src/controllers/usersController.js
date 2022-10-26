@@ -1,10 +1,10 @@
-const knex = require('../database/connection');
 const bcrypt = require('bcrypt');
+const knex = require('../database/connection');
 const schemaRegisterUser = require('../validations/schemaRegisterUser');
 const schemaEditUser = require('../validations/schemaEditUser');
 const { CrudError, ConflictError } = require('../helpers/apiErrors');
 
-const registerUser = async (req, res) => {
+const create = async (req, res) => {
   const { name, email, password } = req.body;
 
   await schemaRegisterUser.validate({ name, email, password });
@@ -30,12 +30,12 @@ const registerUser = async (req, res) => {
   return res.status(201).json();
 };
 
-const userDetail = async (req, res) => {
+const getUser = async (req, res) => {
   const { user } = req;
   return res.status(200).json(user);
 };
 
-const editUser = async (req, res) => {
+const update = async (req, res) => {
   const { user } = req;
   const { name, email, cpf, phone, password } = req.body;
 
@@ -82,4 +82,4 @@ const editUser = async (req, res) => {
   return res.status(204).json();
 };
 
-module.exports = { registerUser, userDetail, editUser };
+module.exports = { create, getUser, update };
