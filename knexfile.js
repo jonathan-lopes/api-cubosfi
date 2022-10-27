@@ -5,7 +5,21 @@ require('dotenv').config();
  */
 module.exports = {
   development: {
-    client: 'pg',
+    client: process.env.DB_CLIENT,
+    connection: {
+      filename: './test/database.sqlite',
+    },
+    useNullAsDefault: true,
+    migrations: {
+      tableName: 'knex_migrations',
+      directory: `${__dirname}/src/database/migrations`,
+    },
+    seeds: {
+      directory: `${__dirname}/src/database/seeds`,
+    },
+  },
+  production: {
+    client: process.env.DB_CLIENT,
     connection: {
       host: process.env.DB_HOST,
       user: process.env.DB_USER,
