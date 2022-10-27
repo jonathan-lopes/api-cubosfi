@@ -3,7 +3,7 @@ const app = require('../src/server');
 const { clear, createSut } = require('./helpers/utils');
 
 describe('Enpoint login', () => {
-  afterEach(async () => clear());
+  afterEach(() => clear());
 
   it('should fail if not send body email and password', async () => {
     const { email, password } = await createSut();
