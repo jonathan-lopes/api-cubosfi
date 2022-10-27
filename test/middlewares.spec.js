@@ -6,7 +6,7 @@ const { createSut, clear } = require('./helpers/utils');
 describe('Middleware verify login', () => {
   afterEach(async () => clear());
 
-  it('should return status code 401 (unauthorized) if token is not sent ', async () => {
+  it('should return status code 401 (unauthorized) if token is not sent', async () => {
     await createSut();
 
     const response = await request(app).get('/user');
@@ -34,13 +34,21 @@ describe('Middleware verify login', () => {
       expiresIn: '3s',
     });
 
-    jest.setTimeout(async () => {
-      const response = await request(app)
-        .get('/user')
-        .set('Authorization', `Bearer ${token}`);
-      expect(response.statusCode).toBe(401);
-      expect(response.body).toHaveProperty('message', 'Token expirou');
-    }, 5000);
+    jest.useFakeTimers();
+    jest.spyOn(global, 'setTimeout');
+
+    function timer() {
+      setTimeout(async () => {
+        const response = await request(app)
+          .get('/user')
+          .set('Authorization', `Bearer ${token}`);
+        expect(response.statusCode).toBe(401);
+        expect(response.body).toHaveProperty('message', 'Token expirou');
+      }, 4000);
+    }
+    timer();
+    expect(setTimeout).toHaveBeenCalledTimes(1);
+    expect(setTimeout).toHaveBeenLastCalledWith(expect.any(Function), 4000);
   });
 
   it('should not be able to authenticate if user does not exist', async () => {
