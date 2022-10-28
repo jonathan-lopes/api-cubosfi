@@ -1,13 +1,15 @@
 const request = require('supertest');
 const jwt = require('jsonwebtoken');
 const app = require('../src/server');
-const { createSut, clear } = require('./helpers/utils');
+const Sut = require('./helpers/utils');
+
+const sut = new Sut('testman#2', 'testman#2@email.com', 'testman1234');
 
 describe('Middleware verify login', () => {
-  afterEach(async () => clear());
+  afterEach(() => sut.clear());
 
   it('should return status code 401 (unauthorized) if token is not sent', async () => {
-    await createSut();
+    await sut.create();
 
     const response = await request(app).get('/user');
     expect(response.status).toBe(401);
@@ -15,7 +17,7 @@ describe('Middleware verify login', () => {
   });
 
   it('should not be able to authenticate with a malformed token', async () => {
-    const { email, password } = await createSut();
+    const { email, password } = await sut.create();
     const responseLogin = await request(app)
       .post('/login')
       .send({ email, password });
@@ -29,7 +31,7 @@ describe('Middleware verify login', () => {
   });
 
   it('should not be able to authenticate with a expired token', async () => {
-    const { id } = await createSut();
+    const { id } = await sut.create();
     const token = jwt.sign({ id }, process.env.JWT_SECRET, {
       expiresIn: '3s',
     });
