@@ -1,23 +1,34 @@
 const bcrypt = require('bcrypt');
 const knex = require('../../src/database/connection');
 
-const createSut = async () => {
-  const user = {
-    name: 'testman',
-    email: 'testman@email.com',
-    password: await bcrypt.hash('testman1234', +process.env.SALT_ROUNDS),
-  };
+class Sut {
+  #name = '';
+  #email = '';
+  #password = '';
 
-  const id = await knex('users').insert(user).returning(['id']);
+  constructor(name, email, password) {
+    this.#name = name;
+    this.#email = email;
+    this.#password = password;
+  }
 
-  return { id, name: user.name, email: user.email, password: 'testman1234' };
-};
+  async create() {
+    const [data] = await knex('users')
+      .insert({
+        name: this.#name,
+        email: this.#email,
+        password: await bcrypt.hash(this.#password, +process.env.SALT_ROUNDS),
+      })
+      .returning(['id', 'name', 'email', 'cpf', 'phone']);
 
-const clear = async () => {
-  await knex('users').del().where({ email: 'testman@email.com' });
-};
+    data.password = this.#password;
 
-module.exports = {
-  createSut,
-  clear,
-};
+    return data;
+  }
+
+  async clear() {
+    await knex('users').del().where({ email: this.#email });
+  }
+}
+
+module.exports = Sut;
