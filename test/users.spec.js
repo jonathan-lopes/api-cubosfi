@@ -1,9 +1,9 @@
-const Sut = require('./helpers/utils');
+const { SutUser } = require('./helpers/utils');
 const request = require('supertest');
 const app = require('../src/server');
 const knex = require('../src/database/connection');
 
-const sut = new Sut('testman#3', 'testman#3@email.com', 'testman1234');
+const sut = new SutUser('testman#3', 'testman#3@email.com', 'testman1234');
 
 describe('Endpoint Users', () => {
   describe('Create User', () => {
@@ -136,7 +136,7 @@ describe('Endpoint Users', () => {
         password,
       });
 
-      const user = new Sut('Jonh Doe', 'jonh.doe@email.com', 'doe12345');
+      const user = new SutUser('Jonh Doe', 'jonh.doe@email.com', 'doe12345');
       const data = await user.create();
 
       const response = await request(app)
@@ -170,7 +170,7 @@ describe('Endpoint Users', () => {
         })
         .set('Authorization', `Bearer ${body.token}`);
 
-      const user = new Sut('Jonh Doe', 'jonh.doe@email.com', 'doe12345');
+      const user = new SutUser('Jonh Doe', 'jonh.doe@email.com', 'doe12345');
       const data = await user.create();
 
       const responseLogin = await request(app).post('/login').send({
