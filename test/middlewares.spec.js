@@ -1,9 +1,9 @@
 const request = require('supertest');
 const jwt = require('jsonwebtoken');
 const app = require('../src/server');
-const Sut = require('./helpers/utils');
+const { SutUser } = require('./helpers/utils');
 
-const sut = new Sut('testman#2', 'testman#2@email.com', 'testman1234');
+const sut = new SutUser('testman#2', 'testman#2@email.com', 'testman1234');
 
 describe('Middleware verify login', () => {
   afterEach(() => sut.clear());
