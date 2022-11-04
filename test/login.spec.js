@@ -1,8 +1,8 @@
 const request = require('supertest');
 const app = require('../src/server');
-const Sut = require('./helpers/utils');
+const { SutUser } = require('./helpers/utils');
 
-const sut = new Sut('testman#1', 'testman#1@email.com', 'testman1234');
+const sut = new SutUser('testman#1', 'testman#1@email.com', 'testman1234');
 
 describe('Enpoint login', () => {
   afterEach(() => sut.clear());
