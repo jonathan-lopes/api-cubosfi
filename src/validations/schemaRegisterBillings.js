@@ -3,7 +3,7 @@ const { validateStatus } = require('../helpers/regex');
 
 const registerBillingSchema = yup.object().shape({
   customer_id: yup.number().integer().required(),
-  description: yup.string().required(),
+  description: yup.string().max(128).required(),
   status: yup
     .string()
     .matches(validateStatus, 'status devem ser paid ou pending')
