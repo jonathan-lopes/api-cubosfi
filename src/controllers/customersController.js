@@ -115,7 +115,7 @@ const getOne = async (req, res) => {
   const customer = await knex('customers').where({ id }).first();
 
   if (!customer) {
-    throw new NotFoundError('Cliente não encontrado.');
+    throw new NotFoundError('Cliente não encontrado');
   }
 
   const address = await knex('adresses')

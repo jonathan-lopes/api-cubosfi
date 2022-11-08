@@ -1,12 +1,14 @@
 const request = require('supertest');
 const app = require('../src/server');
-const { clear, createSut } = require('./helpers/utils');
+const { SutUser } = require('./helpers/utils');
+
+const sut = new SutUser('testman#1', 'testman#1@email.com', 'testman1234');
 
 describe('Enpoint login', () => {
-  afterEach(async () => clear());
+  afterEach(() => sut.clear());
 
   it('should fail if not send body email and password', async () => {
-    const { email, password } = await createSut();
+    const { email, password } = await sut.create();
 
     const responseEmail = await request(app).post('/login').send({
       email,
@@ -43,7 +45,7 @@ describe('Enpoint login', () => {
   });
 
   it('should fail if password is incorrect', async () => {
-    const { email } = await createSut();
+    const { email } = await sut.create();
 
     const response = await request(app).post('/login').send({
       email,
@@ -58,7 +60,7 @@ describe('Enpoint login', () => {
   });
 
   it('should returning user with token', async () => {
-    const { email, password } = await createSut();
+    const { email, password } = await sut.create();
 
     const response = await request(app).post('/login').send({
       email,

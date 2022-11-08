@@ -43,6 +43,10 @@ const del = async (req, res) => {
 
   const billing = await knex('billings').where({ id }).first();
 
+  if (!billing) {
+    throw new NotFoundError('Cobrança não encontrada');
+  }
+
   if (isPending(billing.due, billing.status)) {
     const billingDelete = await knex('billings').del().where({ id });
 
@@ -62,7 +66,7 @@ const getOne = async (req, res) => {
   const detailedBilling = await knex('billings').where({ id }).first();
 
   if (!detailedBilling) {
-    throw new NotFoundError('Cobrança não encontrada.');
+    throw new NotFoundError('Cobrança não encontrada');
   }
 
   return res.status(200).json(detailedBilling);
@@ -80,6 +84,12 @@ const update = async (req, res) => {
   };
 
   await schemaEditBilling.validate(body);
+
+  const billing = await knex('billings').where({ id }).first();
+
+  if (!billing) {
+    throw new NotFoundError('Cobrança não encontrada');
+  }
 
   const updateBilling = await knex('billings').update(body).where({ id });
 
