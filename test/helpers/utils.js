@@ -58,7 +58,7 @@ class SutCustomer {
   }
 
   async clear() {
-    await knex('users').del().where({ email: this.#email });
+    await knex('customers').del().where({ email: this.#email });
   }
 }
 

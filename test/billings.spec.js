@@ -4,6 +4,13 @@ const login = require('./helpers/login');
 const { SutBilling, SutCustomer } = require('./helpers/utils');
 
 let sutBilling = null;
+const customer = new SutCustomer(
+  'customer',
+  'customer@email.com',
+  '999.999.999-99',
+  '(99) 99999-9999',
+);
+let id_customer = 1;
 let token = '';
 
 describe('Endpoint Billings', () => {
@@ -14,11 +21,14 @@ describe('Endpoint Billings', () => {
         email: 'testman#4@email.com',
         password: 'testman1234',
       });
+
+      const { id } = await customer.create();
+      id_customer = id;
     });
 
     beforeEach(async () => {
       sutBilling = new SutBilling(
-        1,
+        id_customer,
         'Lorem ipsum ullamcorper taciti, inceptos.',
         'paid',
         5000,
@@ -26,9 +36,7 @@ describe('Endpoint Billings', () => {
       );
     });
 
-    afterEach(() => {
-      sutBilling.clear();
-    });
+    afterEach(() => sutBilling.clear());
 
     it('should return status 400 if no customer_id, description, status, value, and due are sent in the request body', async () => {
       const response = await request(app)
@@ -56,15 +64,6 @@ describe('Endpoint Billings', () => {
 
   describe('List All', () => {
     it('should return all registered billings', async () => {
-      const sutCustomer = new SutCustomer(
-        'customer',
-        'customer@email.com',
-        '999.999.999-99',
-        '(99) 99999-9999',
-      );
-
-      await sutCustomer.create();
-
       const dataBilling = await sutBilling.create();
       const response = await request(app)
         .post('/billing')
@@ -77,10 +76,9 @@ describe('Endpoint Billings', () => {
         .get('/billings')
         .set('Authorization', `Bearer ${token}`);
 
+      await customer.clear();
       expect(allBillings.statusCode).toBe(200);
       expect(allBillings.body).toHaveLength(2);
-
-      await sutCustomer.clear();
     });
   });
 
@@ -134,7 +132,7 @@ describe('Endpoint Billings', () => {
     it('should be possible to delete a charge that is pending', async () => {
       const date = new Date();
       const sutBilling = new SutBilling(
-        1,
+        id_customer,
         'lorem lorem lorem',
         'pending',
         4000,
@@ -142,12 +140,11 @@ describe('Endpoint Billings', () => {
       );
 
       const { id } = await sutBilling.create();
-
-      const response2 = await request(app)
+      const response = await request(app)
         .del(`/billing/${id}`)
         .set('Authorization', `Bearer ${token}`);
 
-      expect(response2.statusCode).toBe(204);
+      expect(response.statusCode).toBe(204);
     });
   });
 
