@@ -14,8 +14,8 @@
   "scripts": {
     "dev": "cross-env NODE_ENV=production nodemon ./src/index.js",
     "start": "node ./src/index.js",
-    "migrate:latest": "cross-env NODE_ENV=production knex migrate:latest",
-    "migrate:rollback": "cross-env NODE_ENV=production knex migrate:rollback",
+    "migrate:latest": "knex migrate:latest --env production",
+    "migrate:rollback": "knex migrate:rollback --env production",
     "seed:run": "knex seed:run",
     "swagger": "node ./swaggerAutoGen.js",
     "commit": "cz",
