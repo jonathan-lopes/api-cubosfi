@@ -11,30 +11,26 @@ jobs:
       - checkout
       - when:
           condition:
-            equal: [ master, << pipeline.git.branch >> ]
+            equal: [master, << pipeline.git.branch >>]
           steps:
             - node/install-packages
             - run:
+                command: npm run posttest
+            - run:
                 command: npm run test
-  clean_db:
+  test-dev:
     executor:
       name: node/default
     steps:
       - checkout
       - node/install-packages
       - run:
-          name: Clear test database
           command: npm run posttest
+      - run:
+          command: npm run test
 
 workflows:
   app-test:
     jobs:
-      - clean_db
-      - node/test:
-          version: '16.10'
-          pkg-manager: npm
-          requires:
-            - clean_db
-      - test-master:
-          requires:
-            - clean_db
+      - test-dev
+      - test-master
