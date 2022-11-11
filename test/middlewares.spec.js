@@ -32,7 +32,7 @@ describe('Middleware verify login', () => {
 
   it('should not be able to authenticate with a expired token', async () => {
     const { id } = await sut.create();
-    const token = jwt.sign({ id }, process.env.JWT_SECRET, {
+    const token = jwt.sign({ id }, process.env.SECRET_TOKEN, {
       expiresIn: '3s',
     });
 
@@ -54,7 +54,7 @@ describe('Middleware verify login', () => {
   });
 
   it('should not be able to authenticate if user does not exist', async () => {
-    const token = jwt.sign({ id: 1000 }, process.env.JWT_SECRET);
+    const token = jwt.sign({ id: 1000 }, process.env.SECRET_TOKEN);
 
     const response = await request(app)
       .get('/user')
