@@ -11,7 +11,7 @@ const verifyLogin = async (req, res, next) => {
 
   const token = authorization.replace('Bearer ', '').trim();
 
-  const { id } = jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
+  const { id } = jwt.verify(token, process.env.SECRET_TOKEN, (err, decoded) => {
     if (err) {
       if (err.name === 'JsonWebTokenError') {
         throw new UnauthorizedError('Token malformado');
