@@ -16,11 +16,24 @@ jobs:
             - node/install-packages
             - run:
                 command: npm run test
+  clean_db:
+    executor:
+      name: node/default
+    steps:
+      - node/install-packages
+      - run:
+          name: Clear test database
+          command: npm run posttest
 
 workflows:
   app-test:
     jobs:
+      - clean_db
       - node/test:
           version: '16.10'
           pkg-manager: npm
-      - test-master
+          requires:
+            - clean_db
+      - test-master:
+          requires:
+            - clean_db
