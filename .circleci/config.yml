@@ -13,7 +13,6 @@ jobs:
           condition:
             equal: [ master, << pipeline.git.branch >> ]
           steps:
-            - checkout
             - node/install-packages
             - run:
                 command: npm run test
