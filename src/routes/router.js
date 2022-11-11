@@ -4,11 +4,13 @@ const userControllers = require('../controllers/usersController');
 const customerControllers = require('../controllers/customersController');
 const billingControllers = require('../controllers/billingsController');
 const loginController = require('../controllers/loginController');
+const refreshTokenController = require('../controllers/refreshTokenController');
 
 const routes = Router();
 
 routes.post('/user', userControllers.create);
 routes.post('/login', loginController);
+routes.post('/refresh-token', refreshTokenController);
 
 routes.use(verifyLogin);
 
