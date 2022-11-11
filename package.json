@@ -22,7 +22,7 @@
     "prepare": "husky install",
     "pretest": "cross-env NODE_ENV=test knex migrate:latest",
     "test": "jest",
-    "posttest": "cross-env NODE_ENV=test knex migrate:rollback",
+    "posttest": "cross-env NODE_ENV=test knex migrate:rollback --all",
     "test:silent": "jest --watchAll --silent --noStackTrace"
   },
   "keywords": [],
