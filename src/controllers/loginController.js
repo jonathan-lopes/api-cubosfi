@@ -1,5 +1,6 @@
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
+const { add } = require('date-fns');
 const knex = require('../database/connection');
 const schemaLogin = require('../validations/schemaLogin');
 const { BadRequestError } = require('../helpers/apiErrors');
@@ -21,13 +22,33 @@ const login = async (req, res) => {
     throw new BadRequestError('E-mail ou senha inválidos');
   }
 
-  const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, {
-    expiresIn: process.env.TOKEN_EXPIRATION,
+  const token = jwt.sign({ id: user.id }, process.env.SECRET_TOKEN, {
+    expiresIn: process.env.EXPIRES_IN_TOKEN,
+  });
+
+  const refreshToken = jwt.sign(
+    { id: user.id },
+    process.env.SECRET_REFRESH_TOKEN,
+    {
+      expiresIn: process.env.EXPIRES_IN_REFRESH_TOKEN,
+    },
+  );
+
+  const refreshTokenExpiresDate = add(new Date(), {
+    days: process.env.EXPIRES_REFRESH_TOKEN_DAYS,
+  });
+
+  await knex('user_token').insert({
+    refresh_token: refreshToken,
+    expires_date: refreshTokenExpiresDate,
+    user_id: user.id,
   });
 
   const { password: _, ...userLogin } = user;
 
-  return res.status(200).json({ user: userLogin, token });
+  return res
+    .status(200)
+    .json({ user: userLogin, token, refresh_token: refreshToken });
 };
 
 module.exports = login;
