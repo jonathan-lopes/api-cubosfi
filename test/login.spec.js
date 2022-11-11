@@ -59,7 +59,7 @@ describe('Enpoint login', () => {
     );
   });
 
-  it('should returning user with token', async () => {
+  it('should returning user with token and refresh token', async () => {
     const { email, password } = await sut.create();
 
     const response = await request(app).post('/login').send({
@@ -69,6 +69,7 @@ describe('Enpoint login', () => {
 
     expect(response.status).toBe(200);
     expect(response.body).toHaveProperty('token');
+    expect(response.body).toHaveProperty('refresh_token');
     expect(response.body).toHaveProperty('user');
   });
 });
