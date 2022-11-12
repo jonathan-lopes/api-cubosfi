@@ -1,7 +1,7 @@
 const { add } = require('date-fns');
 const jwt = require('jsonwebtoken');
 const knex = require('../database/connection');
-const { NotFoundError } = require('../helpers/apiErrors');
+const { NotFoundError, UnauthorizedError } = require('../helpers/apiErrors');
 const refreshTokenSchema = require('../validations/schemaRefreshToken');
 
 const refreshTokenController = async (req, res) => {
@@ -9,7 +9,19 @@ const refreshTokenController = async (req, res) => {
 
   await refreshTokenSchema.validate({ refresh_token });
 
-  const { id } = jwt.verify(refresh_token, process.env.SECRET_REFRESH_TOKEN);
+  const { id } = jwt.verify(
+    refresh_token,
+    process.env.SECRET_REFRESH_TOKEN,
+    (err, decoded) => {
+      if (err) {
+        if (err.name === 'TokenExpiredError') {
+          throw new UnauthorizedError('refresh_token expirado');
+        }
+      }
+
+      return decoded;
+    },
+  );
 
   const userToken = await knex('user_token')
     .where({
@@ -19,7 +31,7 @@ const refreshTokenController = async (req, res) => {
     .first();
 
   if (!userToken) {
-    throw new NotFoundError('Refresh token não encontrado');
+    throw new NotFoundError('refresh_token não encontrado');
   }
 
   await knex('user_token').del().where({ id: userToken.id });
