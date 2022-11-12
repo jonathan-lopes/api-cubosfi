@@ -103,4 +103,32 @@ class SutBilling {
   }
 }
 
-module.exports = { SutCustomer, SutUser, SutBilling };
+class SutRefreshToken {
+  #refresh_token;
+  #expires_date;
+  #user_id;
+
+  constructor(refresh_token, expires_date, user_id) {
+    this.#refresh_token = refresh_token;
+    this.#expires_date = expires_date;
+    this.#user_id = user_id;
+  }
+
+  async create() {
+    const [data] = await knex('user_token')
+      .insert({
+        refresh_token: this.#refresh_token,
+        expires_date: this.#expires_date,
+        user_id: this.#user_id,
+      })
+      .returning(['id', 'refresh_token', 'expires_date', 'user_id']);
+
+    return data;
+  }
+
+  async clear() {
+    await knex('user_token').del().where({ user_id: this.#user_id });
+  }
+}
+
+module.exports = { SutCustomer, SutUser, SutBilling, SutRefreshToken };
