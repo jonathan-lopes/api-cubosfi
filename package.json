@@ -16,14 +16,13 @@
     "start": "node ./src/index.js",
     "migrate:latest": "knex migrate:latest --env production",
     "migrate:rollback": "knex migrate:rollback --env production",
-    "seed:run": "knex seed:run",
+    "seed": "knex seed:run",
     "swagger": "node ./swaggerAutoGen.js",
     "commit": "cz",
     "prepare": "husky install",
     "pretest": "cross-env NODE_ENV=test knex migrate:latest",
     "test": "jest",
-    "posttest": "cross-env NODE_ENV=test knex migrate:rollback --all",
-    "test:silent": "jest --watchAll --silent --noStackTrace"
+    "posttest": "cross-env NODE_ENV=test knex migrate:rollback --all"
   },
   "keywords": [],
   "author": "",

@@ -1,22 +1,26 @@
+const { onUpdateTrigger } = require('../../../knexfile');
+
 /**
  * @param { import("knex").Knex } knex
  * @returns { Promise<void> }
  */
 exports.up = (knex) =>
-  knex.schema.createTable('user_token', (table) => {
-    table.increments('id');
-    table.text('refresh_token').notNullable();
-    table.timestamp('expires_date').notNullable();
-    table.integer('user_id').notNullable();
-    table
-      .foreign('user_id')
-      .references('id')
-      .inTable('users')
-      .onDelete('CASCADE')
-      .onUpdate('CASCADE');
-    table.timestamp('created_at').defaultTo(knex.fn.now());
-    table.timestamp('updated_at').defaultTo(knex.fn.now());
-  });
+  knex.schema
+    .createTable('user_token', (table) => {
+      table.increments('id');
+      table.text('refresh_token').notNullable();
+      table.timestamp('expires_date').notNullable();
+      table.integer('user_id').notNullable();
+      table
+        .foreign('user_id')
+        .references('id')
+        .inTable('users')
+        .onDelete('CASCADE')
+        .onUpdate('CASCADE');
+      table.timestamp('created_at').defaultTo(knex.fn.now());
+      table.timestamp('updated_at').defaultTo(knex.fn.now());
+    })
+    .then(() => knex.raw(onUpdateTrigger('user_token')));
 
 /**
  * @param { import("knex").Knex } knex
