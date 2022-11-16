@@ -33,7 +33,16 @@ const create = async (req, res) => {
 const getAll = async (req, res) => {
   const billings = await knex('billings')
     .join('customers', 'billings.customer_id', '=', 'customers.id')
-    .select('customers.name', 'customers.cpf', 'billings.*');
+    .select(
+      'customers.name',
+      'customers.cpf',
+      'billings.id',
+      'billings.description',
+      'billings.status',
+      'billings.value',
+      'billings.due',
+      'billings.customer_id',
+    );
 
   return res.status(200).json(billings);
 };
@@ -69,7 +78,9 @@ const getOne = async (req, res) => {
     throw new NotFoundError('Cobrança não encontrada');
   }
 
-  return res.status(200).json(detailedBilling);
+  const { created_at, updated_at, ...billing } = detailedBilling;
+
+  return res.status(200).json(billing);
 };
 
 const update = async (req, res) => {

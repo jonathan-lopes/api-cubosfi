@@ -55,7 +55,7 @@ const create = async (req, res) => {
   };
 
   if (cep || address || complement || district || city || uf) {
-    addressId = await knex('adresses')
+    [addressId] = await knex('adresses')
       .insert({
         address,
         complement,
@@ -64,13 +64,13 @@ const create = async (req, res) => {
         city,
         uf,
       })
-      .returning(['id']);
+      .returning('id');
 
     if (!addressId) {
       throw new CrudError('Não foi possível cadastrar o cliente');
     }
 
-    body.address_id = addressId[0].id;
+    body.address_id = addressId.id;
   }
 
   const insertCustomer = await knex('customers').insert(body);
@@ -84,7 +84,14 @@ const create = async (req, res) => {
 
 const getAll = async (req, res) => {
   const customersList = [];
-  const customers = await knex('customers');
+  const customers = await knex('customers').select(
+    'id',
+    'name',
+    'email',
+    'cpf',
+    'phone',
+    'address_id',
+  );
 
   const billsData = await knex('billings').select(
     'id',
@@ -112,7 +119,10 @@ const getAll = async (req, res) => {
 const getOne = async (req, res) => {
   const { id } = req.params;
 
-  const customer = await knex('customers').where({ id }).first();
+  const customer = await knex('customers')
+    .select('id', 'name', 'email', 'cpf', 'phone', 'address_id')
+    .where({ id })
+    .first();
 
   if (!customer) {
     throw new NotFoundError('Cliente não encontrado');
@@ -120,10 +130,12 @@ const getOne = async (req, res) => {
 
   const address = await knex('adresses')
     .select('address', 'complement', 'cep', 'district', 'city', 'uf')
-    .where('id', customer.address_id)
+    .where({ id: customer.address_id })
     .first();
 
-  const bills = await knex('billings').where('customer_id', id);
+  const bills = await knex('billings')
+    .select('id', 'description', 'status', 'value', 'due', 'customer_id')
+    .where('customer_id', id);
 
   const detailedCustomer = { ...customer, ...address, billings: bills };
 
@@ -181,18 +193,44 @@ const update = async (req, res) => {
     phone,
   };
 
-  const customerAddressIdReturning = await knex('customers')
-    .update(body)
+  const { address_id: userWithAddress } = await knex('customers')
+    .select('address_id')
     .where({ id })
-    .returning('address_id');
+    .first();
 
-  if (customerAddressIdReturning === 0) {
-    throw new CrudError('Não foi possível cadastrar o cliente');
+  if (userWithAddress) {
+    const [customerAddressIdReturning] = await knex('customers')
+      .update(body)
+      .where({ id })
+      .returning('address_id');
+
+    if (customerAddressIdReturning === 0) {
+      throw new CrudError('Não foi possível cadastrar o cliente');
+    }
+
+    if (cep || address || complement || district || city || uf) {
+      const updateAddress = await knex('adresses')
+        .update({
+          address,
+          complement,
+          cep,
+          district,
+          city,
+          uf,
+        })
+        .where({ id: customerAddressIdReturning.address_id });
+
+      if (updateAddress === 0) {
+        throw new CrudError('Não foi possível cadastrar o cliente');
+      }
+    }
+
+    return res.status(204).json();
   }
 
   if (cep || address || complement || district || city || uf) {
-    const updateAddress = await knex('adresses')
-      .update({
+    const [insertAddress] = await knex('adresses')
+      .insert({
         address,
         complement,
         cep,
@@ -200,9 +238,17 @@ const update = async (req, res) => {
         city,
         uf,
       })
-      .where('id', customerAddressIdReturning[0]);
+      .returning('id');
 
-    if (updateAddress === 0) {
+    if (insertAddress === 0) {
+      throw new CrudError('Não foi possível cadastrar o cliente');
+    }
+
+    const customerAddressIdReturning = await knex('customers')
+      .update({ ...body, address_id: insertAddress.id })
+      .where({ id });
+
+    if (customerAddressIdReturning === 0) {
       throw new CrudError('Não foi possível cadastrar o cliente');
     }
   }

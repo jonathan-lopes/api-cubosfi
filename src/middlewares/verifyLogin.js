@@ -29,7 +29,7 @@ const verifyLogin = async (req, res, next) => {
     throw new NotFoundError('Usuário não encontrado');
   }
 
-  const { password: _, ...loggedUser } = existingUser;
+  const { password, created_at, updated_at, ...loggedUser } = existingUser;
 
   req.user = loggedUser;
 

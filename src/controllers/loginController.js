@@ -44,7 +44,7 @@ const login = async (req, res) => {
     user_id: user.id,
   });
 
-  const { password: _, ...userLogin } = user;
+  const { password: _, created_at, updated_at, ...userLogin } = user;
 
   return res
     .status(200)
