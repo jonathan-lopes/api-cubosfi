@@ -14,7 +14,7 @@ module.exports = {
     useNullAsDefault: true,
     migrations: {
       tableName: 'knex_migrations',
-      directory: `${__dirname}/src/database/migrations`,
+      directory: `${__dirname}/src/database/test_migrations`,
     },
     seeds: {
       directory: `${__dirname}/src/database/seeds`,
