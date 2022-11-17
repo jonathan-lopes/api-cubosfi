@@ -41,6 +41,7 @@ const getAll = async (req, res) => {
       'billings.status',
       'billings.value',
       'billings.due',
+      'billings.is_overdue',
       'billings.customer_id',
     );
 

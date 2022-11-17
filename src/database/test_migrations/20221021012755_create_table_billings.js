@@ -9,6 +9,7 @@ exports.up = (knex) =>
     table.enu('status', ['paid', 'pending']).notNullable();
     table.integer('value').notNullable();
     table.date('due').notNullable();
+    table.boolean('is_overdue').defaultTo(false);
     table.integer('customer_id').notNullable();
     table.timestamp('created_at').defaultTo(knex.fn.now());
     table.timestamp('updated_at').defaultTo(knex.fn.now());
