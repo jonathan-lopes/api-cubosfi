@@ -136,7 +136,7 @@ describe('Endpoint Billings', () => {
         'lorem lorem lorem',
         'pending',
         4000,
-        `${date.getFullYear() + 1}-${date.getMonth()}-${date.getDay()}`,
+        `${date.getFullYear() + 1}-${date.getMonth()}-${date.getDate()}`,
       );
 
       const { id } = await sutBilling.create();
