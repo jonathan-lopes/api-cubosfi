@@ -93,6 +93,7 @@ class SutBilling {
         'value',
         'due',
         'customer_id',
+        'is_overdue',
       ]);
 
     return data;
