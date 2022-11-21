@@ -61,7 +61,7 @@ const del = async (req, res) => {
     const billingDelete = await knex('billings').del().where({ id });
 
     if (!billingDelete) {
-      throw new CrudError('Não foi possível exluir a cobrança');
+      throw new CrudError('Não foi possível excluir a cobrança');
     }
 
     return res.status(204).json();
