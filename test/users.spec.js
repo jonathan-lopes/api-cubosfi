@@ -1,14 +1,20 @@
 const { SutUser } = require('./helpers/utils');
 const request = require('supertest');
 const app = require('../src/server');
-const knex = require('../src/database/connection');
+const login = require('./helpers/login');
 
-const sut = new SutUser('testman#3', 'testman#3@email.com', 'testman1234');
+let token = '';
 
 describe('Endpoint Users', () => {
-  describe('Create User', () => {
-    afterEach(() => sut.clear());
+  beforeAll(async () => {
+    token = await login(app, 'login', {
+      name: 'testman#3',
+      email: 'testman#3@email.com',
+      password: 'testman1234',
+    });
+  });
 
+  describe('Create User', () => {
     it('should fail if name are not sent in the body', async () => {
       let response = await request(app).post('/user').send({
         email: 'jonh.doe@email.com',
@@ -16,6 +22,9 @@ describe('Endpoint Users', () => {
       });
 
       expect(response.statusCode).toBe(400);
+      expect(response.body).toHaveProperty('status', 400);
+      expect(response.body).toHaveProperty('type', 'ValidationError');
+      expect(response.body).toHaveProperty('dateTime');
       expect(response.body).toHaveProperty(
         'message',
         'name é um campo obrigatório',
@@ -29,6 +38,9 @@ describe('Endpoint Users', () => {
       });
 
       expect(response.statusCode).toBe(400);
+      expect(response.body).toHaveProperty('status', 400);
+      expect(response.body).toHaveProperty('type', 'ValidationError');
+      expect(response.body).toHaveProperty('dateTime');
       expect(response.body).toHaveProperty(
         'message',
         'email é um campo obrigatório',
@@ -42,6 +54,9 @@ describe('Endpoint Users', () => {
       });
 
       expect(response.statusCode).toBe(400);
+      expect(response.body).toHaveProperty('status', 400);
+      expect(response.body).toHaveProperty('type', 'ValidationError');
+      expect(response.body).toHaveProperty('dateTime');
       expect(response.body).toHaveProperty(
         'message',
         'password é um campo obrigatório',
@@ -49,52 +64,79 @@ describe('Endpoint Users', () => {
     });
 
     it('should return 409 if email has already been registered', async () => {
-      const { name, email, password } = await sut.create();
-
       const response = await request(app).post('/user').send({
-        name,
-        email,
-        password,
+        name: 'David Doe',
+        email: 'testman#3@email.com',
+        password: 'doe123456',
       });
 
       expect(response.statusCode).toBe(409);
+      expect(response.body).toHaveProperty('status', 409);
+      expect(response.body).toHaveProperty('type', 'ConflictError');
+      expect(response.body).toHaveProperty('dateTime');
       expect(response.body).toHaveProperty('message', 'E-mail já cadastrado');
+    });
+
+    it('should return 400 if password is not at least 8 characters long', async () => {
+      const response = await request(app).post('/user').send({
+        name: 'Jonh Doe',
+        email: 'jonh.doe@email.com',
+        password: 'doe',
+      });
+
+      expect(response.statusCode).toBe(400);
+      expect(response.body).toHaveProperty('status', 400);
+      expect(response.body).toHaveProperty('type', 'ValidationError');
+      expect(response.body).toHaveProperty('dateTime');
+      expect(response.body).toHaveProperty(
+        'message',
+        'password deve ser pelo menos 8 caracteres',
+      );
+    });
+
+    it('should return 400 if password is more than 56 characters', async () => {
+      const response = await request(app).post('/user').send({
+        name: 'Jonh Doe',
+        email: 'jonh.doe@email.com',
+        password: 'rc8Yu1Y1gnor^6Ew8LpnuxKUJB3I2AlW7T#4JvThXbZdo!i7sF1111114',
+      });
+
+      expect(response.statusCode).toBe(400);
+      expect(response.body).toHaveProperty('status', 400);
+      expect(response.body).toHaveProperty('type', 'ValidationError');
+      expect(response.body).toHaveProperty('dateTime');
+      expect(response.body).toHaveProperty(
+        'message',
+        'password deve ser no máximo 56 caracteres',
+      );
     });
 
     it('should return 201 if the user was registered', async () => {
       const { statusCode } = await request(app).post('/user').send({
-        name: 'jonh Doe',
-        email: 'jonh.doe@email.com',
-        password: 'doe123456',
+        name: 'Anny Mary',
+        email: 'anny.mary@email.com',
+        password: 'anny123456',
       });
 
       expect(statusCode).toBe(201);
-
-      await knex('users').del().where({ email: 'jonh.doe@email.com' });
     });
   });
 
   describe('Get User', () => {
-    afterEach(() => sut.clear());
-
     it('should not return data if not authenticated', async () => {
       const response = await request(app).get('/user');
 
       expect(response.statusCode).toBe(401);
+      expect(response.body).toHaveProperty('status', 401);
+      expect(response.body).toHaveProperty('type', 'UnauthorizedError');
+      expect(response.body).toHaveProperty('dateTime');
       expect(response.body).toHaveProperty('message', 'Não autorizado');
     });
 
     it('should return user data', async () => {
-      const { email, password } = await sut.create();
-
-      const { body } = await request(app).post('/login').send({
-        email,
-        password,
-      });
-
       const data = await request(app)
         .get('/user')
-        .set('Authorization', `Bearer ${body.token}`);
+        .set('Authorization', `Bearer ${token}`);
 
       expect(data.statusCode).toBe(200);
       expect(data.body).toHaveProperty('id');
@@ -106,72 +148,61 @@ describe('Endpoint Users', () => {
   });
 
   describe('Update User', () => {
-    afterEach(() => sut.clear());
-
     it('should return status code 400 if required fields (name, email) are not sent', async () => {
-      const { email, password } = await sut.create();
-
-      const { body } = await request(app).post('/login').send({
-        email,
-        password,
-      });
-
       const response = await request(app)
         .put('/user')
         .send({})
-        .set('Authorization', `Bearer ${body.token}`);
+        .set('Authorization', `Bearer ${token}`);
 
       expect(response.statusCode).toBe(400);
+      expect(response.body).toHaveProperty('status', 400);
+      expect(response.body).toHaveProperty('type', 'ValidationError');
+      expect(response.body).toHaveProperty('dateTime');
       expect(response.body).toHaveProperty(
         'message',
         'email é um campo obrigatório',
       );
     });
 
-    it('should not be updating the email to another already registered', async () => {
-      const { email, password, name } = await sut.create();
+    it('should not be possible to update the email to another already registered', async () => {
+      const sut = new SutUser(
+        'Billy Kane',
+        'bill.kane@email.com',
+        'kanekane12134',
+      );
 
-      const { body } = await request(app).post('/login').send({
-        email,
-        password,
-      });
-
-      const user = new SutUser('Jonh Doe', 'jonh.doe@email.com', 'doe12345');
-      const data = await user.create();
+      await sut.create();
 
       const response = await request(app)
         .put('/user')
         .send({
-          email: data.email,
-          name,
+          email: 'bill.kane@email.com',
+          name: 'Billy',
+          cpf: '27038316257',
         })
-        .set('Authorization', `Bearer ${body.token}`);
+        .set('Authorization', `Bearer ${token}`);
 
       expect(response.statusCode).toBe(409);
       expect(response.body).toHaveProperty('message', 'E-mail já cadastrado');
+      expect(response.body).toHaveProperty('status', 409);
+      expect(response.body).toHaveProperty('type', 'ConflictError');
+      expect(response.body).toHaveProperty('dateTime');
 
-      await user.clear();
+      await sut.clear();
     });
 
     it('should not be updating the cpf to another already registered', async () => {
-      const { email, password, name } = await sut.create();
-
-      const { body } = await request(app).post('/login').send({
-        email,
-        password,
-      });
-
       await request(app)
         .put('/user')
         .send({
-          email,
-          name,
+          email: 'testman#3@email.com',
+          name: 'Billy',
           cpf: '835.888.910-05',
         })
-        .set('Authorization', `Bearer ${body.token}`);
+        .set('Authorization', `Bearer ${token}`);
 
-      const user = new SutUser('Jonh Doe', 'jonh.doe@email.com', 'doe12345');
-      const data = await user.create();
+      const sut = new SutUser('Jonh Doe', 'jonh.doe@email.com', 'doe12345');
+      const data = await sut.create();
 
       const responseLogin = await request(app).post('/login').send({
         email: data.email,
@@ -188,58 +219,53 @@ describe('Endpoint Users', () => {
         .set('Authorization', `Bearer ${responseLogin.body.token}`);
 
       expect(response.statusCode).toBe(409);
+      expect(response.body).toHaveProperty('status', 409);
       expect(response.body).toHaveProperty('message', 'CPF já cadastrado');
+      expect(response.body).toHaveProperty('type', 'ConflictError');
+      expect(response.body).toHaveProperty('dateTime');
+
+      await sut.clear();
     });
 
     it('should return status 204 if user has been updated', async () => {
-      const { email, password, name } = await sut.create();
-
-      const { body } = await request(app).post('/login').send({
-        email,
-        password,
-      });
-
       const { statusCode } = await request(app)
         .put('/user')
         .send({
-          email,
-          name,
+          email: 'billy@email.com',
+          name: 'Billy',
           cpf: '835.888.910-05',
         })
-        .set('Authorization', `Bearer ${body.token}`);
+        .set('Authorization', `Bearer ${token}`);
 
       expect(statusCode).toBe(204);
     });
 
     it('should be possible to change the user password', async () => {
-      const { email, password, name, cpf, phone } = await sut.create();
-
-      const { body } = await request(app).post('/login').send({
-        email,
-        password,
-      });
-
       const newPasswd = 'newPass123456';
+
+      const updatedUser = {
+        email: 'billy@email.com',
+        name: 'Billy',
+        cpf: '14534482680',
+        phone: '(82) 98784-2630',
+        password: newPasswd,
+      };
 
       const responseUserUpdate = await request(app)
         .put('/user')
-        .send({
-          email,
-          name,
-          cpf,
-          phone,
-          password: newPasswd,
-        })
-        .set('Authorization', `Bearer ${body.token}`);
+        .send(updatedUser)
+        .set('Authorization', `Bearer ${token}`);
 
       expect(responseUserUpdate.statusCode).toBe(204);
 
       const responseLogin = await request(app).post('/login').send({
-        email,
-        password: newPasswd,
+        email: updatedUser.email,
+        password: updatedUser.password,
       });
 
       expect(responseLogin.body).toHaveProperty('token');
+      expect(responseLogin.body).toHaveProperty('refresh_token');
+      expect(responseLogin.body).toHaveProperty('user');
       expect(responseLogin.statusCode).toBe(200);
     });
   });

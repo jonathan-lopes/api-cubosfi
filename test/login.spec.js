@@ -19,6 +19,9 @@ describe('Enpoint login', () => {
       'message',
       'password é um campo obrigatório',
     );
+    expect(responseEmail.body).toHaveProperty('status', 400);
+    expect(responseEmail.body).toHaveProperty('type', 'ValidationError');
+    expect(responseEmail.body).toHaveProperty('dateTime');
 
     const responsePasswd = await request(app).post('/login').send({
       password,
@@ -29,6 +32,9 @@ describe('Enpoint login', () => {
       'message',
       'email é um campo obrigatório',
     );
+    expect(responsePasswd.body).toHaveProperty('status', 400);
+    expect(responsePasswd.body).toHaveProperty('type', 'ValidationError');
+    expect(responsePasswd.body).toHaveProperty('dateTime');
   });
 
   it('should fail if email not exist', async () => {
@@ -42,6 +48,9 @@ describe('Enpoint login', () => {
       'message',
       'E-mail ou senha inválidos',
     );
+    expect(response.body).toHaveProperty('status', 400);
+    expect(response.body).toHaveProperty('type', 'BadRequestError');
+    expect(response.body).toHaveProperty('dateTime');
   });
 
   it('should fail if password is incorrect', async () => {
@@ -57,6 +66,9 @@ describe('Enpoint login', () => {
       'message',
       'E-mail ou senha inválidos',
     );
+    expect(response.body).toHaveProperty('status', 400);
+    expect(response.body).toHaveProperty('type', 'BadRequestError');
+    expect(response.body).toHaveProperty('dateTime');
   });
 
   it('should returning user with token and refresh token', async () => {

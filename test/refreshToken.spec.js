@@ -14,10 +14,24 @@ describe('Refresh Token', () => {
     });
 
     expect(response1.statusCode).toBe(400);
+    expect(response1.body).toHaveProperty(
+      'message',
+      'refresh_token deve ser um tipo de `string`, Mas o valor final foi: `1000`.',
+    );
+    expect(response1.body).toHaveProperty('status', 400);
+    expect(response1.body).toHaveProperty('type', 'ValidationError');
+    expect(response1.body).toHaveProperty('dateTime');
 
     const response2 = await request(app).post('/refresh-token').send({});
 
     expect(response2.statusCode).toBe(400);
+    expect(response2.body).toHaveProperty(
+      'message',
+      'refresh_token é um campo obrigatório',
+    );
+    expect(response2.body).toHaveProperty('status', 400);
+    expect(response2.body).toHaveProperty('type', 'ValidationError');
+    expect(response2.body).toHaveProperty('dateTime');
   });
 
   it('should return status 401 if refresh token is expired', async () => {
@@ -35,6 +49,9 @@ describe('Refresh Token', () => {
 
     expect(response.statusCode).toBe(401);
     expect(response.body).toHaveProperty('message', 'refresh_token expirado');
+    expect(response.body).toHaveProperty('status', 401);
+    expect(response.body).toHaveProperty('type', 'UnauthorizedError');
+    expect(response.body).toHaveProperty('dateTime');
   });
 
   it('should return status 404 if not find refresh token', async () => {
@@ -59,6 +76,9 @@ describe('Refresh Token', () => {
       'message',
       'refresh_token não encontrado',
     );
+    expect(response.body).toHaveProperty('status', 404);
+    expect(response.body).toHaveProperty('type', 'NotFoundError');
+    expect(response.body).toHaveProperty('dateTime');
   });
 
   it('should return a new refresh_token and a new token', async () => {

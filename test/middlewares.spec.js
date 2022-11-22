@@ -2,35 +2,46 @@ const request = require('supertest');
 const jwt = require('jsonwebtoken');
 const app = require('../src/server');
 const { SutUser } = require('./helpers/utils');
+const login = require('./helpers/login');
 
-const sut = new SutUser('testman#2', 'testman#2@email.com', 'testman1234');
+// const sut = new SutUser('testman#2', 'testman#2@email.com', 'testman1234');
+let token = '';
 
 describe('Middleware verify login', () => {
-  afterEach(() => sut.clear());
+  beforeAll(async () => {
+    token = await login(app, 'login', {
+      name: 'testman#2',
+      email: 'testman#2@email.com',
+      password: 'testman1234',
+    });
+  });
+
+  // afterEach(() => sut.clear());
 
   it('should return status code 401 (unauthorized) if token is not sent', async () => {
-    await sut.create();
-
     const response = await request(app).get('/user');
-    expect(response.status).toBe(401);
+
+    expect(response.statusCode).toBe(401);
+    expect(response.body).toHaveProperty('status', 401);
+    expect(response.body).toHaveProperty('type', 'UnauthorizedError');
+    expect(response.body).toHaveProperty('dateTime');
     expect(response.body).toHaveProperty('message', 'Não autorizado');
   });
 
   it('should not be able to authenticate with a malformed token', async () => {
-    const { email, password } = await sut.create();
-    const responseLogin = await request(app)
-      .post('/login')
-      .send({ email, password });
-
     const response = await request(app)
       .get('/user')
-      .set('Authorization', `Bearer ${`aaa${responseLogin.body.token}`}`);
+      .set('Authorization', `Bearer ${`aaa${token}`}`);
 
-    expect(response.status).toBe(401);
+    expect(response.statusCode).toBe(401);
     expect(response.body).toHaveProperty('message', 'Token malformado');
+    expect(response.body).toHaveProperty('status', 401);
+    expect(response.body).toHaveProperty('type', 'UnauthorizedError');
+    expect(response.body).toHaveProperty('dateTime');
   });
 
   it('should not be able to authenticate with a expired token', async () => {
+    const sut = new SutUser('Jack', 'jack@email.com', 'jack12346545');
     const { id } = await sut.create();
     const token = jwt.sign({ id }, process.env.SECRET_TOKEN, {
       expiresIn: '3s',
@@ -46,11 +57,15 @@ describe('Middleware verify login', () => {
           .set('Authorization', `Bearer ${token}`);
         expect(response.statusCode).toBe(401);
         expect(response.body).toHaveProperty('message', 'Token expirou');
+        expect(response.body).toHaveProperty('status', 401);
+        expect(response.body).toHaveProperty('type', 'UnauthorizedError');
+        expect(response.body).toHaveProperty('dateTime');
       }, 4000);
     }
     timer();
     expect(setTimeout).toHaveBeenCalledTimes(1);
     expect(setTimeout).toHaveBeenLastCalledWith(expect.any(Function), 4000);
+    await sut.clear();
   });
 
   it('should not be able to authenticate if user does not exist', async () => {
@@ -62,5 +77,8 @@ describe('Middleware verify login', () => {
 
     expect(response.statusCode).toBe(404);
     expect(response.body).toHaveProperty('message', 'Usuário não encontrado');
+    expect(response.body).toHaveProperty('status', 404);
+    expect(response.body).toHaveProperty('type', 'NotFoundError');
+    expect(response.body).toHaveProperty('dateTime');
   });
 });

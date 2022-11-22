@@ -49,6 +49,9 @@ describe('Endpoint Billings', () => {
         'due é um campo obrigatório',
       );
       expect(response.statusCode).toBe(400);
+      expect(response.body).toHaveProperty('status', 400);
+      expect(response.body).toHaveProperty('type', 'ValidationError');
+      expect(response.body).toHaveProperty('dateTime');
     });
 
     it('should return status 201 if a billing has been registered', async () => {
@@ -76,7 +79,8 @@ describe('Endpoint Billings', () => {
         .get('/billings')
         .set('Authorization', `Bearer ${token}`);
 
-      await customer.clear();
+      customer.clear();
+
       expect(allBillings.statusCode).toBe(200);
       expect(allBillings.body).toHaveLength(2);
     });
@@ -93,6 +97,9 @@ describe('Endpoint Billings', () => {
         'message',
         'Cobrança não encontrada',
       );
+      expect(response.body).toHaveProperty('status', 404);
+      expect(response.body).toHaveProperty('type', 'NotFoundError');
+      expect(response.body).toHaveProperty('dateTime');
     });
 
     it('should return status 400 if the charge is paid or overdue', async () => {
@@ -107,6 +114,9 @@ describe('Endpoint Billings', () => {
         'message',
         'Esta cobrança não pode ser excluída!',
       );
+      expect(response1.body).toHaveProperty('status', 400);
+      expect(response1.body).toHaveProperty('type', 'BadRequestError');
+      expect(response1.body).toHaveProperty('dateTime');
 
       const sutBilling2 = new SutBilling(
         1,
@@ -127,6 +137,9 @@ describe('Endpoint Billings', () => {
         'message',
         'Esta cobrança não pode ser excluída!',
       );
+      expect(response2.body).toHaveProperty('status', 400);
+      expect(response2.body).toHaveProperty('type', 'BadRequestError');
+      expect(response2.body).toHaveProperty('dateTime');
     });
 
     it('should be possible to delete a charge that is pending', async () => {
@@ -159,6 +172,9 @@ describe('Endpoint Billings', () => {
         'message',
         'Cobrança não encontrada',
       );
+      expect(response.body).toHaveProperty('status', 404);
+      expect(response.body).toHaveProperty('type', 'NotFoundError');
+      expect(response.body).toHaveProperty('dateTime');
     });
 
     it('should return billing', async () => {
@@ -189,6 +205,9 @@ describe('Endpoint Billings', () => {
         'message',
         'Cobrança não encontrada',
       );
+      expect(response.body).toHaveProperty('status', 404);
+      expect(response.body).toHaveProperty('type', 'NotFoundError');
+      expect(response.body).toHaveProperty('dateTime');
     });
 
     it('should return status 400 if description, status, value and expiration are not sent in the body', async () => {
@@ -203,6 +222,9 @@ describe('Endpoint Billings', () => {
         'message',
         'due é um campo obrigatório',
       );
+      expect(response.body).toHaveProperty('status', 400);
+      expect(response.body).toHaveProperty('type', 'ValidationError');
+      expect(response.body).toHaveProperty('dateTime');
     });
 
     it('should be possible to update a billing', async () => {

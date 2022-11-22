@@ -34,6 +34,9 @@ describe('Endpoint Customers', () => {
         'message',
         'phone é um campo obrigatório',
       );
+      expect(response.body).toHaveProperty('status', 400);
+      expect(response.body).toHaveProperty('type', 'ValidationError');
+      expect(response.body).toHaveProperty('dateTime');
     });
 
     it('should return status 409 if the email has already been registered', async () => {
@@ -51,6 +54,9 @@ describe('Endpoint Customers', () => {
 
       expect(response.statusCode).toBe(409);
       expect(response.body).toHaveProperty('message', 'E-mail já cadastrado');
+      expect(response.body).toHaveProperty('status', 409);
+      expect(response.body).toHaveProperty('type', 'ConflictError');
+      expect(response.body).toHaveProperty('dateTime');
     });
 
     it('should return status 409 if the cpf has already been registered', async () => {
@@ -68,6 +74,9 @@ describe('Endpoint Customers', () => {
 
       expect(response.statusCode).toBe(409);
       expect(response.body).toHaveProperty('message', 'CPF já cadastrado');
+      expect(response.body).toHaveProperty('status', 409);
+      expect(response.body).toHaveProperty('type', 'ConflictError');
+      expect(response.body).toHaveProperty('dateTime');
     });
 
     it('should be possible to create a customer without the address', async () => {
@@ -93,11 +102,13 @@ describe('Endpoint Customers', () => {
           cpf: '201.474.280-41',
           phone: '(45) 92518-3645',
           cep: '01001-000',
-          address: 'Praça da Sé',
-          complement: 'lado ímpar',
-          district: 'Sé',
-          city: 'São Paulo',
-          uf: 'SP',
+          address: {
+            street: 'Praça da Sé',
+            complement: 'lado ímpar',
+            district: 'Sé',
+            city: 'São Paulo',
+            uf: 'SP',
+          },
         })
         .set('Authorization', `Bearer ${token}`);
 
@@ -124,6 +135,9 @@ describe('Endpoint Customers', () => {
 
       expect(response.statusCode).toBe(404);
       expect(response.body).toHaveProperty('message', 'Cliente não encontrado');
+      expect(response.body).toHaveProperty('status', 404);
+      expect(response.body).toHaveProperty('type', 'NotFoundError');
+      expect(response.body).toHaveProperty('dateTime');
     });
 
     it('should return a customer', async () => {
@@ -160,6 +174,9 @@ describe('Endpoint Customers', () => {
 
       expect(response.statusCode).toBe(409);
       expect(response.body).toHaveProperty('message', 'E-mail já cadastrado');
+      expect(response.body).toHaveProperty('status', 409);
+      expect(response.body).toHaveProperty('type', 'ConflictError');
+      expect(response.body).toHaveProperty('dateTime');
 
       await customer.clear();
     });
@@ -188,6 +205,9 @@ describe('Endpoint Customers', () => {
 
       expect(response.statusCode).toBe(409);
       expect(response.body).toHaveProperty('message', 'CPF já cadastrado');
+      expect(response.body).toHaveProperty('status', 409);
+      expect(response.body).toHaveProperty('type', 'ConflictError');
+      expect(response.body).toHaveProperty('dateTime');
 
       await customer.clear();
     });
