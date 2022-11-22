@@ -8,18 +8,7 @@ const {
 } = require('../helpers/apiErrors');
 
 const create = async (req, res) => {
-  const {
-    name,
-    email,
-    cpf,
-    phone,
-    cep,
-    address,
-    complement,
-    district,
-    city,
-    uf,
-  } = req.body;
+  const { name, email, cpf, phone, address } = req.body;
   let addressId = 0;
 
   await schemaCustomer.validate({
@@ -27,12 +16,7 @@ const create = async (req, res) => {
     email,
     cpf,
     phone,
-    cep,
     address,
-    complement,
-    district,
-    city,
-    uf,
   });
 
   const customerEmail = await knex('customers').where({ email }).first();
@@ -54,17 +38,8 @@ const create = async (req, res) => {
     phone,
   };
 
-  if (cep || address || complement || district || city || uf) {
-    [addressId] = await knex('adresses')
-      .insert({
-        address,
-        complement,
-        cep,
-        district,
-        city,
-        uf,
-      })
-      .returning('id');
+  if (address) {
+    [addressId] = await knex('adresses').insert(address).returning('id');
 
     if (!addressId) {
       throw new CrudError('Não foi possível cadastrar o cliente');
@@ -129,7 +104,7 @@ const getOne = async (req, res) => {
   }
 
   const address = await knex('adresses')
-    .select('address', 'complement', 'cep', 'district', 'city', 'uf')
+    .select('street', 'complement', 'cep', 'district', 'city', 'uf')
     .where({ id: customer.address_id })
     .first();
 
@@ -137,24 +112,13 @@ const getOne = async (req, res) => {
     .select('id', 'description', 'status', 'value', 'due', 'customer_id')
     .where('customer_id', id);
 
-  const detailedCustomer = { ...customer, ...address, billings: bills };
+  const detailedCustomer = { ...customer, address, billings: bills };
 
   return res.status(200).json(detailedCustomer);
 };
 
 const update = async (req, res) => {
-  const {
-    name,
-    email,
-    cpf,
-    phone,
-    cep,
-    address,
-    complement,
-    district,
-    city,
-    uf,
-  } = req.body;
+  const { name, email, cpf, phone, address } = req.body;
   const { id } = req.params;
 
   await schemaCustomer.validate({
@@ -162,12 +126,7 @@ const update = async (req, res) => {
     email,
     cpf,
     phone,
-    cep,
     address,
-    complement,
-    district,
-    city,
-    uf,
   });
 
   const customerEmail = await knex('customers')
@@ -208,16 +167,9 @@ const update = async (req, res) => {
       throw new CrudError('Não foi possível cadastrar o cliente');
     }
 
-    if (cep || address || complement || district || city || uf) {
+    if (address) {
       const updateAddress = await knex('adresses')
-        .update({
-          address,
-          complement,
-          cep,
-          district,
-          city,
-          uf,
-        })
+        .update(address)
         .where({ id: customerAddressIdReturning.address_id });
 
       if (updateAddress === 0) {
@@ -228,16 +180,9 @@ const update = async (req, res) => {
     return res.status(204).json();
   }
 
-  if (cep || address || complement || district || city || uf) {
+  if (address) {
     const [insertAddress] = await knex('adresses')
-      .insert({
-        address,
-        complement,
-        cep,
-        district,
-        city,
-        uf,
-      })
+      .insert(address)
       .returning('id');
 
     if (insertAddress === 0) {
