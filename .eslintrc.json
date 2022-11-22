@@ -12,6 +12,7 @@
   },
   "rules": {
     "camelcase": "off",
-    "no-restricted-syntax": "off"
+    "no-restricted-syntax": "off",
+    "no-plusplus": "off"
   }
 }
