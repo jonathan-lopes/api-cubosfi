@@ -1,4 +1,4 @@
-const { add } = require('date-fns');
+const { addDays } = require('date-fns');
 const jwt = require('jsonwebtoken');
 const knex = require('../database/connection');
 const { NotFoundError, UnauthorizedError } = require('../helpers/apiErrors');
@@ -40,9 +40,10 @@ const refreshTokenController = async (req, res) => {
     expiresIn: process.env.EXPIRES_IN_REFRESH_TOKEN,
   });
 
-  const refreshTokenExpiresDate = add(new Date(), {
-    days: process.env.EXPIRES_REFRESH_TOKEN_DAYS,
-  });
+  const refreshTokenExpiresDate = addDays(
+    new Date(),
+    process.env.EXPIRES_REFRESH_TOKEN_DAYS,
+  );
 
   await knex('user_token').insert({
     refresh_token: newRefreshToken,

@@ -1,6 +1,6 @@
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
-const { add } = require('date-fns');
+const { addDays } = require('date-fns');
 const knex = require('../database/connection');
 const schemaLogin = require('../validations/schemaLogin');
 const { BadRequestError } = require('../helpers/apiErrors');
@@ -34,9 +34,10 @@ const login = async (req, res) => {
     },
   );
 
-  const refreshTokenExpiresDate = add(new Date(), {
-    days: process.env.EXPIRES_REFRESH_TOKEN_DAYS,
-  });
+  const refreshTokenExpiresDate = addDays(
+    new Date(),
+    process.env.EXPIRES_REFRESH_TOKEN_DAYS,
+  );
 
   await knex('user_token').insert({
     refresh_token: refreshToken,
