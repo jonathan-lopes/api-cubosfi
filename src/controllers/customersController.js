@@ -3,7 +3,7 @@ const schemaCustomer = require('../validations/schemaCustomer');
 const paymentStatus = require('../helpers/paymentStatus');
 const {
   ConflictError,
-  CrudError,
+  DatabaseError,
   NotFoundError,
 } = require('../helpers/apiErrors');
 
@@ -42,7 +42,7 @@ const create = async (req, res) => {
     [addressId] = await knex('adresses').insert(address).returning('id');
 
     if (!addressId) {
-      throw new CrudError('Não foi possível cadastrar o cliente');
+      throw new DatabaseError('Não foi possível cadastrar o cliente');
     }
 
     body.address_id = addressId.id;
@@ -51,7 +51,7 @@ const create = async (req, res) => {
   const insertCustomer = await knex('customers').insert(body);
 
   if (insertCustomer === 0) {
-    throw new CrudError('Não foi possível cadastrar o cliente');
+    throw new DatabaseError('Não foi possível cadastrar o cliente');
   }
 
   return res.status(201).json();
@@ -164,7 +164,7 @@ const update = async (req, res) => {
       .returning('address_id');
 
     if (customerAddressIdReturning === 0) {
-      throw new CrudError('Não foi possível cadastrar o cliente');
+      throw new DatabaseError('Não foi possível cadastrar o cliente');
     }
 
     if (address) {
@@ -173,7 +173,7 @@ const update = async (req, res) => {
         .where({ id: customerAddressIdReturning.address_id });
 
       if (updateAddress === 0) {
-        throw new CrudError('Não foi possível cadastrar o cliente');
+        throw new DatabaseError('Não foi possível cadastrar o cliente');
       }
     }
 
@@ -186,7 +186,7 @@ const update = async (req, res) => {
       .returning('id');
 
     if (insertAddress === 0) {
-      throw new CrudError('Não foi possível cadastrar o cliente');
+      throw new DatabaseError('Não foi possível cadastrar o cliente');
     }
 
     const customerAddressIdReturning = await knex('customers')
@@ -194,7 +194,7 @@ const update = async (req, res) => {
       .where({ id });
 
     if (customerAddressIdReturning === 0) {
-      throw new CrudError('Não foi possível cadastrar o cliente');
+      throw new DatabaseError('Não foi possível cadastrar o cliente');
     }
   }
 

@@ -3,7 +3,7 @@ const schemaRegisterBilling = require('../validations/schemaRegisterBillings');
 const schemaEditBilling = require('../validations/schemaEditBilling');
 const { isPending } = require('../helpers/paymentStatus');
 const {
-  CrudError,
+  DatabaseError,
   BadRequestError,
   NotFoundError,
 } = require('../helpers/apiErrors');
@@ -24,7 +24,7 @@ const create = async (req, res) => {
   const insertBilling = await knex('billings').insert(body);
 
   if (insertBilling === 0) {
-    throw new CrudError('Não foi possível cadastrar a cobrança');
+    throw new DatabaseError('Não foi possível cadastrar a cobrança');
   }
 
   return res.status(201).json();
@@ -61,7 +61,7 @@ const del = async (req, res) => {
     const billingDelete = await knex('billings').del().where({ id });
 
     if (!billingDelete) {
-      throw new CrudError('Não foi possível excluir a cobrança');
+      throw new DatabaseError('Não foi possível excluir a cobrança');
     }
 
     return res.status(204).json();
@@ -106,7 +106,7 @@ const update = async (req, res) => {
   const updateBilling = await knex('billings').update(body).where({ id });
 
   if (!updateBilling) {
-    throw new CrudError('Não foi possível atualizar a cobrança');
+    throw new DatabaseError('Não foi possível atualizar a cobrança');
   }
 
   return res.status(204).json();

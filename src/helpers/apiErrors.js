@@ -30,7 +30,7 @@ class ForbiddenError extends ApiError {
   }
 }
 
-class CrudError extends ApiError {
+class DatabaseError extends ApiError {
   constructor(message) {
     super(message, 500);
   }
@@ -48,6 +48,6 @@ module.exports = {
   ForbiddenError,
   NotFoundError,
   UnauthorizedError,
-  CrudError,
+  DatabaseError,
   ConflictError,
 };
