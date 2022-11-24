@@ -3,8 +3,8 @@ const yup = require('./yupSettings');
 const { validateCPF, validadePhone } = require('../helpers/regex');
 
 const schemaCustomer = yup.object().shape({
-  name: yup.string().strict().required(),
-  email: yup.string().email('Formato de e-mail inválido').required(),
+  name: yup.string().strict().max(80).required(),
+  email: yup.string().max(80).email('Formato de e-mail inválido').required(),
   cpf: yup
     .string()
     .strict()
@@ -13,7 +13,7 @@ const schemaCustomer = yup.object().shape({
   phone: yup
     .string()
     .strict()
-    .matches(validadePhone, 'Fomato de telefone inválido')
+    .matches(validadePhone, 'Formato de telefone inválido')
     .required(),
   address: yup
     .object({
@@ -36,7 +36,7 @@ const schemaCustomer = yup.object().shape({
       (value) => Object.keys(value).length,
     )
     .test(
-      'is-aaa',
+      'is-unknown',
       '${path} com propriedades não suportadas',
       (value, context) => {
         const keysOriginalValue = Object.keys(value);
