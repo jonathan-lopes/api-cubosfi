@@ -79,7 +79,7 @@ describe('Endpoint Billings', () => {
         .get('/billings')
         .set('Authorization', `Bearer ${token}`);
 
-      customer.clear();
+      await customer.clear();
 
       expect(allBillings.statusCode).toBe(200);
       expect(allBillings.body).toHaveLength(2);

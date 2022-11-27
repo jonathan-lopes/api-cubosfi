@@ -104,6 +104,7 @@ describe('Endpoint Customers', () => {
           cep: '01001-000',
           address: {
             street: 'Praça da Sé',
+            cep: '01001-000',
             complement: 'lado ímpar',
             district: 'Sé',
             city: 'São Paulo',
