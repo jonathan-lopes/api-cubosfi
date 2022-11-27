@@ -52,7 +52,7 @@ class SutCustomer {
         cpf: this.#cpf,
         phone: this.#phone,
       })
-      .returning(['id', 'name', 'email', 'cpf', 'phone', 'address_id']);
+      .returning(['id', 'name', 'email', 'cpf', 'phone']);
 
     return data;
   }
