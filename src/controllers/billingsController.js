@@ -31,7 +31,18 @@ const create = async (req, res) => {
 };
 
 const getAll = async (req, res) => {
-  const billings = await knex('billings')
+  const {
+    status,
+    is_overdue,
+    cpf,
+    due_date,
+    after_due_date,
+    before_due_date,
+    less_than_value,
+    greater_than_value,
+  } = req.query;
+
+  const query = knex('billings')
     .join('customers', 'billings.customer_id', '=', 'customers.id')
     .select(
       'customers.name',
@@ -44,6 +55,55 @@ const getAll = async (req, res) => {
       'billings.is_overdue',
       'billings.customer_id',
     );
+
+  if (status) {
+    query.where({
+      status,
+    });
+  }
+
+  if (is_overdue) {
+    query.where({
+      is_overdue,
+    });
+  }
+
+  if (cpf) {
+    query.where({
+      cpf,
+    });
+  }
+
+  if (due_date) {
+    query.where({
+      due: due_date,
+    });
+  }
+
+  if (after_due_date) {
+    query.where('billings.due', '>', after_due_date);
+  }
+
+  if (before_due_date) {
+    query.where('billings.due', '<', before_due_date);
+  }
+
+  if (less_than_value && !greater_than_value) {
+    query.where('billings.value', '<', less_than_value);
+  }
+
+  if (greater_than_value && !less_than_value) {
+    query.where('billings.value', '>', greater_than_value);
+  }
+
+  if (less_than_value && greater_than_value) {
+    query.whereNotBetween('billings.value', [
+      less_than_value,
+      greater_than_value,
+    ]);
+  }
+
+  const billings = await query;
 
   return res.status(200).json(billings);
 };
