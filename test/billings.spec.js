@@ -40,7 +40,7 @@ describe('Endpoint Billings', () => {
 
     it('should return status 400 if no customer_id, description, status, value, and due are sent in the request body', async () => {
       const response = await request(app)
-        .post('/billing')
+        .post('/billings')
         .send({})
         .set('Authorization', `Bearer ${token}`);
 
@@ -57,7 +57,7 @@ describe('Endpoint Billings', () => {
     it('should return status 201 if a billing has been registered', async () => {
       const dataBilling = await sutBilling.create();
       const response = await request(app)
-        .post('/billing')
+        .post('/billings')
         .send(dataBilling)
         .set('Authorization', `Bearer ${token}`);
 
@@ -69,7 +69,7 @@ describe('Endpoint Billings', () => {
     it('should return all registered billings', async () => {
       const dataBilling = await sutBilling.create();
       const response = await request(app)
-        .post('/billing')
+        .post('/billings')
         .send(dataBilling)
         .set('Authorization', `Bearer ${token}`);
 
@@ -89,7 +89,7 @@ describe('Endpoint Billings', () => {
   describe('Delete Billing', () => {
     it('should return 404 if the charge does not exist', async () => {
       const response = await request(app)
-        .del('/billing/100')
+        .del('/billings/100')
         .set('Authorization', `Bearer ${token}`);
 
       expect(response.statusCode).toBe(404);
@@ -106,7 +106,7 @@ describe('Endpoint Billings', () => {
       const { id: id1 } = await sutBilling.create();
 
       const response1 = await request(app)
-        .del(`/billing/${id1}`)
+        .del(`/billings/${id1}`)
         .set('Authorization', `Bearer ${token}`);
 
       expect(response1.statusCode).toBe(400);
@@ -129,7 +129,7 @@ describe('Endpoint Billings', () => {
       const { id: id2 } = await sutBilling2.create();
 
       const response2 = await request(app)
-        .del(`/billing/${id2}`)
+        .del(`/billings/${id2}`)
         .set('Authorization', `Bearer ${token}`);
 
       expect(response2.statusCode).toBe(400);
@@ -154,7 +154,7 @@ describe('Endpoint Billings', () => {
 
       const { id } = await sutBilling.create();
       const response = await request(app)
-        .del(`/billing/${id}`)
+        .del(`/billings/${id}`)
         .set('Authorization', `Bearer ${token}`);
 
       expect(response.statusCode).toBe(204);
@@ -164,7 +164,7 @@ describe('Endpoint Billings', () => {
   describe('Get One Billing', () => {
     it('should return status 404 if billing does not exist', async () => {
       const response = await request(app)
-        .get('/billing/100')
+        .get('/billings/100')
         .set('Authorization', `Bearer ${token}`);
 
       expect(response.statusCode).toBe(404);
@@ -181,7 +181,7 @@ describe('Endpoint Billings', () => {
       const { id } = await sutBilling.create();
 
       const response = await request(app)
-        .get(`/billing/${id}`)
+        .get(`/billings/${id}`)
         .set('Authorization', `Bearer ${token}`);
 
       expect(response.statusCode).toBe(200);
@@ -191,7 +191,7 @@ describe('Endpoint Billings', () => {
   describe('Update Billing', () => {
     it('should return status 404 if billing does not exist', async () => {
       const response = await request(app)
-        .put('/billing/100')
+        .put('/billings/100')
         .send({
           description: 'lorem',
           status: 'paid',
@@ -213,7 +213,7 @@ describe('Endpoint Billings', () => {
     it('should return status 400 if description, status, value and expiration are not sent in the body', async () => {
       const { id } = await sutBilling.create();
       const response = await request(app)
-        .put(`/billing/${id}`)
+        .put(`/billings/${id}`)
         .send({})
         .set('Authorization', `Bearer ${token}`);
 
@@ -231,7 +231,7 @@ describe('Endpoint Billings', () => {
       const { id } = await sutBilling.create();
 
       const response = await request(app)
-        .put(`/billing/${id}`)
+        .put(`/billings/${id}`)
         .send({
           description: 'lorem',
           status: 'paid',
