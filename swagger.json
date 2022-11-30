@@ -1,105 +1,552 @@
 {
-  "swagger": "2.0",
+  "openapi": "3.0.3",
   "info": {
     "version": "1.0.0",
-    "title": "REST API",
-    "description": ""
+    "title": "CUBOSFI API",
+    "description": "CubosFi is an API developed for the CubosFi frontend application to register customers and their charges"
   },
-  "host": "localhost:3000",
-  "basePath": "/",
-  "schemes": [
-    "http"
+  "servers": [
+    {
+      "url": "http://localhost:3333/",
+      "description": "Local"
+    },
+    {
+      "url": "https://api/",
+      "description": "Production"
+    }
   ],
-  "paths": {
-    "/user": {
-      "post": {
-        "description": "",
-        "parameters": [
-          {
-            "name": "body",
-            "in": "body",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "nome": {
-                  "example": "any"
-                },
-                "email": {
-                  "example": "any"
-                },
-                "senha": {
-                  "example": "any"
-                }
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    },
+    "schemas": {
+      "User": {
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "Jonh Doe"
+          },
+          "email": {
+            "type": "string",
+            "example": "john.doe@email.com"
+          },
+          "cpf": {
+            "type": "string",
+            "example": null,
+            "nullable": true,
+            "description": "field can be null"
+          },
+          "phone": {
+            "type": "string",
+            "example": null,
+            "nullable": true,
+            "description": "field can be null"
+          }
+        },
+        "required": [
+          "name",
+          "email"
+        ]
+      },
+      "ResponseUser": {
+        "properties": {
+          "id": {
+            "type": "integer",
+            "example": 1
+          },
+          "name": {
+            "type": "string",
+            "example": "Jonh Doe"
+          },
+          "email": {
+            "type": "string",
+            "example": "john.doe@email.com"
+          },
+          "cpf": {
+            "type": "string",
+            "nullable": true,
+            "example": null
+          },
+          "phone": {
+            "type": "string",
+            "nullable": true,
+            "example": null
+          }
+        }
+      },
+      "Error": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string"
+          },
+          "message": {
+            "type": "string"
+          },
+          "status": {
+            "type": "number"
+          },
+          "dateTime": {
+            "type": "string"
+          }
+        }
+      },
+      "Customer": {
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "Mary"
+          },
+          "email": {
+            "type": "string",
+            "example": "Mary@email.com"
+          },
+          "cpf": {
+            "type": "string",
+            "example": "762.039.490-78"
+          },
+          "phone": {
+            "type": "string",
+            "example": "(18) 2304-2161"
+          },
+          "address": {
+            "type": "object",
+            "properties": {
+              "cep": {
+                "type": "string",
+                "example": "01001-000",
+                "maxLength": 9
+              },
+              "street": {
+                "type": "string",
+                "example": "Praça da Sé"
+              },
+              "complement": {
+                "type": "string",
+                "example": "lado ímpar"
+              },
+              "district": {
+                "type": "string",
+                "example": "Sé"
+              },
+              "city": {
+                "type": "string",
+                "example": "São Paulo"
+              },
+              "uf": {
+                "type": "string",
+                "example": "SP",
+                "maxLength": 2,
+                "description": "must send the characters in uppercase"
               }
             }
           }
+        },
+        "required": [
+          "name",
+          "email",
+          "cpf",
+          "phone"
+        ]
+      },
+      "ResponseCustomer": {
+        "properties": {
+          "id": {
+            "type": "integer"
+          },
+          "name": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          },
+          "cpf": {
+            "type": "string"
+          },
+          "phone": {
+            "type": "string"
+          },
+          "address_id": {
+            "type": "integer",
+            "nullable": true
+          },
+          "billings": {
+            "type": "array",
+            "example": []
+          },
+          "address": {
+            "type": "object",
+            "properties": {
+              "street": {
+                "type": "string"
+              },
+              "complement": {
+                "type": "string"
+              },
+              "cep": {
+                "type": "string"
+              },
+              "district": {
+                "type": "string"
+              },
+              "city": {
+                "type": "string"
+              },
+              "uf": {
+                "type": "string",
+                "maxLength": 2
+              }
+            }
+          }
+        }
+      },
+      "Billing": {
+        "properties": {
+          "customer_id": {
+            "type": "integer",
+            "description": "customer id already registered"
+          },
+          "description": {
+            "type": "string",
+            "maxLength": 128
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "paid",
+              "pending"
+            ]
+          },
+          "value": {
+            "type": "integer",
+            "description": "monetary value must be sent in cents, negative values are not accepted"
+          },
+          "due": {
+            "type": "string",
+            "format": "yyyy-mm-dd"
+          }
+        },
+        "required": [
+          "customer_id",
+          "description",
+          "status",
+          "value",
+          "due"
+        ]
+      }
+    },
+    "responses": {
+      "NotFound": {
+        "description": "The specified resource was not found",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/Error"
+            }
+          }
+        }
+      },
+      "Unauthorized": {
+        "description": "Unauthorized",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/Error"
+            }
+          }
+        }
+      },
+      "BadRequest": {
+        "description": "Bad Request",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/Error"
+            }
+          }
+        }
+      },
+      "Forbidden": {
+        "description": "Forbidden",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/Error"
+            }
+          }
+        }
+      },
+      "Database": {
+        "description": "Internal Server Error",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/Error"
+            }
+          }
+        }
+      },
+      "Conflict": {
+        "description": "Conflict",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/Error"
+            }
+          }
+        }
+      }
+    }
+  },
+  "paths": {
+    "/user": {
+      "post": {
+        "tags": [
+          "User"
         ],
+        "description": "on this endpoint create a new user",
+        "summary": " Create a new user",
+        "parameters": [],
         "responses": {
           "201": {
             "description": "Created"
           },
           "400": {
-            "description": "Bad Request"
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/responses/BadRequest"
+                },
+                "examples": {
+                  "name field": {
+                    "value": {
+                      "type": "ValidationError",
+                      "message": "name deve ser no máximo 128 caracteres",
+                      "status": 400,
+                      "dateTime": "2022-11-22T03:50:44.269Z"
+                    },
+                    "description": "must send a name with a maximum of 128 characters"
+                  },
+                  "email field": {
+                    "value": {
+                      "type": "ValidationError",
+                      "message": "Formato de e-mail inválido",
+                      "status": 400,
+                      "dateTime": "2022-11-22T03:50:44.269Z"
+                    },
+                    "description": "must send a valid email with a maximum of 128 characters"
+                  },
+                  "password filed": {
+                    "value": {
+                      "type": "ValidationError",
+                      "message": "password deve ser pelo menos 8 caracteres",
+                      "status": 400,
+                      "dateTime": "2022-11-22T03:50:44.269Z"
+                    },
+                    "description": "must send a password between 8 and 56 characters"
+                  }
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/responses/Conflict"
+                },
+                "example": {
+                  "type": "ConflictError",
+                  "message": "E-mail já cadastrado",
+                  "status": 409,
+                  "dateTime": "2022-11-22T03:50:44.269Z"
+                }
+              }
+            }
           },
           "500": {
-            "description": "Internal Server Error"
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/responses/Database"
+                },
+                "examples": {
+                  "error#1": {
+                    "description": "internal error",
+                    "value": {
+                      "type": "Error",
+                      "message": "Internal Server Error",
+                      "status": 500,
+                      "dateTime": "2022-11-23T23:25:25Z"
+                    }
+                  },
+                  "error#2": {
+                    "description": "database error",
+                    "value": {
+                      "type": "DatabaseError",
+                      "message": "Não foi possível cadastrar o usuário",
+                      "status": 500,
+                      "dateTime": "2022-11-23T23:22:48Z"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "title": "User",
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "example": "Jonh Doe",
+                    "type": "string"
+                  },
+                  "email": {
+                    "example": "john.doe@email.com",
+                    "type": "string"
+                  },
+                  "password": {
+                    "example": "doe@1234",
+                    "type": "string"
+                  }
+                }
+              }
+            }
           }
         }
       },
       "get": {
-        "description": "",
+        "tags": [
+          "User"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "description": "get logged in user details",
+        "summary": "Get user details",
         "parameters": [
           {
             "name": "authorization",
+            "required": true,
             "in": "header",
-            "type": "string"
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "responses": {
           "200": {
-            "description": "OK"
-          },
-          "400": {
-            "description": "Bad Request"
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseUser"
+                }
+              }
+            }
           },
           "401": {
-            "description": "Unauthorized"
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/responses/Unauthorized"
+                },
+                "examples": {
+                  "Unauthorized": {
+                    "value": {
+                      "type": "UnauthorizedError",
+                      "message": "Não autorizado",
+                      "status": 401,
+                      "dateTime": "2022-11-23T23:30:10Z"
+                    },
+                    "description": "you are not allowed"
+                  },
+                  "JsonWebTokenError": {
+                    "description": "malformed token",
+                    "value": {
+                      "type": "UnauthorizedError",
+                      "message": "Token malformado",
+                      "status": 401,
+                      "dateTime": "2022-11-23T23:31:43Z"
+                    }
+                  },
+                  "TokenExpiredError": {
+                    "description": "expired token",
+                    "value": {
+                      "message": "Token expirou"
+                    }
+                  }
+                }
+              }
+            }
           },
           "404": {
-            "description": "Not Found"
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/responses/NotFound"
+                },
+                "example": {
+                  "type": "NotFoundError",
+                  "message": "Usuário não encontrado",
+                  "status": 404,
+                  "dateTime": "2022-11-23T23:33:32Z"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/responses/Database"
+                },
+                "example": {
+                  "type": "DatabaseError",
+                  "message": "Internal Server Error",
+                  "status": 500,
+                  "dateTime": "2022-11-23T23:41:47Z"
+                }
+              }
+            }
           }
         }
       },
       "put": {
-        "description": "",
+        "tags": [
+          "User"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "description": "this endpoint update user",
+        "summary": "Update User",
         "parameters": [
           {
             "name": "authorization",
+            "required": true,
             "in": "header",
-            "type": "string"
-          },
-          {
-            "name": "body",
-            "in": "body",
             "schema": {
-              "type": "object",
-              "properties": {
-                "nome": {
-                  "example": "any"
-                },
-                "email": {
-                  "example": "any"
-                },
-                "cpf": {
-                  "example": "any"
-                },
-                "telefone": {
-                  "example": "any"
-                },
-                "senha": {
-                  "example": "any"
-                }
-              }
+              "type": "string"
             }
           }
         ],
@@ -108,285 +555,446 @@
             "description": "No Content"
           },
           "400": {
-            "description": "Bad Request"
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/responses/BadRequest"
+                },
+                "examples": {
+                  "cpf field": {
+                    "value": {
+                      "type": "ValidationError",
+                      "message": "Formato de CPF inválido",
+                      "status": 400,
+                      "dateTime": "2022-11-24T00:12:28Z"
+                    },
+                    "description": "must send a valid CPF"
+                  },
+                  "phone field": {
+                    "value": {
+                      "type": "ValidationError",
+                      "message": "Fomato de telefone inválido",
+                      "status": 400,
+                      "dateTime": "2022-11-24T00:14:05Z"
+                    },
+                    "description": "must send a valid phone"
+                  }
+                }
+              }
+            }
           },
           "401": {
-            "description": "Unauthorized"
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/responses/Unauthorized"
+                },
+                "examples": {
+                  "unauthorized": {
+                    "value": {
+                      "type": "UnauthorizedError",
+                      "message": "Não autorizado",
+                      "status": 401,
+                      "dateTime": "2022-11-23T23:56:45Z"
+                    }
+                  },
+                  "JsonWebTokenError": {
+                    "description": "malformed token",
+                    "value": {
+                      "type": "UnauthorizedError",
+                      "message": "Token malformado",
+                      "status": 401,
+                      "dateTime": "2022-11-23T23:58:24Z"
+                    }
+                  },
+                  "TokenExpiredError": {
+                    "description": "expired token",
+                    "value": {
+                      "type": "UnauthorizedError",
+                      "message": "Token expirou",
+                      "status": 401,
+                      "dateTime": "2022-11-23T23:58:50Z"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/responses/Conflict"
+                },
+                "examples": {
+                  "error#1": {
+                    "value": {
+                      "type": "ConflictError",
+                      "message": "E-mail já cadastrado",
+                      "status": 409,
+                      "dateTime": "2022-11-24T00:00:21Z"
+                    },
+                    "description": "email already registered by another user"
+                  },
+                  "error#2": {
+                    "value": {
+                      "type": "ConflictError",
+                      "message": "CPF já cadastrado",
+                      "status": 409,
+                      "dateTime": "2022-11-24T00:00:36Z"
+                    },
+                    "description": "cpf already registered by another user"
+                  }
+                }
+              }
+            }
           },
           "404": {
-            "description": "Not Found"
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/responses/NotFound"
+                },
+                "example": {
+                  "type": "NotFoundError",
+                  "message": "Usuário não encontrado",
+                  "status": 404,
+                  "dateTime": "2022-11-24T00:04:14Z"
+                }
+              }
+            }
           },
           "500": {
-            "description": "Internal Server Error"
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/responses/Database"
+                },
+                "examples": {
+                  "error#1": {
+                    "description": "internal error",
+                    "value": {
+                      "type": "Error",
+                      "message": "Internal Server Error",
+                      "status": 500,
+                      "dateTime": "2022-11-24T00:00:36Z"
+                    }
+                  },
+                  "error#2": {
+                    "description": "error when updating",
+                    "value": {
+                      "type": "DatabaseError",
+                      "message": "Não foi possível atualizar o usuário",
+                      "status": 500,
+                      "dateTime": "2022-11-24T00:07:44Z"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/User"
+              },
+              "examples": {
+                "default": {
+                  "value": {
+                    "name": "Jonh Doe",
+                    "email": "john.doe@email.com",
+                    "cpf": null,
+                    "phone": null
+                  }
+                },
+                "update fields": {
+                  "value": {
+                    "name": "Jonh Doe",
+                    "email": "john.doe@email.com",
+                    "cpf": "626.646.280-03",
+                    "phone": "(88) 2722-5732"
+                  }
+                }
+              }
+            }
           }
         }
       }
     },
     "/login": {
       "post": {
-        "description": "",
-        "parameters": [
-          {
-            "name": "body",
-            "in": "body",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "email": {
-                  "example": "any"
+        "tags": [
+          "Login"
+        ],
+        "summary": "Log in",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "user": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "integer",
+                          "example": 1
+                        },
+                        "name": {
+                          "type": "string",
+                          "example": "Jonh Doe"
+                        },
+                        "email": {
+                          "type": "string",
+                          "example": "john.doe@email.com"
+                        },
+                        "cpf": {
+                          "type": "string",
+                          "nullable": true,
+                          "example": null
+                        },
+                        "phone": {
+                          "type": "string",
+                          "nullable": true,
+                          "example": null
+                        }
+                      }
+                    },
+                    "token": {
+                      "type": "string",
+                      "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c"
+                    },
+                    "refresh_token": {
+                      "type": "string",
+                      "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiSm9obiBEb2UiLCJpYXQiOjE1MTYyMzkwMjJ9.hqWGSaFpvbrXkOWc6lrnffhNWR19W_S1YKFBx2arWBk"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/responses/BadRequest"
                 },
-                "senha": {
-                  "example": "any"
+                "examples": {
+                  "ValidationError#1": {
+                    "value": {
+                      "type": "ValidationError",
+                      "messege": "Formato de e-mail inválido",
+                      "status": 400,
+                      "dateTime": "2022-11-24T00:53:42Z"
+                    },
+                    "description": "must send a valid registered email with a maximum of 128 characters"
+                  },
+                  "ValidationError#2": {
+                    "value": {
+                      "type": "ValidationError",
+                      "messege": "password deve ser pelo menos 8 caracteres",
+                      "status": 400,
+                      "dateTime": "2022-11-24T00:53:42Z"
+                    },
+                    "description": "must send a registered password between 8 to 56 characters"
+                  },
+                  "BadRequest": {
+                    "value": {
+                      "type": "BadRequestError",
+                      "messege": "E-mail ou senha inválidos",
+                      "status": 400,
+                      "dateTime": "2022-11-24T00:59:21Z"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/responses/Database"
+                },
+                "example": {
+                  "type": "DatabaseError",
+                  "message": "Internal Server Error",
+                  "status": 500,
+                  "dateTime": "2022-11-24T01:02:29Z"
                 }
               }
             }
           }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          },
-          "400": {
-            "description": "Bad Request"
-          },
-          "404": {
-            "description": "Not Found"
-          },
-          "500": {
-            "description": "Internal Server Error"
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "email": {
+                    "example": "john.doe@email.com",
+                    "type": "string"
+                  },
+                  "password": {
+                    "example": "doe@1234",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "email",
+                  "password"
+                ]
+              }
+            }
           }
         }
       }
     },
-    "/customer": {
+    "/refresh-token": {
       "post": {
-        "description": "",
-        "parameters": [
-          {
-            "name": "authorization",
-            "in": "header",
-            "type": "string"
+        "tags": [
+          "Refresh Token"
+        ],
+        "summary": "Refresh Token",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "token": {
+                      "type": "string",
+                      "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiSm9obiBEb2UiLCJpYXQiOjE1MTYyMzkwMjJ9.hqWGSaFpvbrXkOWc6lrnffhNWR19W_S1YKFBx2arWBk"
+                    },
+                    "refresh_token": {
+                      "type": "string",
+                      "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiSm9obiBEb2UiLCJpYXQiOjE1MTYyMzkwMjJ9.hqWGSaFpvbrXkOWc6lrnffhNWR19W_S1YKFBx2arWBk"
+                    }
+                  }
+                }
+              }
+            }
           },
-          {
-            "name": "body",
-            "in": "body",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "nome": {
-                  "example": "any"
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/responses/BadRequest"
                 },
-                "email": {
-                  "example": "any"
+                "example": {
+                  "type": "ValidationError",
+                  "message": "refresh_token deve ser um tipo de string",
+                  "status": 400,
+                  "dateTime": "2022-11-24T01:13:43Z"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/responses/Unauthorized"
                 },
-                "cpf": {
-                  "example": "any"
+                "example": {
+                  "type": "UnauthorizedError",
+                  "message": "refresh_token expirado",
+                  "status": 401,
+                  "dateTime": "2022-11-23T23:22:48Z"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/responses/NotFound"
                 },
-                "telefone": {
-                  "example": "any"
+                "example": {
+                  "type": "ValidError",
+                  "message": "refresh_token não encontrado",
+                  "status": 404,
+                  "dateTime": "2022-11-24T01:20:12Z"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/responses/Database"
                 },
-                "cep": {
-                  "example": "any"
-                },
-                "endereco": {
-                  "example": "any"
-                },
-                "complemento": {
-                  "example": "any"
-                },
-                "bairro": {
-                  "example": "any"
-                },
-                "cidade": {
-                  "example": "any"
-                },
-                "uf": {
-                  "example": "any"
+                "example": {
+                  "type": "DatabaseError",
+                  "message": "Internal Server Error",
+                  "status": 500,
+                  "dateTime": "2022-11-24T01:20:12Z"
                 }
               }
             }
           }
-        ],
-        "responses": {
-          "201": {
-            "description": "Created"
-          },
-          "400": {
-            "description": "Bad Request"
-          },
-          "401": {
-            "description": "Unauthorized"
-          },
-          "404": {
-            "description": "Not Found"
-          },
-          "500": {
-            "description": "Internal Server Error"
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "refresh_token": {
+                    "type": "string",
+                    "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiSm9obiBEb2UiLCJpYXQiOjE1MTYyMzkwMjJ9.hqWGSaFpvbrXkOWc6lrnffhNWR19W_S1YKFBx2arWBk",
+                    "required": [
+                      "true"
+                    ]
+                  }
+                }
+              }
+            }
           }
         }
       }
     },
     "/customers": {
-      "get": {
-        "description": "",
-        "parameters": [
-          {
-            "name": "authorization",
-            "in": "header",
-            "type": "string"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          },
-          "400": {
-            "description": "Bad Request"
-          },
-          "401": {
-            "description": "Unauthorized"
-          },
-          "404": {
-            "description": "Not Found"
-          }
-        }
-      }
-    },
-    "/customer/{id}": {
-      "get": {
-        "description": "",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          },
-          {
-            "name": "authorization",
-            "in": "header",
-            "type": "string"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          },
-          "400": {
-            "description": "Bad Request"
-          },
-          "401": {
-            "description": "Unauthorized"
-          },
-          "404": {
-            "description": "Not Found"
-          }
-        }
-      },
-      "put": {
-        "description": "",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          },
-          {
-            "name": "authorization",
-            "in": "header",
-            "type": "string"
-          },
-          {
-            "name": "body",
-            "in": "body",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "nome": {
-                  "example": "any"
-                },
-                "email": {
-                  "example": "any"
-                },
-                "cpf": {
-                  "example": "any"
-                },
-                "telefone": {
-                  "example": "any"
-                },
-                "cep": {
-                  "example": "any"
-                },
-                "endereco": {
-                  "example": "any"
-                },
-                "complemento": {
-                  "example": "any"
-                },
-                "bairro": {
-                  "example": "any"
-                },
-                "cidade": {
-                  "example": "any"
-                },
-                "uf": {
-                  "example": "any"
-                }
-              }
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          },
-          "400": {
-            "description": "Bad Request"
-          },
-          "401": {
-            "description": "Unauthorized"
-          },
-          "404": {
-            "description": "Not Found"
-          },
-          "500": {
-            "description": "Internal Server Error"
-          }
-        }
-      }
-    },
-    "/billing": {
       "post": {
-        "description": "",
+        "tags": [
+          "Customer"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Create a new customer",
         "parameters": [
           {
             "name": "authorization",
+            "required": true,
             "in": "header",
-            "type": "string"
-          },
-          {
-            "name": "body",
-            "in": "body",
             "schema": {
-              "type": "object",
-              "properties": {
-                "clienteId": {
-                  "example": "any"
-                },
-                "descricao": {
-                  "example": "any"
-                },
-                "status": {
-                  "example": "any"
-                },
-                "valor": {
-                  "example": "any"
-                },
-                "vencimento": {
-                  "example": "any"
-                }
-              }
+              "type": "string"
             }
           }
         ],
@@ -395,158 +1003,1485 @@
             "description": "Created"
           },
           "400": {
-            "description": "Bad Request"
-          },
-          "401": {
-            "description": "Unauthorized"
-          },
-          "404": {
-            "description": "Not Found"
-          },
-          "500": {
-            "description": "Internal Server Error"
-          }
-        }
-      }
-    },
-    "/billings": {
-      "get": {
-        "description": "",
-        "parameters": [
-          {
-            "name": "authorization",
-            "in": "header",
-            "type": "string"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          },
-          "400": {
-            "description": "Bad Request"
-          },
-          "401": {
-            "description": "Unauthorized"
-          },
-          "404": {
-            "description": "Not Found"
-          }
-        }
-      }
-    },
-    "/billing/{id}": {
-      "delete": {
-        "description": "",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          },
-          {
-            "name": "authorization",
-            "in": "header",
-            "type": "string"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          },
-          "400": {
-            "description": "Bad Request"
-          },
-          "401": {
-            "description": "Unauthorized"
-          },
-          "404": {
-            "description": "Not Found"
-          }
-        }
-      },
-      "get": {
-        "description": "",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          },
-          {
-            "name": "authorization",
-            "in": "header",
-            "type": "string"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          },
-          "400": {
-            "description": "Bad Request"
-          },
-          "401": {
-            "description": "Unauthorized"
-          },
-          "404": {
-            "description": "Not Found"
-          }
-        }
-      },
-      "put": {
-        "description": "",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          },
-          {
-            "name": "authorization",
-            "in": "header",
-            "type": "string"
-          },
-          {
-            "name": "body",
-            "in": "body",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "descricao": {
-                  "example": "any"
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/responses/BadRequest"
                 },
-                "status": {
-                  "example": "any"
-                },
-                "valor": {
-                  "example": "any"
-                },
-                "vencimento": {
-                  "example": "any"
+                "examples": {
+                  "ValidationError#1": {
+                    "summary": "name field",
+                    "value": {
+                      "type": "ValidationError",
+                      "message": "name deve ser no máximo 80 caracteres",
+                      "status": 400,
+                      "dateTime": "2022-11-24T02:49:00Z"
+                    }
+                  },
+                  "ValidationError#2": {
+                    "summary": "email field",
+                    "value": {
+                      "type": "ValidationError",
+                      "message": "Formato de e-mail inválido",
+                      "status": 400,
+                      "dateTime": "2022-11-24T02:53:47Z"
+                    },
+                    "description": "must send an email with a valid format and a maximum length of 80 characters"
+                  },
+                  "ValidationError#3": {
+                    "summary": "cpf field",
+                    "value": {
+                      "type": "ValidationError",
+                      "message": "Formato de CPF inválido",
+                      "status": 400,
+                      "dateTime": "2022-11-24T02:55:39Z"
+                    },
+                    "description": "must send a valid CPF"
+                  },
+                  "ValidationError#4": {
+                    "summary": "phone field",
+                    "value": {
+                      "type": "ValidationError",
+                      "message": "Fomato de telefone inválido",
+                      "status": 400,
+                      "dateTime": "2022-11-24T02:55:39Z"
+                    },
+                    "description": "must send a valid CPF"
+                  },
+                  "ValidationError#5": {
+                    "summary": "address.cep field",
+                    "value": {
+                      "type": "ValidationError",
+                      "message": "Fomato de telefone inválido",
+                      "status": 400,
+                      "dateTime": "2022-11-24T02:55:39Z"
+                    }
+                  },
+                  "ValidationError#6": {
+                    "summary": "address.uf field",
+                    "value": {
+                      "type": "ValidationError",
+                      "message": "address.uf deve ter exatamente 2 caracteres em maiúsculo",
+                      "status": 400,
+                      "dateTime": "2022-11-24T03:11:22Z"
+                    }
+                  }
                 }
               }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/responses/Unauthorized"
+                },
+                "examples": {
+                  "Unauthorized": {
+                    "value": {
+                      "type": "UnauthorizedError",
+                      "message": "Não autorizado",
+                      "status": 401,
+                      "dateTime": "2022-11-23T23:30:10Z"
+                    },
+                    "description": "you are not allowed"
+                  },
+                  "JsonWebTokenError": {
+                    "description": "malformed token",
+                    "value": {
+                      "type": "UnauthorizedError",
+                      "message": "Token malformado",
+                      "status": 401,
+                      "dateTime": "2022-11-23T23:31:43Z"
+                    }
+                  },
+                  "TokenExpiredError": {
+                    "description": "expired token",
+                    "value": {
+                      "message": "Token expirou"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/responses/Conflict"
+                },
+                "examples": {
+                  "Conflict#1": {
+                    "summary": "email with conflict",
+                    "value": {
+                      "type": "ConflictError",
+                      "message": "E-mail já cadastrado",
+                      "status": 409,
+                      "dateTime": "2022-11-24T03:16:27Z"
+                    }
+                  },
+                  "Conflict#2": {
+                    "summary": "cpf with conflict",
+                    "value": {
+                      "type": "ConflictError",
+                      "message": "CPF já cadastrado",
+                      "status": 409,
+                      "dateTime": "2022-11-24T03:17:04Z"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/responses/Database"
+                },
+                "examples": {
+                  "Internal Error#1": {
+                    "summary": "database error",
+                    "value": {
+                      "type": "DatabaseError",
+                      "message": "Não foi possível cadastrar o cliente",
+                      "status": 500,
+                      "dateTime": "2022-11-24T03:16:27Z"
+                    }
+                  },
+                  "Internal Error#2": {
+                    "summary": "internal sever error",
+                    "value": {
+                      "type": "Error",
+                      "message": "Internal Server Error",
+                      "status": 500,
+                      "dateTime": "2022-11-24T03:19:53Z"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "description": "you can register a new customer with or without an address",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Customer"
+              },
+              "examples": {
+                "no address": {
+                  "value": {
+                    "name": "Mary",
+                    "email": "Mary@email.com",
+                    "cpf": "762.039.490-78",
+                    "phone": "(18) 2304-2161"
+                  }
+                },
+                "with address": {
+                  "value": {
+                    "name": "Mary",
+                    "email": "Mary@email.com",
+                    "cpf": "762.039.490-78",
+                    "phone": "(18) 2304-2161",
+                    "address": {
+                      "cep": "01001-000",
+                      "street": "Praça da Sé",
+                      "complement": "lado ímpar",
+                      "district": "Sé",
+                      "city": "São Paulo",
+                      "uf": "SP"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "Customer"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Get all customers",
+        "parameters": [
+          {
+            "name": "authorization",
+            "required": true,
+            "in": "header",
+            "schema": {
+              "type": "string"
             }
           }
         ],
         "responses": {
           "200": {
-            "description": "OK"
-          },
-          "400": {
-            "description": "Bad Request"
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "Customer",
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "integer",
+                        "example": 1
+                      },
+                      "name": {
+                        "type": "string",
+                        "example": "Mary"
+                      },
+                      "email": {
+                        "type": "string",
+                        "example": "Mary@email.com"
+                      },
+                      "cpf": {
+                        "type": "string",
+                        "example": "762.039.490-78"
+                      },
+                      "phone": {
+                        "type": "string",
+                        "example": "(18) 2304-2161"
+                      },
+                      "billings": {
+                        "type": "array",
+                        "example": []
+                      }
+                    }
+                  }
+                }
+              }
+            }
           },
           "401": {
-            "description": "Unauthorized"
-          },
-          "404": {
-            "description": "Not Found"
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/responses/Unauthorized"
+                },
+                "examples": {
+                  "Unauthorized": {
+                    "value": {
+                      "type": "UnauthorizedError",
+                      "message": "Não autorizado",
+                      "status": 401,
+                      "dateTime": "2022-11-23T23:30:10Z"
+                    },
+                    "description": "you are not allowed"
+                  },
+                  "JsonWebTokenError": {
+                    "description": "malformed token",
+                    "value": {
+                      "type": "UnauthorizedError",
+                      "message": "Token malformado",
+                      "status": 401,
+                      "dateTime": "2022-11-23T23:31:43Z"
+                    }
+                  },
+                  "TokenExpiredError": {
+                    "description": "expired token",
+                    "value": {
+                      "message": "Token expirou"
+                    }
+                  }
+                }
+              }
+            }
           },
           "500": {
-            "description": "Internal Server Error"
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/responses/Database"
+                },
+                "example": {
+                  "value": {
+                    "type": "Error",
+                    "message": "Internal Server Error",
+                    "status": 500,
+                    "dateTime": "2022-11-24T03:29:45Z"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/customers/{id}": {
+      "get": {
+        "tags": [
+          "Customer"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Get a customer by id",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "authorization",
+            "required": true,
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseCustomer"
+                },
+                "examples": {
+                  "no address": {
+                    "value": {
+                      "id": 1,
+                      "name": "Billy",
+                      "email": "billy@email.com",
+                      "cpf": "030.712.654-12",
+                      "phone": "(71) 99469-4549",
+                      "billings": [
+                        {
+                          "id": 1,
+                          "description": "Delectus ullam at tempore reiciendis vel ipsam consequatur. Quibusdam non nihil eos ducimus fugiat provident.",
+                          "status": "paid",
+                          "value": 6418,
+                          "due": "2021-11-25T03:00:00.000Z",
+                          "customer_id": 1
+                        }
+                      ]
+                    },
+                    "description": "customer without registered address"
+                  },
+                  "with address": {
+                    "value": {
+                      "id": 1,
+                      "name": "Joana Franco",
+                      "email": "joana.fran@live.com",
+                      "cpf": "030.712.524-12",
+                      "phone": "(11) 99545-9999",
+                      "address": {
+                        "street": "Praça da Sé",
+                        "complement": "lado ímpar",
+                        "cep": "01001-000",
+                        "district": "Sé",
+                        "city": "São Paulo",
+                        "uf": "SP",
+                        "customer_id": 1
+                      },
+                      "billings": [
+                        {
+                          "id": 1,
+                          "description": "fast food snack",
+                          "status": "paid",
+                          "value": 3261,
+                          "due": "2021-11-25T03:00:00.000Z",
+                          "customer_id": 1
+                        }
+                      ]
+                    },
+                    "description": "customer with registered address"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/responses/Unauthorized"
+                },
+                "examples": {
+                  "Unauthorized": {
+                    "value": {
+                      "type": "UnauthorizedError",
+                      "message": "Não autorizado",
+                      "status": 401,
+                      "dateTime": "2022-11-23T23:30:10Z"
+                    },
+                    "description": "you are not allowed"
+                  },
+                  "JsonWebTokenError": {
+                    "description": "malformed token",
+                    "value": {
+                      "type": "UnauthorizedError",
+                      "message": "Token malformado",
+                      "status": 401,
+                      "dateTime": "2022-11-23T23:31:43Z"
+                    }
+                  },
+                  "TokenExpiredError": {
+                    "description": "expired token",
+                    "value": {
+                      "message": "Token expirou"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/responses/NotFound"
+                },
+                "example": {
+                  "type": "NotFoundError",
+                  "message": "Cliente não encontrado",
+                  "status": 404,
+                  "dateTime": "2022-11-24T04:22:58Z"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Customer"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Update a customer",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "authorization",
+            "required": true,
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content"
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/responses/BadRequest"
+                },
+                "examples": {
+                  "ValidationError#1": {
+                    "summary": "name field",
+                    "value": {
+                      "type": "ValidationError",
+                      "message": "name deve ser no máximo 80 caracteres",
+                      "status": 400,
+                      "dateTime": "2022-11-24T02:49:00Z"
+                    }
+                  },
+                  "ValidationError#2": {
+                    "summary": "email field",
+                    "value": {
+                      "type": "ValidationError",
+                      "message": "Formato de e-mail inválido",
+                      "status": 400,
+                      "dateTime": "2022-11-24T02:53:47Z"
+                    },
+                    "description": "must send an email with a valid format and a maximum length of 80 characters"
+                  },
+                  "ValidationError#3": {
+                    "summary": "cpf field",
+                    "value": {
+                      "type": "ValidationError",
+                      "message": "Formato de CPF inválido",
+                      "status": 400,
+                      "dateTime": "2022-11-24T02:55:39Z"
+                    },
+                    "description": "must send a valid CPF"
+                  },
+                  "ValidationError#4": {
+                    "summary": "phone field",
+                    "value": {
+                      "type": "ValidationError",
+                      "message": "Fomato de telefone inválido",
+                      "status": 400,
+                      "dateTime": "2022-11-24T02:55:39Z"
+                    },
+                    "description": "must send a valid CPF"
+                  },
+                  "ValidationError#5": {
+                    "summary": "address.cep field",
+                    "value": {
+                      "type": "ValidationError",
+                      "message": "Fomato de telefone inválido",
+                      "status": 400,
+                      "dateTime": "2022-11-24T02:55:39Z"
+                    }
+                  },
+                  "ValidationError#6": {
+                    "summary": "address.uf field",
+                    "value": {
+                      "type": "ValidationError",
+                      "message": "address.uf deve ter exatamente 2 caracteres em maiúsculo",
+                      "status": 400,
+                      "dateTime": "2022-11-24T03:11:22Z"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/responses/Unauthorized"
+                },
+                "examples": {
+                  "Unauthorized": {
+                    "value": {
+                      "type": "UnauthorizedError",
+                      "message": "Não autorizado",
+                      "status": 401,
+                      "dateTime": "2022-11-23T23:30:10Z"
+                    },
+                    "description": "you are not allowed"
+                  },
+                  "JsonWebTokenError": {
+                    "description": "malformed token",
+                    "value": {
+                      "type": "UnauthorizedError",
+                      "message": "Token malformado",
+                      "status": 401,
+                      "dateTime": "2022-11-23T23:31:43Z"
+                    }
+                  },
+                  "TokenExpiredError": {
+                    "description": "expired token",
+                    "value": {
+                      "message": "Token expirou"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/responses/Conflict"
+                },
+                "examples": {
+                  "Conflict#1": {
+                    "summary": "email with conflict",
+                    "value": {
+                      "type": "ConflictError",
+                      "message": "E-mail já cadastrado",
+                      "status": 409,
+                      "dateTime": "2022-11-24T03:16:27Z"
+                    }
+                  },
+                  "Conflict#2": {
+                    "summary": "cpf with conflict",
+                    "value": {
+                      "type": "ConflictError",
+                      "message": "CPF já cadastrado",
+                      "status": 409,
+                      "dateTime": "2022-11-24T03:17:04Z"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/responses/Database"
+                },
+                "examples": {
+                  "Internal Error#1": {
+                    "summary": "database error",
+                    "value": {
+                      "type": "DatabaseError",
+                      "message": "Não foi possível cadastrar o cliente",
+                      "status": 500,
+                      "dateTime": "2022-11-24T03:16:27Z"
+                    }
+                  },
+                  "Internal Error#2": {
+                    "summary": "internal sever error",
+                    "value": {
+                      "type": "Error",
+                      "message": "Internal Server Error",
+                      "status": 500,
+                      "dateTime": "2022-11-24T03:19:53Z"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Customer"
+              },
+              "examples": {
+                "update a customer without address": {
+                  "value": {
+                    "name": "Paulo Franco",
+                    "email": "paulo.franco@email.com",
+                    "cpf": "030.742.524-12",
+                    "phone": "(71) 99999-9999"
+                  }
+                },
+                "update a customer with address provided": {
+                  "value": {
+                    "name": "Paulo Franco",
+                    "email": "paulo.franco@email.com",
+                    "cpf": "030.742.524-12",
+                    "phone": "(71) 99999-9999",
+                    "address": {
+                      "street": "1ª Travessa Vasco da Gama",
+                      "complement": "",
+                      "cep": "40286-120",
+                      "district": "Brotas",
+                      "city": "Salvador",
+                      "uf": "BA"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/billings": {
+      "post": {
+        "tags": [
+          "Billings"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Create a new billing",
+        "parameters": [
+          {
+            "name": "authorization",
+            "required": true,
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Created"
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/responses/BadRequest"
+                },
+                "examples": {
+                  "description field": {
+                    "value": {
+                      "type": "ValidationError",
+                      "message": "description deve ser no máximo 128 caracteres",
+                      "status": 400,
+                      "dateTime": "2022-11-30T00:47:52.816Z"
+                    }
+                  },
+                  "status field": {
+                    "value": {
+                      "type": "ValidationError",
+                      "message": "status devem ser paid ou pending",
+                      "status": 400,
+                      "dateTime": "2022-11-30T00:49:43.875Z"
+                    }
+                  },
+                  "value field": {
+                    "value": {
+                      "type": "ValidationError",
+                      "message": "value deve ser um número positivo",
+                      "status": 400,
+                      "dateTime": "2022-11-30T03:02:21.282Z"
+                    }
+                  },
+                  "due field": {
+                    "value": {
+                      "type": "ValidationError",
+                      "message": "Campo due deve ser mais tarde do que 1900-01-01",
+                      "status": 400,
+                      "dateTime": "2022-11-30T02:02:08.016Z"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/responses/Unauthorized"
+                },
+                "examples": {
+                  "Unauthorized": {
+                    "value": {
+                      "type": "UnauthorizedError",
+                      "message": "Não autorizado",
+                      "status": 401,
+                      "dateTime": "2022-11-23T23:30:10Z"
+                    },
+                    "description": "you are not allowed"
+                  },
+                  "JsonWebTokenError": {
+                    "description": "malformed token",
+                    "value": {
+                      "type": "UnauthorizedError",
+                      "message": "Token malformado",
+                      "status": 401,
+                      "dateTime": "2022-11-23T23:31:43Z"
+                    }
+                  },
+                  "TokenExpiredError": {
+                    "description": "expired token",
+                    "value": {
+                      "message": "Token expirou"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/responses/Database"
+                },
+                "examples": {
+                  "Internal Error#1": {
+                    "summary": "database error",
+                    "value": {
+                      "type": "DatabaseError",
+                      "message": "Não foi possível cadastrar a cobrança",
+                      "status": 500,
+                      "dateTime": "2022-11-24T03:16:27Z"
+                    }
+                  },
+                  "Internal Error#2": {
+                    "summary": "internal sever error",
+                    "value": {
+                      "type": "Error",
+                      "message": "Internal Server Error",
+                      "status": 500,
+                      "dateTime": "2022-11-24T03:19:53Z"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Billing"
+              },
+              "example": {
+                "customer_id": 1,
+                "description": "Amet dolore maxime ipsum numquam earum nesciunt.",
+                "status": "pending",
+                "value": 50000,
+                "due": "2022-11-25"
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "Billings"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Get all billings",
+        "description": "You can merge queries to get more specific results.",
+        "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "example": "http://localhost:3333/billings?status=pending",
+            "description": "Gets all billings based on a paid or pending status",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "paid",
+                "pending"
+              ]
+            }
+          },
+          {
+            "name": "is_overdue",
+            "example": "http://127.0.0.1:3333/billings?is_overdue=true",
+            "description": "Gets all billings who have overdue accounts",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "cpf",
+            "example": "http://127.0.0.1:3333/billings?cpf=02880614546",
+            "description": "Get all billings by a specific cpf",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "due_date",
+            "example": "http://127.0.0.1:3333/billings?due_date=2021-11-20",
+            "description": "Get all billings by a specific due date",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "after_due_date",
+            "example": "http://127.0.0.1:3333/billings?after_due_date=2021-11-20",
+            "description": "Get all billings after a specific due date",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "before_due_date",
+            "example": "http://127.0.0.1:3333/billings?before_due_date=2021-11-20",
+            "description": "Get all billings before a specific due date",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "less_than_value",
+            "example": "http://127.0.0.1:3333/billings?less_than_value=1000",
+            "description": "Gets all charges with values less than specified and can be used in conjunction with the greater_than_value query to get a range of values",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "greater_than_value",
+            "example": "http://127.0.0.1:3333/billings?greater_than_value=6000",
+            "description": "Gets all billings with values greater than specified and can be used in conjunction with the less_than_value query to get a range of values",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#components/schemas/Billing"
+                  },
+                  "example": [
+                    {
+                      "name": "Ana Júlia Pereira",
+                      "cpf": "02880614546",
+                      "id": 1,
+                      "description": "Reprehenderit atque dolorum quis quia minus nam inventore suscipit. Quisquam error laborum.",
+                      "status": "pending",
+                      "value": 7354,
+                      "due": "2021-11-25T03:00:00.000Z",
+                      "is_overdue": true,
+                      "customer_id": 1
+                    },
+                    {
+                      "name": "Maria Helena Ribeiro",
+                      "cpf": "46351411874",
+                      "id": 2,
+                      "description": "Mollitia quaerat fugiat voluptas nemo.",
+                      "status": "paid",
+                      "value": 1145,
+                      "due": "2021-11-25T03:00:00.000Z",
+                      "is_overdue": false,
+                      "customer_id": 2
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/responses/Unauthorized"
+                },
+                "examples": {
+                  "Unauthorized": {
+                    "value": {
+                      "type": "UnauthorizedError",
+                      "message": "Não autorizado",
+                      "status": 401,
+                      "dateTime": "2022-11-23T23:30:10Z"
+                    },
+                    "description": "you are not allowed"
+                  },
+                  "JsonWebTokenError": {
+                    "description": "malformed token",
+                    "value": {
+                      "type": "UnauthorizedError",
+                      "message": "Token malformado",
+                      "status": 401,
+                      "dateTime": "2022-11-23T23:31:43Z"
+                    }
+                  },
+                  "TokenExpiredError": {
+                    "description": "expired token",
+                    "value": {
+                      "message": "Token expirou"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "type": "Error",
+                    "message": "Internal Server Error",
+                    "status": 500,
+                    "dateTime": "2022-11-24T03:19:53Z"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/billings/{id}": {
+      "delete": {
+        "tags": [
+          "Billings"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "delete a billing",
+        "description": "It is only possible to delete a charge that is in pending status and that is not overdue",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "required": true,
+            "name": "authorization",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content"
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/responses/BadRequest"
+                },
+                "example": {
+                  "type": "BadRequestError",
+                  "message": "Esta cobrança não pode ser excluída!",
+                  "status": 400,
+                  "dateTime": "2022-11-24T04:22:58Z"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/responses/NotFound"
+                },
+                "example": {
+                  "type": "NotFoundError",
+                  "message": "Cobrança não encontrada",
+                  "status": 404,
+                  "dateTime": "2022-11-24T04:22:58Z"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/responses/Unauthorized"
+                },
+                "examples": {
+                  "Unauthorized": {
+                    "value": {
+                      "type": "UnauthorizedError",
+                      "message": "Não autorizado",
+                      "status": 401,
+                      "dateTime": "2022-11-23T23:30:10Z"
+                    },
+                    "description": "you are not allowed"
+                  },
+                  "JsonWebTokenError": {
+                    "description": "malformed token",
+                    "value": {
+                      "type": "UnauthorizedError",
+                      "message": "Token malformado",
+                      "status": 401,
+                      "dateTime": "2022-11-23T23:31:43Z"
+                    }
+                  },
+                  "TokenExpiredError": {
+                    "description": "expired token",
+                    "value": {
+                      "message": "Token expirou"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/responses/Database"
+                },
+                "example": {
+                  "type": "DatabaseError",
+                  "message": "Não foi possível excluir a cobrança",
+                  "status": 500,
+                  "dateTime": "2022-11-24T03:19:53Z"
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "Billings"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Get a billing by id",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "authorization",
+            "required": true,
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Billing"
+                },
+                "example": {
+                  "id": 1,
+                  "description": "Numquam veniam animi voluptate. Rerum delectus fugiat mollitia tenetur nisi accusantium similique omnis.",
+                  "status": "paid",
+                  "value": 3261,
+                  "due": "2021-11-25T03:00:00.000Z",
+                  "is_overdue": false,
+                  "customer_id": 1
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/responses/Unauthorized"
+                },
+                "examples": {
+                  "Unauthorized": {
+                    "value": {
+                      "type": "UnauthorizedError",
+                      "message": "Não autorizado",
+                      "status": 401,
+                      "dateTime": "2022-11-23T23:30:10Z"
+                    },
+                    "description": "you are not allowed"
+                  },
+                  "JsonWebTokenError": {
+                    "description": "malformed token",
+                    "value": {
+                      "type": "UnauthorizedError",
+                      "message": "Token malformado",
+                      "status": 401,
+                      "dateTime": "2022-11-23T23:31:43Z"
+                    }
+                  },
+                  "TokenExpiredError": {
+                    "description": "expired token",
+                    "value": {
+                      "message": "Token expirou"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/responses/NotFound"
+                },
+                "example": {
+                  "type": "NotFoundError",
+                  "message": "Cobrança não encontrada",
+                  "status": 404,
+                  "dateTime": "2022-11-24T04:22:58Z"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "example": {
+                  "type": "Error",
+                  "message": "Internal Server Error",
+                  "status": 500,
+                  "dateTime": "2022-11-24T03:19:53Z"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Billings"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "update a billing",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "authorization",
+            "required": true,
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content"
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/responses/BadRequest"
+                },
+                "examples": {
+                  "description field": {
+                    "value": {
+                      "type": "ValidationError",
+                      "message": "description deve ser no máximo 128 caracteres",
+                      "status": 400,
+                      "dateTime": "2022-11-30T00:47:52.816Z"
+                    }
+                  },
+                  "status field": {
+                    "value": {
+                      "type": "ValidationError",
+                      "message": "status devem ser paid ou pending",
+                      "status": 400,
+                      "dateTime": "2022-11-30T00:49:43.875Z"
+                    }
+                  },
+                  "value field": {
+                    "value": {
+                      "type": "ValidationError",
+                      "message": "value deve ser um número positivo",
+                      "status": 400,
+                      "dateTime": "2022-11-30T03:02:21.282Z"
+                    }
+                  },
+                  "due field": {
+                    "value": {
+                      "type": "ValidationError",
+                      "message": "Campo due deve ser mais tarde do que 1900-01-01",
+                      "status": 400,
+                      "dateTime": "2022-11-30T02:02:08.016Z"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/responses/Unauthorized"
+                },
+                "examples": {
+                  "Unauthorized": {
+                    "value": {
+                      "type": "UnauthorizedError",
+                      "message": "Não autorizado",
+                      "status": 401,
+                      "dateTime": "2022-11-23T23:30:10Z"
+                    },
+                    "description": "you are not allowed"
+                  },
+                  "JsonWebTokenError": {
+                    "description": "malformed token",
+                    "value": {
+                      "type": "UnauthorizedError",
+                      "message": "Token malformado",
+                      "status": 401,
+                      "dateTime": "2022-11-23T23:31:43Z"
+                    }
+                  },
+                  "TokenExpiredError": {
+                    "description": "expired token",
+                    "value": {
+                      "message": "Token expirou"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/responses/NotFound"
+                },
+                "example": {
+                  "type": "NotFoundError",
+                  "message": "Cobrança não encontrada",
+                  "status": 404,
+                  "dateTime": "2022-11-24T04:22:58Z"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/responses/Database"
+                },
+                "examples": {
+                  "DataBaseError": {
+                    "value": {
+                      "type": "DatabaseError",
+                      "message": "Não foi possível atualizar a cobrança",
+                      "status": 500,
+                      "dateTime": "2022-11-24T04:22:58Z"
+                    }
+                  },
+                  "internalServerError": {
+                    "value": {
+                      "type": "Error",
+                      "message": "Internal Server Error",
+                      "status": 500,
+                      "dateTime": "2022-11-24T04:22:58Z"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "title": "Billing",
+                "type": "object",
+                "properties": {
+                  "description": {
+                    "type": "string",
+                    "maxLength": 128
+                  },
+                  "status": {
+                    "type": "string",
+                    "enum": [
+                      "paid",
+                      "pending"
+                    ]
+                  },
+                  "value": {
+                    "type": "integer",
+                    "description": "monetary value must be sent in cents, negative values are not accepted"
+                  },
+                  "due": {
+                    "type": "string",
+                    "format": "yyyy-mm-dd"
+                  }
+                },
+                "required": [
+                  "description",
+                  "status",
+                  "value",
+                  "due"
+                ]
+              },
+              "example": {
+                "description": "Parcela da Moto",
+                "status": "pending",
+                "value": 58475,
+                "due": "2021-10-10T03:00:00.000Z"
+              }
+            }
           }
         }
       }
