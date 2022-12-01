@@ -2,7 +2,7 @@ const bcrypt = require('bcrypt');
 const knex = require('../database/connection');
 const schemaRegisterUser = require('../validations/schemaRegisterUser');
 const schemaEditUser = require('../validations/schemaEditUser');
-const { CrudError, ConflictError } = require('../helpers/apiErrors');
+const { DatabaseError, ConflictError } = require('../helpers/apiErrors');
 
 const create = async (req, res) => {
   const { name, email, password } = req.body;
@@ -24,7 +24,7 @@ const create = async (req, res) => {
   });
 
   if (!insertUser) {
-    throw new CrudError('Não foi possível cadastrar o usuário');
+    throw new DatabaseError('Não foi possível cadastrar o usuário');
   }
 
   return res.status(201).json();
@@ -76,7 +76,7 @@ const update = async (req, res) => {
   const updateUser = await knex('users').update(body).where({ id: user.id });
 
   if (!updateUser) {
-    throw new CrudError('Não foi possível atualizar o usuário');
+    throw new DatabaseError('Não foi possível atualizar o usuário');
   }
 
   return res.status(204).json();

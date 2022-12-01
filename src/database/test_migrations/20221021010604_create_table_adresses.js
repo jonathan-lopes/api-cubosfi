@@ -11,6 +11,12 @@ exports.up = (knex) =>
     table.text('district');
     table.text('city');
     table.string('uf', 2);
+    table.integer('customer_id');
+    table
+      .foreign('customer_id')
+      .references('id')
+      .inTable('customers')
+      .onDelete('CASCADE');
     table.timestamp('created_at').defaultTo(knex.fn.now());
     table.timestamp('updated_at').defaultTo(knex.fn.now());
   });

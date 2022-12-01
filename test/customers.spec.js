@@ -25,7 +25,7 @@ describe('Endpoint Customers', () => {
   describe('Create Customer', () => {
     it('should return status 400 if name, email, cpf and phone fields are not sent', async () => {
       const response = await request(app)
-        .post('/customer')
+        .post('/customers')
         .send({})
         .set('Authorization', `Bearer ${token}`);
 
@@ -43,7 +43,7 @@ describe('Endpoint Customers', () => {
       await sut.create();
 
       const response = await request(app)
-        .post('/customer')
+        .post('/customers')
         .send({
           name: 'Anny Mary',
           email: 'anny@email.com',
@@ -63,7 +63,7 @@ describe('Endpoint Customers', () => {
       await sut.create();
 
       const response = await request(app)
-        .post('/customer')
+        .post('/customers')
         .send({
           name: 'Anny Mary',
           email: 'anny.mary@email.com',
@@ -81,7 +81,7 @@ describe('Endpoint Customers', () => {
 
     it('should be possible to create a customer without the address', async () => {
       const response = await request(app)
-        .post('/customer')
+        .post('/customers')
         .send({
           name: 'Jonh Doe',
           email: 'jonh.doe@email.com',
@@ -95,7 +95,7 @@ describe('Endpoint Customers', () => {
 
     it('should be possible to create a customer with address', async () => {
       const response = await request(app)
-        .post('/customer')
+        .post('/customers')
         .send({
           name: 'David Doe',
           email: 'david.doe@email.com',
@@ -104,6 +104,7 @@ describe('Endpoint Customers', () => {
           cep: '01001-000',
           address: {
             street: 'Praça da Sé',
+            cep: '01001-000',
             complement: 'lado ímpar',
             district: 'Sé',
             city: 'São Paulo',
@@ -130,7 +131,7 @@ describe('Endpoint Customers', () => {
   describe('Get One Customer', () => {
     it('should return status 400 if a customer does not exist', async () => {
       const response = await request(app)
-        .get('/customer/100')
+        .get('/customers/100')
         .set('Authorization', `Bearer ${token}`);
 
       expect(response.statusCode).toBe(404);
@@ -143,7 +144,7 @@ describe('Endpoint Customers', () => {
     it('should return a customer', async () => {
       const { id } = await sut.create();
       const response = await request(app)
-        .get(`/customer/${id}`)
+        .get(`/customers/${id}`)
         .set('Authorization', `Bearer ${token}`);
 
       expect(response.statusCode).toBe(200);
@@ -163,7 +164,7 @@ describe('Endpoint Customers', () => {
       const { id } = await sut.create();
 
       const response = await request(app)
-        .put(`/customer/${id}`)
+        .put(`/customers/${id}`)
         .send({
           name,
           email: 'anny.doe@email.com',
@@ -194,7 +195,7 @@ describe('Endpoint Customers', () => {
       const { id } = await sut.create();
 
       const response = await request(app)
-        .put(`/customer/${id}`)
+        .put(`/customers/${id}`)
         .send({
           name: 'Anny Mary',
           email: 'anny.mary@email.com',
@@ -216,7 +217,7 @@ describe('Endpoint Customers', () => {
       const { id, email, cpf, phone } = await sut.create();
 
       const response = await request(app)
-        .put(`/customer/${id}`)
+        .put(`/customers/${id}`)
         .send({
           name: 'Anny Mary Smith',
           email,

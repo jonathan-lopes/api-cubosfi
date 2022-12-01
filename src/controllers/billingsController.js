@@ -3,7 +3,7 @@ const schemaRegisterBilling = require('../validations/schemaRegisterBillings');
 const schemaEditBilling = require('../validations/schemaEditBilling');
 const { isPending } = require('../helpers/paymentStatus');
 const {
-  CrudError,
+  DatabaseError,
   BadRequestError,
   NotFoundError,
 } = require('../helpers/apiErrors');
@@ -24,14 +24,25 @@ const create = async (req, res) => {
   const insertBilling = await knex('billings').insert(body);
 
   if (insertBilling === 0) {
-    throw new CrudError('Não foi possível cadastrar a cobrança');
+    throw new DatabaseError('Não foi possível cadastrar a cobrança');
   }
 
   return res.status(201).json();
 };
 
 const getAll = async (req, res) => {
-  const billings = await knex('billings')
+  const {
+    status,
+    is_overdue,
+    cpf,
+    due_date,
+    after_due_date,
+    before_due_date,
+    less_than_value,
+    greater_than_value,
+  } = req.query;
+
+  const query = knex('billings')
     .join('customers', 'billings.customer_id', '=', 'customers.id')
     .select(
       'customers.name',
@@ -44,6 +55,55 @@ const getAll = async (req, res) => {
       'billings.is_overdue',
       'billings.customer_id',
     );
+
+  if (status) {
+    query.where({
+      status,
+    });
+  }
+
+  if (is_overdue) {
+    query.where({
+      is_overdue,
+    });
+  }
+
+  if (cpf) {
+    query.where({
+      cpf,
+    });
+  }
+
+  if (due_date) {
+    query.where({
+      due: due_date,
+    });
+  }
+
+  if (after_due_date) {
+    query.where('billings.due', '>', after_due_date);
+  }
+
+  if (before_due_date) {
+    query.where('billings.due', '<', before_due_date);
+  }
+
+  if (less_than_value && !greater_than_value) {
+    query.where('billings.value', '<', less_than_value);
+  }
+
+  if (greater_than_value && !less_than_value) {
+    query.where('billings.value', '>', greater_than_value);
+  }
+
+  if (less_than_value && greater_than_value) {
+    query.whereNotBetween('billings.value', [
+      less_than_value,
+      greater_than_value,
+    ]);
+  }
+
+  const billings = await query;
 
   return res.status(200).json(billings);
 };
@@ -61,7 +121,7 @@ const del = async (req, res) => {
     const billingDelete = await knex('billings').del().where({ id });
 
     if (!billingDelete) {
-      throw new CrudError('Não foi possível excluir a cobrança');
+      throw new DatabaseError('Não foi possível excluir a cobrança');
     }
 
     return res.status(204).json();
@@ -106,7 +166,7 @@ const update = async (req, res) => {
   const updateBilling = await knex('billings').update(body).where({ id });
 
   if (!updateBilling) {
-    throw new CrudError('Não foi possível atualizar a cobrança');
+    throw new DatabaseError('Não foi possível atualizar a cobrança');
   }
 
   return res.status(204).json();

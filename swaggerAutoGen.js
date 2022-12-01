@@ -1,3 +1,5 @@
 const swaggerAutogen = require('swagger-autogen');
 
-swaggerAutogen()('./swagger.json', ['./src/routes/router.js']);
+swaggerAutogen({ openapi: '3.0.3' })('./swagger.json', [
+  './src/routes/router.js',
+]);

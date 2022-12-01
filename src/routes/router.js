@@ -17,15 +17,15 @@ routes.use(verifyLogin);
 routes.get('/user', userControllers.getUser);
 routes.put('/user', userControllers.update);
 
-routes.post('/customer', customerControllers.create);
+routes.post('/customers', customerControllers.create);
 routes.get('/customers', customerControllers.getAll);
-routes.get('/customer/:id', customerControllers.getOne);
-routes.put('/customer/:id', customerControllers.update);
+routes.get('/customers/:id', customerControllers.getOne);
+routes.put('/customers/:id', customerControllers.update);
 
-routes.post('/billing', billingControllers.create);
+routes.post('/billings', billingControllers.create);
 routes.get('/billings', billingControllers.getAll);
-routes.delete('/billing/:id', billingControllers.del);
-routes.get('/billing/:id', billingControllers.getOne);
-routes.put('/billing/:id', billingControllers.update);
+routes.delete('/billings/:id', billingControllers.del);
+routes.get('/billings/:id', billingControllers.getOne);
+routes.put('/billings/:id', billingControllers.update);
 
 module.exports = routes;

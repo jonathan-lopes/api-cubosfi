@@ -4,7 +4,7 @@ const { validateCPF, validadePhone } = require('../helpers/regex');
 const editUserSchema = yup.object().shape({
   name: yup.string().strict().required().max(128),
   email: yup.string().email('Formato de e-mail inválido').max(128).required(),
-  password: yup.string().strict().min(8),
+  password: yup.string().strict().min(8).max(56),
   cpf: yup
     .string()
     .strict()
