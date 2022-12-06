@@ -2,9 +2,9 @@
 
 ![Logo](https://i.imgur.com/7q8TLfc.png)
 
-CubosFi é uma API desenvolvida para o aplicativo [frontend CubosFi](https://github.com/jonathan-lopes/front-integral-m05-desafio) para cadastrar clientes e suas cobranças.
+CubosFi é uma REST API desenvolvida para a aplicação frontend [CubosFi](https://github.com/jonathan-lopes/front-integral-m05-desafio).
 
-[![CircleCI](https://dl.circleci.com/status-badge/img/gh/jonathan-lopes/api-cubosfi/tree/develop.svg?style=shield)](https://dl.circleci.com/status-badge/redirect/gh/jonathan-lopes/api-cubosfi/tree/develop) [![Commitizen friendly](https://img.shields.io/badge/commitizen-friendly-brightgreen.svg)](http://commitizen.github.io/cz-cli/) ![Swagger Validator](https://img.shields.io/swagger/valid/3.0?specUrl=https%3A%2F%2Fgithub.com%2Fjonathan-lopes%2Fapi-cubosfi%2Fblob%2Fmaster%2Fswagger.json) ![GitHub last commit](https://img.shields.io/github/last-commit/jonathan-lopes/api-cubosfi)
+[![CircleCI](https://dl.circleci.com/status-badge/img/gh/jonathan-lopes/api-cubosfi/tree/develop.svg?style=shield)](https://dl.circleci.com/status-badge/redirect/gh/jonathan-lopes/api-cubosfi/tree/develop) [![Commitizen friendly](https://img.shields.io/badge/commitizen-friendly-brightgreen.svg)](http://commitizen.github.io/cz-cli/) ![Swagger Validator](https://img.shields.io/swagger/valid/3.0?specUrl=https%3A%2F%2Fraw.githubusercontent.com%2Fjonathan-lopes%2Fapi-cubosfi%2Fdevelop%2Fswagger.json) ![GitHub last commit](https://img.shields.io/github/last-commit/jonathan-lopes/api-cubosfi)
 
 ## Para testa no insomnia
 
@@ -79,7 +79,7 @@ Primeiro crie um arquivo .env.test adicione as seguintes variáveis de ambiente
 
 `SALT_ROUNDS`
 
-Para rodar os testes, rode o seguinte comando
+Rode o seguinte comando
 
 ```bash
   npm t ou npm run test
