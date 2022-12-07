@@ -1,3 +1,4 @@
+const { v4: uuidv4 } = require('uuid');
 const knex = require('../database/connection');
 const schemaCustomer = require('../validations/schemaCustomer');
 const {
@@ -30,6 +31,7 @@ const create = async (req, res) => {
   }
 
   const body = {
+    id: uuidv4(),
     name,
     email,
     cpf,
@@ -46,6 +48,7 @@ const create = async (req, res) => {
 
   if (address) {
     const insertedAddress = await knex('adresses').insert({
+      id: uuidv4(),
       ...address,
       customer_id: insertedCustomer.id,
     });
@@ -176,6 +179,7 @@ const update = async (req, res) => {
 
   if (!customerWithAddress && address) {
     const insertedAddress = await knex('adresses').insert({
+      id: uuidv4(),
       ...address,
       customer_id: id,
     });

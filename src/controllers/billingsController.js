@@ -1,4 +1,5 @@
 const { isValid } = require('date-fns');
+const { v4: uuidv4 } = require('uuid');
 const knex = require('../database/connection');
 const schemaRegisterBilling = require('../validations/schemaRegisterBillings');
 const schemaEditBilling = require('../validations/schemaEditBilling');
@@ -13,6 +14,7 @@ const create = async (req, res) => {
   const { customer_id, description, status, value, due } = req.body;
 
   const body = {
+    id: uuidv4(),
     customer_id,
     description,
     status,
