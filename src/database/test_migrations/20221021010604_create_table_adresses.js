@@ -4,14 +4,14 @@
  */
 exports.up = (knex) =>
   knex.schema.createTable('adresses', (table) => {
-    table.increments('id');
+    table.uuid('id').primary();
     table.text('street');
     table.text('complement');
     table.string('cep', 9);
     table.text('district');
     table.text('city');
     table.string('uf', 2);
-    table.integer('customer_id');
+    table.uuid('customer_id');
     table
       .foreign('customer_id')
       .references('id')
