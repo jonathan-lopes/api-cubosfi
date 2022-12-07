@@ -55,8 +55,8 @@
       "ResponseUser": {
         "properties": {
           "id": {
-            "type": "integer",
-            "example": 1
+            "type": "string",
+            "example": "e466f439-bcb5-4e1a-9ccb-13bbe6a6f74d"
           },
           "name": {
             "type": "string",
@@ -156,7 +156,8 @@
       "ResponseCustomer": {
         "properties": {
           "id": {
-            "type": "integer"
+            "type": "string",
+            "format": "uuid"
           },
           "name": {
             "type": "string"
@@ -207,8 +208,9 @@
       "Billing": {
         "properties": {
           "customer_id": {
-            "type": "integer",
-            "description": "customer id already registered"
+            "type": "string",
+            "description": "customer id already registered",
+            "format": "uuid"
           },
           "description": {
             "type": "string",
@@ -241,10 +243,12 @@
       "ResponseBilling": {
         "properties": {
           "id": {
-            "type": "integer"
+            "type": "string",
+            "format": "uuid"
           },
           "customer_id": {
-            "type": "integer",
+            "type": "string",
+            "format": "uuid",
             "description": "customer id already registered"
           },
           "description": {
@@ -781,8 +785,8 @@
                       "type": "object",
                       "properties": {
                         "id": {
-                          "type": "integer",
-                          "example": 1
+                          "type": "string",
+                          "example": "e466f439-bcb5-4e1a-9ccb-13bbe6a6f74d"
                         },
                         "name": {
                           "type": "string",
@@ -1272,8 +1276,8 @@
                     "type": "object",
                     "properties": {
                       "id": {
-                        "type": "integer",
-                        "example": 1
+                        "type": "string",
+                        "example": "b2a163f9-fc14-46a0-a10d-6db646adf3a3"
                       },
                       "name": {
                         "type": "string",
@@ -1398,19 +1402,19 @@
                 "examples": {
                   "no address": {
                     "value": {
-                      "id": 1,
+                      "id": "49133fc9-cd08-4dcf-8ad0-720759769df6",
                       "name": "Billy",
                       "email": "billy@email.com",
                       "cpf": "030.712.654-12",
                       "phone": "(71) 99469-4549",
                       "billings": [
                         {
-                          "id": 1,
+                          "id": "4cc57665-da04-4fcd-868c-b9ce91e978aa",
                           "description": "Delectus ullam at tempore reiciendis vel ipsam consequatur. Quibusdam non nihil eos ducimus fugiat provident.",
                           "status": "paid",
                           "value": 6418,
                           "due": "2021-11-25T03:00:00.000Z",
-                          "customer_id": 1
+                          "customer_id": "49133fc9-cd08-4dcf-8ad0-720759769df6"
                         }
                       ]
                     },
@@ -1418,7 +1422,7 @@
                   },
                   "with address": {
                     "value": {
-                      "id": 1,
+                      "id": "e6608634-497a-4b25-a235-2adc68dd0b1e",
                       "name": "Joana Franco",
                       "email": "joana.fran@live.com",
                       "cpf": "030.712.524-12",
@@ -1430,16 +1434,16 @@
                         "district": "Sé",
                         "city": "São Paulo",
                         "uf": "SP",
-                        "customer_id": 1
+                        "customer_id": "e6608634-497a-4b25-a235-2adc68dd0b1e"
                       },
                       "billings": [
                         {
-                          "id": 1,
+                          "id": "93dcdddc-53b6-49e9-918f-4cd04fad30fd",
                           "description": "fast food snack",
                           "status": "paid",
                           "value": 3261,
                           "due": "2021-11-25T03:00:00.000Z",
-                          "customer_id": 1
+                          "customer_id": "e6608634-497a-4b25-a235-2adc68dd0b1e"
                         }
                       ]
                     },
@@ -1883,7 +1887,7 @@
                 "$ref": "#/components/schemas/Billing"
               },
               "example": {
-                "customer_id": 1,
+                "customer_id": "a5aae4ad-f129-4d9f-8917-f4661ded14f0",
                 "description": "Amet dolore maxime ipsum numquam earum nesciunt.",
                 "status": "pending",
                 "value": 50000,
@@ -1999,24 +2003,24 @@
                     {
                       "name": "Ana Júlia Pereira",
                       "cpf": "02880614546",
-                      "id": 1,
+                      "id": "bc0245e0-4d3b-4eb1-b278-43ab99d94253",
                       "description": "Reprehenderit atque dolorum quis quia minus nam inventore suscipit. Quisquam error laborum.",
                       "status": "pending",
                       "value": 7354,
                       "due": "2021-11-25T03:00:00.000Z",
                       "is_overdue": true,
-                      "customer_id": 1
+                      "customer_id": "539c5517-ac8a-4b9e-ad2f-fb739b01402d"
                     },
                     {
                       "name": "Maria Helena Ribeiro",
                       "cpf": "46351411874",
-                      "id": 2,
+                      "id": "a4b6f02f-0302-47d4-a068-dcf35ca1c652",
                       "description": "Mollitia quaerat fugiat voluptas nemo.",
                       "status": "paid",
                       "value": 1145,
                       "due": "2021-11-25T03:00:00.000Z",
                       "is_overdue": false,
-                      "customer_id": 2
+                      "customer_id": "ec45c545-8567-47ca-ac8e-cfc8b8454532"
                     }
                   ]
                 }
@@ -2234,13 +2238,13 @@
                   "$ref": "#/components/schemas/ResponseBilling"
                 },
                 "example": {
-                  "id": 1,
+                  "id": "2ed3c7bc-ffcb-4431-8f54-15b9e227784e",
                   "description": "Numquam veniam animi voluptate. Rerum delectus fugiat mollitia tenetur nisi accusantium similique omnis.",
                   "status": "paid",
                   "value": 3261,
                   "due": "2021-11-25T03:00:00.000Z",
                   "is_overdue": false,
-                  "customer_id": 1
+                  "customer_id": "500d8e00-cfd8-4e86-850a-c850291b78ee"
                 }
               }
             }
