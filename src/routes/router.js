@@ -14,7 +14,7 @@ routes.post('/refresh-token', refreshTokenController);
 
 routes.use(verifyLogin);
 
-routes.get('/user', userControllers.getUser);
+routes.get('/user', userControllers.get);
 routes.put('/user', userControllers.update);
 
 routes.post('/customers', customerControllers.create);
