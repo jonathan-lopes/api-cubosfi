@@ -36,7 +36,7 @@ describe('Refresh Token', () => {
 
   it('should return status 401 if refresh token is expired', async () => {
     const refresh_token = jwt.sign(
-      { id: 100 },
+      { id: '8db2148e-438f-4404-8393-604a1602411e' },
       process.env.SECRET_REFRESH_TOKEN,
       {
         expiresIn: '0s',
@@ -56,7 +56,7 @@ describe('Refresh Token', () => {
 
   it('should return status 404 if not find refresh token', async () => {
     const refresh_token = jwt.sign(
-      { id: 100 },
+      { id: '4bb8d3da-4a34-477d-8eef-6402bef6bf34' },
       process.env.SECRET_REFRESH_TOKEN,
       {
         expiresIn: process.env.EXPIRES_IN_REFRESH_TOKEN,
