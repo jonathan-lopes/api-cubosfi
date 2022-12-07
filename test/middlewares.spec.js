@@ -4,7 +4,6 @@ const app = require('../src/server');
 const { SutUser } = require('./helpers/utils');
 const login = require('./helpers/login');
 
-// const sut = new SutUser('testman#2', 'testman#2@email.com', 'testman1234');
 let token = '';
 
 describe('Middleware verify login', () => {
@@ -15,8 +14,6 @@ describe('Middleware verify login', () => {
       password: 'testman1234',
     });
   });
-
-  // afterEach(() => sut.clear());
 
   it('should return status code 401 (unauthorized) if token is not sent', async () => {
     const response = await request(app).get('/user');
@@ -69,7 +66,7 @@ describe('Middleware verify login', () => {
   });
 
   it('should not be able to authenticate if user does not exist', async () => {
-    const token = jwt.sign({ id: 1000 }, process.env.SECRET_TOKEN);
+    const token = jwt.sign({ id: '2772fcbc-07e4-4c9d-bb45-d7303832b102' }, process.env.SECRET_TOKEN);
 
     const response = await request(app)
       .get('/user')

@@ -40,6 +40,7 @@
     "node-schedule": "^2.1.0",
     "pg": "^8.8.0",
     "swagger-ui-express": "^4.5.0",
+    "uuid": "^9.0.0",
     "yup": "^0.32.11",
     "yup-locales": "^1.2.10"
   },

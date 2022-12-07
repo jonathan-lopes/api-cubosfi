@@ -7,10 +7,10 @@ const { onUpdateTrigger } = require('../../../knexfile');
 exports.up = (knex) =>
   knex.schema
     .createTable('user_token', (table) => {
-      table.increments('id');
+      table.uuid('id').primary();
       table.text('refresh_token').notNullable();
       table.timestamp('expires_date').notNullable();
-      table.integer('user_id').notNullable();
+      table.uuid('user_id').notNullable();
       table
         .foreign('user_id')
         .references('id')

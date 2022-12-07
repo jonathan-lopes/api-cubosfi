@@ -1,4 +1,5 @@
 const bcrypt = require('bcrypt');
+const { v4: uuidv4 } = require('uuid');
 const knex = require('../database/connection');
 const schemaRegisterUser = require('../validations/schemaRegisterUser');
 const schemaEditUser = require('../validations/schemaEditUser');
@@ -18,6 +19,7 @@ const create = async (req, res) => {
   const pwdCrypt = await bcrypt.hash(password, Number(process.env.SALT_ROUNDS));
 
   const insertUser = await knex('users').insert({
+    id: uuidv4(),
     name,
     email,
     password: pwdCrypt,
@@ -30,7 +32,7 @@ const create = async (req, res) => {
   return res.status(201).json();
 };
 
-const getUser = async (req, res) => {
+const get = async (req, res) => {
   const { user } = req;
   return res.status(200).json(user);
 };
@@ -82,4 +84,4 @@ const update = async (req, res) => {
   return res.status(204).json();
 };
 
-module.exports = { create, getUser, update };
+module.exports = { create, get, update };

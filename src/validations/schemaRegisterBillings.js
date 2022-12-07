@@ -2,7 +2,7 @@ const yup = require('./yupSettings');
 const { validateStatus } = require('../helpers/regex');
 
 const registerBillingSchema = yup.object().shape({
-  customer_id: yup.number().strict().integer().positive().required(),
+  customer_id: yup.string().uuid().required(),
   description: yup.string().max(128).required(),
   status: yup
     .string()

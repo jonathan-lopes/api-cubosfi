@@ -1,5 +1,6 @@
 const bcrypt = require('bcrypt');
 const knex = require('../../src/database/connection');
+const { v4: uuidv4 } = require('uuid');
 
 class SutUser {
   #name = '';
@@ -15,6 +16,7 @@ class SutUser {
   async create() {
     const [data] = await knex('users')
       .insert({
+        id: uuidv4(),
         name: this.#name,
         email: this.#email,
         password: await bcrypt.hash(this.#password, +process.env.SALT_ROUNDS),
@@ -47,6 +49,7 @@ class SutCustomer {
   async create() {
     const [data] = await knex('customers')
       .insert({
+        id: uuidv4(),
         name: this.#name,
         email: this.#email,
         cpf: this.#cpf,
@@ -80,6 +83,7 @@ class SutBilling {
   async create() {
     const [data] = await knex('billings')
       .insert({
+        id: uuidv4(),
         customer_id: this.#customer_id,
         description: this.#description,
         status: this.#status,
@@ -118,6 +122,7 @@ class SutRefreshToken {
   async create() {
     const [data] = await knex('user_token')
       .insert({
+        id: uuidv4(),
         refresh_token: this.#refresh_token,
         expires_date: this.#expires_date,
         user_id: this.#user_id,

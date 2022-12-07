@@ -1,3 +1,5 @@
+const { isValid } = require('date-fns');
+const { v4: uuidv4 } = require('uuid');
 const knex = require('../database/connection');
 const schemaRegisterBilling = require('../validations/schemaRegisterBillings');
 const schemaEditBilling = require('../validations/schemaEditBilling');
@@ -12,6 +14,7 @@ const create = async (req, res) => {
   const { customer_id, description, status, value, due } = req.body;
 
   const body = {
+    id: uuidv4(),
     customer_id,
     description,
     status,
@@ -34,7 +37,6 @@ const getAll = async (req, res) => {
   const {
     status,
     is_overdue,
-    cpf,
     due_date,
     after_due_date,
     before_due_date,
@@ -56,47 +58,41 @@ const getAll = async (req, res) => {
       'billings.customer_id',
     );
 
-  if (status) {
+  if (status === 'paid' || status === 'pending') {
     query.where({
       status,
     });
   }
 
-  if (is_overdue) {
+  if (is_overdue === 'false' || is_overdue === 'true') {
     query.where({
       is_overdue,
     });
   }
 
-  if (cpf) {
-    query.where({
-      cpf,
-    });
-  }
-
-  if (due_date) {
+  if (isValid(new Date(due_date))) {
     query.where({
       due: due_date,
     });
   }
 
-  if (after_due_date) {
+  if (isValid(new Date(after_due_date))) {
     query.where('billings.due', '>', after_due_date);
   }
 
-  if (before_due_date) {
+  if (isValid(new Date(before_due_date))) {
     query.where('billings.due', '<', before_due_date);
   }
 
-  if (less_than_value && !greater_than_value) {
+  if (Number(less_than_value) && !greater_than_value) {
     query.where('billings.value', '<', less_than_value);
   }
 
-  if (greater_than_value && !less_than_value) {
+  if (Number(greater_than_value) && !less_than_value) {
     query.where('billings.value', '>', greater_than_value);
   }
 
-  if (less_than_value && greater_than_value) {
+  if (Number(less_than_value) && Number(greater_than_value)) {
     query.whereNotBetween('billings.value', [
       less_than_value,
       greater_than_value,

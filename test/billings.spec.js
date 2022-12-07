@@ -10,7 +10,7 @@ const customer = new SutCustomer(
   '999.999.999-99',
   '(99) 99999-9999',
 );
-let id_customer = 1;
+let id_customer = '';
 let token = '';
 
 describe('Endpoint Billings', () => {
@@ -89,7 +89,7 @@ describe('Endpoint Billings', () => {
   describe('Delete Billing', () => {
     it('should return 404 if the charge does not exist', async () => {
       const response = await request(app)
-        .del('/billings/100')
+        .del('/billings/98a760d8-ed4f-4f4f-8b28-844485ac1c0d')
         .set('Authorization', `Bearer ${token}`);
 
       expect(response.statusCode).toBe(404);
@@ -119,7 +119,7 @@ describe('Endpoint Billings', () => {
       expect(response1.body).toHaveProperty('dateTime');
 
       const sutBilling2 = new SutBilling(
-        1,
+        id_customer,
         'lorem lorem lorem',
         'pending',
         4000,
@@ -164,7 +164,7 @@ describe('Endpoint Billings', () => {
   describe('Get One Billing', () => {
     it('should return status 404 if billing does not exist', async () => {
       const response = await request(app)
-        .get('/billings/100')
+        .get('/billings/1c53ae80-5042-4db9-aad5-3e2d510c98b3')
         .set('Authorization', `Bearer ${token}`);
 
       expect(response.statusCode).toBe(404);
@@ -191,7 +191,7 @@ describe('Endpoint Billings', () => {
   describe('Update Billing', () => {
     it('should return status 404 if billing does not exist', async () => {
       const response = await request(app)
-        .put('/billings/100')
+        .put('/billings/1c53ae80-5042-4db9-aad5-3e2d510c98b3')
         .send({
           description: 'lorem',
           status: 'paid',

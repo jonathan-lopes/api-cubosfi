@@ -4,7 +4,7 @@
  */
 exports.up = (knex) =>
   knex.schema.createTable('customers', (table) => {
-    table.increments('id');
+    table.uuid('id').primary();
     table.string('name', 80).notNullable();
     table.string('email', 80).unique().notNullable();
     table.text('cpf').unique().notNullable();
