@@ -7,13 +7,13 @@ const { onUpdateTrigger } = require('../../../knexfile');
 exports.up = (knex) =>
   knex.schema
     .createTable('billings', (table) => {
-      table.increments('id');
+      table.uuid('id').primary();
       table.string('description', 128).notNullable();
       table.enu('status', ['paid', 'pending']).notNullable();
       table.integer('value').notNullable();
       table.date('due').notNullable();
       table.boolean('is_overdue').defaultTo(false);
-      table.integer('customer_id').notNullable();
+      table.uuid('customer_id').notNullable();
       table.timestamp('created_at').defaultTo(knex.fn.now());
       table.timestamp('updated_at').defaultTo(knex.fn.now());
       table
