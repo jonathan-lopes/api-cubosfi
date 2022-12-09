@@ -8,6 +8,7 @@ const cors = require('cors');
 const helmet = require('helmet');
 const routes = require('./routes/router');
 const errorMiddleware = require('./middlewares/error');
+const rateLimit = require('./middlewares/rateLimit');
 
 const app = express();
 
@@ -20,6 +21,7 @@ app.use(
 app.use(express.json());
 app.use(cors());
 app.use(helmet());
+app.use(...rateLimit);
 app.use(routes);
 app.use(errorMiddleware);
 
