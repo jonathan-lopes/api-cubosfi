@@ -1,6 +1,6 @@
 /* eslint-disable no-template-curly-in-string */
 const yup = require('./yupSettings');
-const { validateCPFCNPJ, validadePhone } = require('../helpers/regex');
+const { validateCPFCNPJ, validatePhone } = require('../helpers/regex');
 
 const schemaCustomer = yup.object().shape({
   name: yup.string().strict().max(80).required(),
@@ -13,7 +13,7 @@ const schemaCustomer = yup.object().shape({
   phone: yup
     .string()
     .strict()
-    .matches(validadePhone, 'Formato de telefone inválido')
+    .matches(validatePhone, 'Formato de telefone inválido')
     .required(),
   address: yup
     .object({

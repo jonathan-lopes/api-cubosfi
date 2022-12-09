@@ -1,5 +1,5 @@
 const yup = require('./yupSettings');
-const { validateCPFCNPJ, validadePhone } = require('../helpers/regex');
+const { validateCPFCNPJ, validatePhone } = require('../helpers/regex');
 
 const editUserSchema = yup.object().shape({
   name: yup.string().strict().required().max(128),
@@ -13,7 +13,7 @@ const editUserSchema = yup.object().shape({
   telefone: yup
     .string()
     .strict()
-    .matches(validadePhone, 'Fomato de telefone inválido')
+    .matches(validatePhone, 'Fomato de telefone inválido')
     .nullable(),
 });
 
