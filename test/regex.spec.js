@@ -2,6 +2,7 @@ const {
   validateStatus,
   validateCPFCNPJ,
   validatePhone,
+  validateCEP,
 } = require('../src/helpers/regex');
 
 describe('Regex', () => {
@@ -45,5 +46,18 @@ describe('Regex', () => {
 
   it('should fail if phone is invalid', () => {
     expect('(99711-5760').not.toEqual(expect.stringMatching(validatePhone));
+  });
+
+  it('should fail if cep is invalid', () => {
+    expect('79091-2700').not.toEqual(expect.stringMatching(validateCEP));
+    expect('5903230000').not.toEqual(expect.stringMatching(validateCEP));
+  });
+
+  it('should validate a cep with mask', () => {
+    expect('55008-241').toEqual(expect.stringMatching(validateCEP));
+  });
+
+  it('should validate a cep without mask', () => {
+    expect('29150017').toEqual(expect.stringMatching(validateCEP));
   });
 });
