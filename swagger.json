@@ -298,6 +298,16 @@
           }
         }
       },
+      "TooManyRequests": {
+        "description": "Too Many Requests",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/Error"
+            }
+          }
+        }
+      },
       "BadRequest": {
         "description": "Bad Request",
         "content": {
@@ -361,7 +371,7 @@
                   "$ref": "#/components/responses/BadRequest"
                 },
                 "examples": {
-                  "name field": {
+                  "Name Field": {
                     "value": {
                       "type": "ValidationError",
                       "message": "name deve ser no máximo 128 caracteres",
@@ -370,7 +380,7 @@
                     },
                     "description": "must send a name with a maximum of 128 characters"
                   },
-                  "email field": {
+                  "Email Field": {
                     "value": {
                       "type": "ValidationError",
                       "message": "Formato de e-mail inválido",
@@ -379,7 +389,7 @@
                     },
                     "description": "must send a valid email with a maximum of 128 characters"
                   },
-                  "password filed": {
+                  "Password Field": {
                     "value": {
                       "type": "ValidationError",
                       "message": "password deve ser pelo menos 8 caracteres",
@@ -408,6 +418,22 @@
               }
             }
           },
+          "429": {
+            "description": "Too Many Requests",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/responses/TooManyRequests"
+                },
+                "example": {
+                  "type": "manyRequestsError",
+                  "message": "Muitos pedidos. Por favor tente mais tarde.",
+                  "status": 249,
+                  "dateTime": "2022-11-24T01:02:29Z"
+                }
+              }
+            }
+          },
           "500": {
             "description": "Internal Server Error",
             "content": {
@@ -416,8 +442,7 @@
                   "$ref": "#/components/responses/Database"
                 },
                 "examples": {
-                  "error#1": {
-                    "description": "internal error",
+                  "Internal Server Error": {
                     "value": {
                       "type": "Error",
                       "message": "Internal Server Error",
@@ -425,8 +450,7 @@
                       "dateTime": "2022-11-23T23:25:25Z"
                     }
                   },
-                  "error#2": {
-                    "description": "database error",
+                  "Database Error": {
                     "value": {
                       "type": "DatabaseError",
                       "message": "Não foi possível cadastrar o usuário",
@@ -514,7 +538,7 @@
                     },
                     "description": "you are not allowed"
                   },
-                  "JsonWebTokenError": {
+                  "JsonWebToken Error": {
                     "description": "malformed token",
                     "value": {
                       "type": "UnauthorizedError",
@@ -523,7 +547,7 @@
                       "dateTime": "2022-11-23T23:31:43Z"
                     }
                   },
-                  "TokenExpiredError": {
+                  "Token Expired Error": {
                     "description": "expired token",
                     "value": {
                       "message": "Token expirou"
@@ -545,6 +569,22 @@
                   "message": "Usuário não encontrado",
                   "status": 404,
                   "dateTime": "2022-11-23T23:33:32Z"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Too Many Requests",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/responses/TooManyRequests"
+                },
+                "example": {
+                  "type": "manyRequestsError",
+                  "message": "Muitos pedidos. Por favor tente mais tarde.",
+                  "status": 249,
+                  "dateTime": "2022-11-24T01:02:29Z"
                 }
               }
             }
@@ -600,7 +640,7 @@
                   "$ref": "#/components/responses/BadRequest"
                 },
                 "examples": {
-                  "cpf field": {
+                  "CPF Field": {
                     "value": {
                       "type": "ValidationError",
                       "message": "Formato de CPF inválido",
@@ -609,7 +649,7 @@
                     },
                     "description": "must send a valid CPF"
                   },
-                  "phone field": {
+                  "Phone Field": {
                     "value": {
                       "type": "ValidationError",
                       "message": "Fomato de telefone inválido",
@@ -638,7 +678,7 @@
                       "dateTime": "2022-11-23T23:56:45Z"
                     }
                   },
-                  "JsonWebTokenError": {
+                  "JsonWebToken Error": {
                     "description": "malformed token",
                     "value": {
                       "type": "UnauthorizedError",
@@ -647,7 +687,7 @@
                       "dateTime": "2022-11-23T23:58:24Z"
                     }
                   },
-                  "TokenExpiredError": {
+                  "Token Expired Error": {
                     "description": "expired token",
                     "value": {
                       "type": "UnauthorizedError",
@@ -655,36 +695,6 @@
                       "status": 401,
                       "dateTime": "2022-11-23T23:58:50Z"
                     }
-                  }
-                }
-              }
-            }
-          },
-          "409": {
-            "description": "Conflict",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/responses/Conflict"
-                },
-                "examples": {
-                  "error#1": {
-                    "value": {
-                      "type": "ConflictError",
-                      "message": "E-mail já cadastrado",
-                      "status": 409,
-                      "dateTime": "2022-11-24T00:00:21Z"
-                    },
-                    "description": "email already registered by another user"
-                  },
-                  "error#2": {
-                    "value": {
-                      "type": "ConflictError",
-                      "message": "CPF já cadastrado",
-                      "status": 409,
-                      "dateTime": "2022-11-24T00:00:36Z"
-                    },
-                    "description": "cpf already registered by another user"
                   }
                 }
               }
@@ -706,6 +716,52 @@
               }
             }
           },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/responses/Conflict"
+                },
+                "examples": {
+                  "Email Conflict": {
+                    "value": {
+                      "type": "ConflictError",
+                      "message": "E-mail já cadastrado",
+                      "status": 409,
+                      "dateTime": "2022-11-24T00:00:21Z"
+                    },
+                    "description": "email already registered by another user"
+                  },
+                  "CPF Conflict": {
+                    "value": {
+                      "type": "ConflictError",
+                      "message": "CPF já cadastrado",
+                      "status": 409,
+                      "dateTime": "2022-11-24T00:00:36Z"
+                    },
+                    "description": "cpf already registered by another user"
+                  }
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Too Many Requests",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/responses/TooManyRequests"
+                },
+                "example": {
+                  "type": "manyRequestsError",
+                  "message": "Muitos pedidos. Por favor tente mais tarde.",
+                  "status": 249,
+                  "dateTime": "2022-11-24T01:02:29Z"
+                }
+              }
+            }
+          },
           "500": {
             "description": "Internal Server Error",
             "content": {
@@ -714,8 +770,7 @@
                   "$ref": "#/components/responses/Database"
                 },
                 "examples": {
-                  "error#1": {
-                    "description": "internal error",
+                  "Internal Server Error": {
                     "value": {
                       "type": "Error",
                       "message": "Internal Server Error",
@@ -723,8 +778,7 @@
                       "dateTime": "2022-11-24T00:00:36Z"
                     }
                   },
-                  "error#2": {
-                    "description": "error when updating",
+                  "Database Error": {
                     "value": {
                       "type": "DatabaseError",
                       "message": "Não foi possível atualizar o usuário",
@@ -829,7 +883,7 @@
                   "$ref": "#/components/responses/BadRequest"
                 },
                 "examples": {
-                  "ValidationError#1": {
+                  "Email Field": {
                     "value": {
                       "type": "ValidationError",
                       "messege": "Formato de e-mail inválido",
@@ -838,7 +892,7 @@
                     },
                     "description": "must send a valid registered email with a maximum of 128 characters"
                   },
-                  "ValidationError#2": {
+                  "Password Field": {
                     "value": {
                       "type": "ValidationError",
                       "messege": "password deve ser pelo menos 8 caracteres",
@@ -855,6 +909,22 @@
                       "dateTime": "2022-11-24T00:59:21Z"
                     }
                   }
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Too Many Requests",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/responses/TooManyRequests"
+                },
+                "example": {
+                  "type": "manyRequestsError",
+                  "message": "Muitos pedidos. Por favor tente mais tarde.",
+                  "status": 249,
+                  "dateTime": "2022-11-24T01:02:29Z"
                 }
               }
             }
@@ -970,10 +1040,26 @@
                   "$ref": "#/components/responses/NotFound"
                 },
                 "example": {
-                  "type": "ValidError",
+                  "type": "NotFoundError",
                   "message": "refresh_token não encontrado",
                   "status": 404,
                   "dateTime": "2022-11-24T01:20:12Z"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Too Many Requests",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/responses/TooManyRequests"
+                },
+                "example": {
+                  "type": "manyRequestsError",
+                  "message": "Muitos pedidos. Por favor tente mais tarde.",
+                  "status": 249,
+                  "dateTime": "2022-11-24T01:02:29Z"
                 }
               }
             }
@@ -1048,8 +1134,7 @@
                   "$ref": "#/components/responses/BadRequest"
                 },
                 "examples": {
-                  "ValidationError#1": {
-                    "summary": "name field",
+                  "Name Field": {
                     "value": {
                       "type": "ValidationError",
                       "message": "name deve ser no máximo 80 caracteres",
@@ -1057,8 +1142,7 @@
                       "dateTime": "2022-11-24T02:49:00Z"
                     }
                   },
-                  "ValidationError#2": {
-                    "summary": "email field",
+                  "Email Field": {
                     "value": {
                       "type": "ValidationError",
                       "message": "Formato de e-mail inválido",
@@ -1067,8 +1151,7 @@
                     },
                     "description": "must send an email with a valid format and a maximum length of 80 characters"
                   },
-                  "ValidationError#3": {
-                    "summary": "cpf field",
+                  "CPF Field": {
                     "value": {
                       "type": "ValidationError",
                       "message": "Formato de CPF inválido",
@@ -1077,8 +1160,7 @@
                     },
                     "description": "must send a valid CPF"
                   },
-                  "ValidationError#4": {
-                    "summary": "phone field",
+                  "Phone Field": {
                     "value": {
                       "type": "ValidationError",
                       "message": "Fomato de telefone inválido",
@@ -1087,16 +1169,15 @@
                     },
                     "description": "must send a valid CPF"
                   },
-                  "ValidationError#5": {
-                    "summary": "address.cep field",
+                  "Address CEP Field": {
                     "value": {
                       "type": "ValidationError",
-                      "message": "Fomato de telefone inválido",
+                      "message": "Formato de address.cep inválido",
                       "status": 400,
                       "dateTime": "2022-11-24T02:55:39Z"
                     }
                   },
-                  "ValidationError#6": {
+                  "Address UF Field": {
                     "summary": "address.uf field",
                     "value": {
                       "type": "ValidationError",
@@ -1126,7 +1207,7 @@
                     },
                     "description": "you are not allowed"
                   },
-                  "JsonWebTokenError": {
+                  "JsonWebToken Error": {
                     "description": "malformed token",
                     "value": {
                       "type": "UnauthorizedError",
@@ -1135,7 +1216,7 @@
                       "dateTime": "2022-11-23T23:31:43Z"
                     }
                   },
-                  "TokenExpiredError": {
+                  "Token Expired Error": {
                     "description": "expired token",
                     "value": {
                       "message": "Token expirou"
@@ -1153,7 +1234,7 @@
                   "$ref": "#/components/responses/Conflict"
                 },
                 "examples": {
-                  "Conflict#1": {
+                  "Email Conflict": {
                     "summary": "email with conflict",
                     "value": {
                       "type": "ConflictError",
@@ -1162,7 +1243,7 @@
                       "dateTime": "2022-11-24T03:16:27Z"
                     }
                   },
-                  "Conflict#2": {
+                  "CPF Conflict": {
                     "summary": "cpf with conflict",
                     "value": {
                       "type": "ConflictError",
@@ -1175,6 +1256,22 @@
               }
             }
           },
+          "429": {
+            "description": "Too Many Requests",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/responses/TooManyRequests"
+                },
+                "example": {
+                  "type": "manyRequestsError",
+                  "message": "Muitos pedidos. Por favor tente mais tarde.",
+                  "status": 249,
+                  "dateTime": "2022-11-24T01:02:29Z"
+                }
+              }
+            }
+          },
           "500": {
             "description": "Internal Server Error",
             "content": {
@@ -1183,8 +1280,7 @@
                   "$ref": "#/components/responses/Database"
                 },
                 "examples": {
-                  "Internal Error#1": {
-                    "summary": "database error",
+                  "Database Error": {
                     "value": {
                       "type": "DatabaseError",
                       "message": "Não foi possível cadastrar o cliente",
@@ -1192,8 +1288,7 @@
                       "dateTime": "2022-11-24T03:16:27Z"
                     }
                   },
-                  "Internal Error#2": {
-                    "summary": "internal sever error",
+                  "Internal Server Error": {
                     "value": {
                       "type": "Error",
                       "message": "Internal Server Error",
@@ -1322,7 +1417,7 @@
                     },
                     "description": "you are not allowed"
                   },
-                  "JsonWebTokenError": {
+                  "JsonWebToken Error": {
                     "description": "malformed token",
                     "value": {
                       "type": "UnauthorizedError",
@@ -1331,12 +1426,28 @@
                       "dateTime": "2022-11-23T23:31:43Z"
                     }
                   },
-                  "TokenExpiredError": {
+                  "Token Expired Error": {
                     "description": "expired token",
                     "value": {
                       "message": "Token expirou"
                     }
                   }
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Too Many Requests",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/responses/TooManyRequests"
+                },
+                "example": {
+                  "type": "manyRequestsError",
+                  "message": "Muitos pedidos. Por favor tente mais tarde.",
+                  "status": 249,
+                  "dateTime": "2022-11-24T01:02:29Z"
                 }
               }
             }
@@ -1470,7 +1581,7 @@
                     },
                     "description": "you are not allowed"
                   },
-                  "JsonWebTokenError": {
+                  "JsonWebToken Error": {
                     "description": "malformed token",
                     "value": {
                       "type": "UnauthorizedError",
@@ -1479,7 +1590,7 @@
                       "dateTime": "2022-11-23T23:31:43Z"
                     }
                   },
-                  "TokenExpiredError": {
+                  "Token Expired Error": {
                     "description": "expired token",
                     "value": {
                       "message": "Token expirou"
@@ -1501,6 +1612,50 @@
                   "message": "Cliente não encontrado",
                   "status": 404,
                   "dateTime": "2022-11-24T04:22:58Z"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Too Many Requests",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/responses/TooManyRequests"
+                },
+                "example": {
+                  "type": "manyRequestsError",
+                  "message": "Muitos pedidos. Por favor tente mais tarde.",
+                  "status": 249,
+                  "dateTime": "2022-11-24T01:02:29Z"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/responses/Database"
+                },
+                "examples": {
+                  "Internal Server Error": {
+                    "value": {
+                      "type": "Error",
+                      "message": "Internal Server Error",
+                      "status": 500,
+                      "dateTime": "2022-11-24T00:00:36Z"
+                    }
+                  },
+                  "Database Error": {
+                    "value": {
+                      "type": "DatabaseError",
+                      "message": "Não foi possível atualizar o usuário",
+                      "status": 500,
+                      "dateTime": "2022-11-24T00:07:44Z"
+                    }
+                  }
                 }
               }
             }
@@ -1547,8 +1702,7 @@
                   "$ref": "#/components/responses/BadRequest"
                 },
                 "examples": {
-                  "ValidationError#1": {
-                    "summary": "name field",
+                  "Name Field": {
                     "value": {
                       "type": "ValidationError",
                       "message": "name deve ser no máximo 80 caracteres",
@@ -1556,8 +1710,7 @@
                       "dateTime": "2022-11-24T02:49:00Z"
                     }
                   },
-                  "ValidationError#2": {
-                    "summary": "email field",
+                  "Email Field": {
                     "value": {
                       "type": "ValidationError",
                       "message": "Formato de e-mail inválido",
@@ -1566,8 +1719,7 @@
                     },
                     "description": "must send an email with a valid format and a maximum length of 80 characters"
                   },
-                  "ValidationError#3": {
-                    "summary": "cpf field",
+                  "CPF Field": {
                     "value": {
                       "type": "ValidationError",
                       "message": "Formato de CPF inválido",
@@ -1576,8 +1728,7 @@
                     },
                     "description": "must send a valid CPF"
                   },
-                  "ValidationError#4": {
-                    "summary": "phone field",
+                  "Phone Field": {
                     "value": {
                       "type": "ValidationError",
                       "message": "Fomato de telefone inválido",
@@ -1586,17 +1737,16 @@
                     },
                     "description": "must send a valid CPF"
                   },
-                  "ValidationError#5": {
+                  "Address CEP Field": {
                     "summary": "address.cep field",
                     "value": {
                       "type": "ValidationError",
-                      "message": "Fomato de telefone inválido",
+                      "message": "Formato de address.cep inválido",
                       "status": 400,
                       "dateTime": "2022-11-24T02:55:39Z"
                     }
                   },
-                  "ValidationError#6": {
-                    "summary": "address.uf field",
+                  "Address UF Field": {
                     "value": {
                       "type": "ValidationError",
                       "message": "address.uf deve ter exatamente 2 caracteres em maiúsculo",
@@ -1625,7 +1775,7 @@
                     },
                     "description": "you are not allowed"
                   },
-                  "JsonWebTokenError": {
+                  "JsonWebToken Error": {
                     "description": "malformed token",
                     "value": {
                       "type": "UnauthorizedError",
@@ -1634,7 +1784,7 @@
                       "dateTime": "2022-11-23T23:31:43Z"
                     }
                   },
-                  "TokenExpiredError": {
+                  "Token Expired Error": {
                     "description": "expired token",
                     "value": {
                       "message": "Token expirou"
@@ -1652,7 +1802,7 @@
                   "$ref": "#/components/responses/Conflict"
                 },
                 "examples": {
-                  "Conflict#1": {
+                  "Email Conflict": {
                     "summary": "email with conflict",
                     "value": {
                       "type": "ConflictError",
@@ -1661,7 +1811,7 @@
                       "dateTime": "2022-11-24T03:16:27Z"
                     }
                   },
-                  "Conflict#2": {
+                  "CPF Conflict": {
                     "summary": "cpf with conflict",
                     "value": {
                       "type": "ConflictError",
@@ -1674,6 +1824,22 @@
               }
             }
           },
+          "429": {
+            "description": "Too Many Requests",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/responses/TooManyRequests"
+                },
+                "example": {
+                  "type": "manyRequestsError",
+                  "message": "Muitos pedidos. Por favor tente mais tarde.",
+                  "status": 249,
+                  "dateTime": "2022-11-24T01:02:29Z"
+                }
+              }
+            }
+          },
           "500": {
             "description": "Internal Server Error",
             "content": {
@@ -1682,8 +1848,7 @@
                   "$ref": "#/components/responses/Database"
                 },
                 "examples": {
-                  "Internal Error#1": {
-                    "summary": "database error",
+                  "Database Error": {
                     "value": {
                       "type": "DatabaseError",
                       "message": "Não foi possível cadastrar o cliente",
@@ -1691,8 +1856,7 @@
                       "dateTime": "2022-11-24T03:16:27Z"
                     }
                   },
-                  "Internal Error#2": {
-                    "summary": "internal sever error",
+                  "Internal Server Error": {
                     "value": {
                       "type": "Error",
                       "message": "Internal Server Error",
@@ -1776,7 +1940,7 @@
                   "$ref": "#/components/responses/BadRequest"
                 },
                 "examples": {
-                  "description field": {
+                  "Description Field": {
                     "value": {
                       "type": "ValidationError",
                       "message": "description deve ser no máximo 128 caracteres",
@@ -1784,7 +1948,7 @@
                       "dateTime": "2022-11-30T00:47:52.816Z"
                     }
                   },
-                  "status field": {
+                  "Status Field": {
                     "value": {
                       "type": "ValidationError",
                       "message": "status devem ser paid ou pending",
@@ -1792,7 +1956,7 @@
                       "dateTime": "2022-11-30T00:49:43.875Z"
                     }
                   },
-                  "value field": {
+                  "Value Field": {
                     "value": {
                       "type": "ValidationError",
                       "message": "value deve ser um número positivo",
@@ -1800,7 +1964,7 @@
                       "dateTime": "2022-11-30T03:02:21.282Z"
                     }
                   },
-                  "due field": {
+                  "Due Field": {
                     "value": {
                       "type": "ValidationError",
                       "message": "Campo due deve ser mais tarde do que 1900-01-01",
@@ -1829,7 +1993,7 @@
                     },
                     "description": "you are not allowed"
                   },
-                  "JsonWebTokenError": {
+                  "JsonWebToken Error": {
                     "description": "malformed token",
                     "value": {
                       "type": "UnauthorizedError",
@@ -1838,12 +2002,28 @@
                       "dateTime": "2022-11-23T23:31:43Z"
                     }
                   },
-                  "TokenExpiredError": {
+                  "Token Expired Error": {
                     "description": "expired token",
                     "value": {
                       "message": "Token expirou"
                     }
                   }
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Too Many Requests",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/responses/TooManyRequests"
+                },
+                "example": {
+                  "type": "manyRequestsError",
+                  "message": "Muitos pedidos. Por favor tente mais tarde.",
+                  "status": 249,
+                  "dateTime": "2022-11-24T01:02:29Z"
                 }
               }
             }
@@ -1856,8 +2036,7 @@
                   "$ref": "#/components/responses/Database"
                 },
                 "examples": {
-                  "Internal Error#1": {
-                    "summary": "database error",
+                  "Database Error": {
                     "value": {
                       "type": "DatabaseError",
                       "message": "Não foi possível cadastrar a cobrança",
@@ -1865,8 +2044,7 @@
                       "dateTime": "2022-11-24T03:16:27Z"
                     }
                   },
-                  "Internal Error#2": {
-                    "summary": "internal sever error",
+                  "Internal Server Error": {
                     "value": {
                       "type": "Error",
                       "message": "Internal Server Error",
@@ -2063,6 +2241,22 @@
               }
             }
           },
+          "429": {
+            "description": "Too Many Requests",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/responses/TooManyRequests"
+                },
+                "example": {
+                  "type": "manyRequestsError",
+                  "message": "Muitos pedidos. Por favor tente mais tarde.",
+                  "status": 249,
+                  "dateTime": "2022-11-24T01:02:29Z"
+                }
+              }
+            }
+          },
           "500": {
             "description": "Internal Server Error",
             "content": {
@@ -2131,22 +2325,6 @@
               }
             }
           },
-          "404": {
-            "description": "Not Found",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/responses/NotFound"
-                },
-                "example": {
-                  "type": "NotFoundError",
-                  "message": "Cobrança não encontrada",
-                  "status": 404,
-                  "dateTime": "2022-11-24T04:22:58Z"
-                }
-              }
-            }
-          },
           "401": {
             "description": "Unauthorized",
             "content": {
@@ -2164,7 +2342,7 @@
                     },
                     "description": "you are not allowed"
                   },
-                  "JsonWebTokenError": {
+                  "JsonWebToken Error": {
                     "description": "malformed token",
                     "value": {
                       "type": "UnauthorizedError",
@@ -2173,12 +2351,44 @@
                       "dateTime": "2022-11-23T23:31:43Z"
                     }
                   },
-                  "TokenExpiredError": {
+                  "Token Expired Error": {
                     "description": "expired token",
                     "value": {
                       "message": "Token expirou"
                     }
                   }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/responses/NotFound"
+                },
+                "example": {
+                  "type": "NotFoundError",
+                  "message": "Cobrança não encontrada",
+                  "status": 404,
+                  "dateTime": "2022-11-24T04:22:58Z"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Too Many Requests",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/responses/TooManyRequests"
+                },
+                "example": {
+                  "type": "manyRequestsError",
+                  "message": "Muitos pedidos. Por favor tente mais tarde.",
+                  "status": 249,
+                  "dateTime": "2022-11-24T01:02:29Z"
                 }
               }
             }
@@ -2266,7 +2476,7 @@
                     },
                     "description": "you are not allowed"
                   },
-                  "JsonWebTokenError": {
+                  "JsonWebToken Error": {
                     "description": "malformed token",
                     "value": {
                       "type": "UnauthorizedError",
@@ -2275,7 +2485,7 @@
                       "dateTime": "2022-11-23T23:31:43Z"
                     }
                   },
-                  "TokenExpiredError": {
+                  "Token Expired Error": {
                     "description": "expired token",
                     "value": {
                       "message": "Token expirou"
@@ -2297,6 +2507,22 @@
                   "message": "Cobrança não encontrada",
                   "status": 404,
                   "dateTime": "2022-11-24T04:22:58Z"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Too Many Requests",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/responses/TooManyRequests"
+                },
+                "example": {
+                  "type": "manyRequestsError",
+                  "message": "Muitos pedidos. Por favor tente mais tarde.",
+                  "status": 249,
+                  "dateTime": "2022-11-24T01:02:29Z"
                 }
               }
             }
@@ -2356,7 +2582,7 @@
                   "$ref": "#/components/responses/BadRequest"
                 },
                 "examples": {
-                  "description field": {
+                  "Description Field": {
                     "value": {
                       "type": "ValidationError",
                       "message": "description deve ser no máximo 128 caracteres",
@@ -2364,7 +2590,7 @@
                       "dateTime": "2022-11-30T00:47:52.816Z"
                     }
                   },
-                  "status field": {
+                  "Status Field": {
                     "value": {
                       "type": "ValidationError",
                       "message": "status devem ser paid ou pending",
@@ -2372,7 +2598,7 @@
                       "dateTime": "2022-11-30T00:49:43.875Z"
                     }
                   },
-                  "value field": {
+                  "Value Field": {
                     "value": {
                       "type": "ValidationError",
                       "message": "value deve ser um número positivo",
@@ -2380,7 +2606,7 @@
                       "dateTime": "2022-11-30T03:02:21.282Z"
                     }
                   },
-                  "due field": {
+                  "Due Field": {
                     "value": {
                       "type": "ValidationError",
                       "message": "Campo due deve ser mais tarde do que 1900-01-01",
@@ -2409,7 +2635,7 @@
                     },
                     "description": "you are not allowed"
                   },
-                  "JsonWebTokenError": {
+                  "JsonWebToken Error": {
                     "description": "malformed token",
                     "value": {
                       "type": "UnauthorizedError",
@@ -2418,7 +2644,7 @@
                       "dateTime": "2022-11-23T23:31:43Z"
                     }
                   },
-                  "TokenExpiredError": {
+                  "Token Expired Error": {
                     "description": "expired token",
                     "value": {
                       "message": "Token expirou"
@@ -2444,6 +2670,22 @@
               }
             }
           },
+          "429": {
+            "description": "Too Many Requests",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/responses/TooManyRequests"
+                },
+                "example": {
+                  "type": "manyRequestsError",
+                  "message": "Muitos pedidos. Por favor tente mais tarde.",
+                  "status": 249,
+                  "dateTime": "2022-11-24T01:02:29Z"
+                }
+              }
+            }
+          },
           "500": {
             "description": "Internal Server Error",
             "content": {
@@ -2452,7 +2694,7 @@
                   "$ref": "#/components/responses/Database"
                 },
                 "examples": {
-                  "DataBaseError": {
+                  "Database Error": {
                     "value": {
                       "type": "DatabaseError",
                       "message": "Não foi possível atualizar a cobrança",
@@ -2460,7 +2702,7 @@
                       "dateTime": "2022-11-24T04:22:58Z"
                     }
                   },
-                  "internalServerError": {
+                  "Internal Server Error": {
                     "value": {
                       "type": "Error",
                       "message": "Internal Server Error",
