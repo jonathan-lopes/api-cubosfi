@@ -1,6 +1,3 @@
-require('dotenv').config({
-  path: process.env.NODE_ENV === 'test' ? '.env.test' : '.env',
-});
 require('express-async-errors');
 const express = require('express');
 const swaggerUi = require('swagger-ui-express');
@@ -9,8 +6,16 @@ const helmet = require('helmet');
 const routes = require('./routes/router');
 const errorMiddleware = require('./middlewares/error');
 const rateLimit = require('./middlewares/rateLimit');
+const loadEnviromentVariables = require('./helpers/loadEnviromentVariables');
+const morganMiddleware = require('./middlewares/morgan');
+
+require('dotenv').config({
+  path: loadEnviromentVariables(),
+});
 
 const app = express();
+
+app.use(morganMiddleware);
 
 app.use(
   '/api-docs',
