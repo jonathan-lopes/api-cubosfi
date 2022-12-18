@@ -8,7 +8,9 @@ const errorMiddleware = (err, req, res, next) => {
   message = err.name === 'ValidationError' ? err.message : message;
 
   logger.error({
-    message: `type: ${err.constructor.name}, ${message}, status: ${statusCode}`,
+    message: `${req.ip} ${req.get('User-Agent')} ${req.method} ${req.path} ${
+      req.user?.id || '-'
+    } ${err.constructor.name} ${err.message} ${statusCode}`,
   });
 
   return res.status(statusCode).json({
