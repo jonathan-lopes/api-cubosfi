@@ -45,6 +45,7 @@
     "swagger-ui-express": "^4.5.0",
     "uuid": "^9.0.0",
     "winston": "^3.8.2",
+    "winston-mongodb": "^5.1.0",
     "yup": "^0.32.11",
     "yup-locales": "^1.2.10"
   },
