@@ -1,4 +1,5 @@
 const winston = require('winston');
+require('winston-mongodb');
 
 const levels = {
   error: 0,
@@ -26,7 +27,7 @@ winston.addColors(colors);
 
 const format = winston.format.combine(
   winston.format.colorize({ all: true }),
-  winston.format.timestamp({ format: 'YYYY-MM-DD HH:mm:ss:ms Z' }),
+  winston.format.timestamp({ format: 'YYYY-MM-DD HH:mm:ss:msZ' }),
   winston.format.printf(
     (info) => `${info.timestamp} ${info.level}: ${info.message}`,
   ),
@@ -40,6 +41,15 @@ const transports = [
   }),
   new winston.transports.File({ filename: 'logs/access.log', level: 'http' }),
   new winston.transports.File({ filename: 'logs/all.log' }),
+  new winston.transports.MongoDB({
+    db: process.env.MONGO_DB,
+    level: 'error',
+    dbName: 'cubosfi',
+    tryReconnect: true,
+    collection: 'logs',
+    decolorize: true,
+    options: { useNewUrlParser: true, useUnifiedTopology: true, poolSize: 2 },
+  }),
 ];
 
 const logger = winston.createLogger({
