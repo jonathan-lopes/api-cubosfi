@@ -18,48 +18,7 @@ CubosFi é uma REST API desenvolvida para a aplicação frontend [CubosFi](https
 
 Para rodar esse projeto, você vai precisar adicionar as seguintes variáveis de ambiente no seu .env
 
-`PORT`
-
-`DB_HOST`<br/>
-`DB_USER`<br/>
-`DB_PASSWORD`<br/>
-`DB_NAME`<br/>
-`DB_PORT`<br/>
-`DB_CLIENT`<br/>
-
-`MONGO_DB`<br/>
-
-`SECRET_TOKEN`<br/>
-`EXPIRES_IN_TOKEN`<br/>
-
-`SECRET_REFRESH_TOKEN`<br/>
-`EXPIRES_IN_REFRESH_TOKEN`<br/>
-`EXPIRES_REFRESH_TOKEN_DAYS`<br/>
-
-`SALT_ROUNDS`
-
-## Rodando localmente
-
-Clone o projeto
-
-```bash
-  git clone https://github.com/jonathan-lopes/api-cubosfi.git
-```
-
-Entre no diretório do projeto
-
-```bash
-  cd api-cubosfi
-```
-
-Instale as dependências
-
-```bash
-  npm i ou npm install
-```
-
-Você vai precisar adicionar as seguintes variáveis de ambiente num arquivo .env.dev
-```bash
+```properties
 PORT
 
 DB_HOST
@@ -81,6 +40,28 @@ EXPIRES_REFRESH_TOKEN_DAYS
 SALT_ROUNDS
 ```
 
+## Rodando localmente
+
+Clone o projeto
+
+```bash
+  git clone https://github.com/jonathan-lopes/api-cubosfi.git
+```
+
+Entre no diretório do projeto
+
+```bash
+  cd api-cubosfi
+```
+
+Instale as dependências
+
+```bash
+  npm i ou npm install
+```
+
+Crie um arquivo .env.dev e adicione as variáveis como na seção [Variáveis de Ambiente](#variáveis-de-ambiente)
+
 Inicie o servidor
 
 ```bash
@@ -91,18 +72,20 @@ Inicie o servidor
 
 Primeiro crie um arquivo .env.test adicione as seguintes variáveis de ambiente
 
-`PORT`
+```properties
+PORT
 
-`DB_CLIENT=sqlite3`
+DB_CLIENT=sqlite3
 
-`SECRET_TOKEN`<br/>
-`EXPIRES_IN_TOKEN`
+SECRET_TOKEN
+EXPIRES_IN_TOKEN
 
-`SECRET_REFRESH_TOKEN`<br/>
-`EXPIRES_IN_REFRESH_TOKEN`<br/>
-`EXPIRES_REFRESH_TOKEN_DAYS`<br/>
+SECRET_REFRESH_TOKEN
+EXPIRES_IN_REFRESH_TOKEN
+EXPIRES_REFRESH_TOKEN_DAYS
 
-`SALT_ROUNDS`
+SALT_ROUNDS
+```
 
 Rode o seguinte comando
 
