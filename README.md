@@ -27,6 +27,8 @@ Para rodar esse projeto, você vai precisar adicionar as seguintes variáveis de
 `DB_PORT`<br/>
 `DB_CLIENT`<br/>
 
+`MONGO_DB`<br/>
+
 `SECRET_TOKEN`<br/>
 `EXPIRES_IN_TOKEN`<br/>
 
@@ -54,6 +56,29 @@ Instale as dependências
 
 ```bash
   npm i ou npm install
+```
+
+Você vai precisar adicionar as seguintes variáveis de ambiente num arquivo .env.dev
+```bash
+PORT
+
+DB_HOST
+DB_USER
+DB_PASSWORD
+DB_NAME
+DB_PORT
+DB_CLIENT
+
+MONGO_DB
+
+SECRET_TOKEN
+EXPIRES_IN_TOKEN
+
+SECRET_REFRESH_TOKEN
+EXPIRES_IN_REFRESH_TOKEN
+EXPIRES_REFRESH_TOKEN_DAYS
+
+SALT_ROUNDS
 ```
 
 Inicie o servidor
