@@ -12,7 +12,19 @@ CubosFi é uma REST API desenvolvida para a aplicação frontend [CubosFi](https
 
 ## Documentação
 
-[Documentação](#)
+Documentação utiliza a especificação OpenAPI (anteriormente Swagger Specification) para descrever os endpoints disponíveis e as operações em cada endpoint deles.
+A especificação da API foi escrita em [JSON](https://pt.wikipedia.org/wiki/JSON) e pode ser encontrado no arquivo [swagger.json](https://github.com/jonathan-lopes/api-cubosfi/blob/master/swagger.json) na raiz do repositório.
+
+A duas formas de acessar a documentação:
+
+### Primeira Forma
+
+Pela rota `/api-docs` disponibilizada pela própria api que utilizar Swagger UI para renderiza definições de OpenAPI como documentação interativa.
+
+### Segunda Forma
+
+A outra forma é pelo serviço da [bump.sh](https://bump.sh/) que gera a documentação apartir das especificações OpenAPI, para acessar [clique aqui](https://bump.sh/jonathan-lopes/doc/api-cubosfi).
+
 
 ## Variáveis de Ambiente
 
