@@ -33,30 +33,39 @@ const format = winston.format.combine(
   ),
 );
 
-const transports = [
-  new winston.transports.Console(),
-  new winston.transports.File({
-    filename: 'logs/error.log',
-    level: 'error',
-  }),
-  new winston.transports.File({ filename: 'logs/access.log', level: 'http' }),
-  new winston.transports.File({ filename: 'logs/all.log' }),
-  new winston.transports.MongoDB({
-    db: process.env.MONGO_DB,
-    level: 'error',
-    dbName: 'cubosfi',
-    tryReconnect: true,
-    collection: 'logs',
-    decolorize: true,
-    options: { useNewUrlParser: true, useUnifiedTopology: true, poolSize: 2 },
-  }),
-];
+const transports = () => {
+  const loggers = [
+    new winston.transports.Console(),
+    new winston.transports.File({
+      filename: 'logs/error.log',
+      level: 'error',
+    }),
+    new winston.transports.File({ filename: 'logs/access.log', level: 'http' }),
+    new winston.transports.File({ filename: 'logs/all.log' }),
+  ];
+
+  if (process.env.NODE_ENV !== 'test') {
+    const mongoLogger = new winston.transports.MongoDB({
+      db: process.env.MONGO_DB,
+      level: 'error',
+      dbName: 'cubosfi',
+      tryReconnect: true,
+      collection: 'logs',
+      decolorize: true,
+      options: { useNewUrlParser: true, useUnifiedTopology: true, poolSize: 2 },
+    });
+
+    return [...loggers, mongoLogger];
+  }
+
+  return loggers;
+};
 
 const logger = winston.createLogger({
   level: level(),
   levels,
   format,
-  transports,
+  transports: transports(),
 });
 
 module.exports = logger;
