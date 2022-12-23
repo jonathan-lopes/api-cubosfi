@@ -17,10 +17,9 @@ require('dotenv').config({
 
 const app = express();
 
-app.use(morganMiddleware);
-
 app.use(
   compression({
+    threshold: 10 * 1024,
     filter: (req, res) => {
       if (req.headers['x-no-compression']) {
         return false;
@@ -29,6 +28,8 @@ app.use(
     },
   }),
 );
+
+app.use(morganMiddleware);
 
 app.use(
   '/api-docs',
