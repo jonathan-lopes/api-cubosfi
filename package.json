@@ -12,8 +12,8 @@
   },
   "homepage": "https://github.com/jonathan-lopes/api-cubosfi#readme",
   "scripts": {
-    "dev": "cross-env NODE_ENV=development nodemon ./src/index.js",
-    "start": "node ./src/index.js",
+    "dev": "pm2-runtime start ecosystem.config.js --env development",
+    "start": "pm2-runtime start ecosystem.config.js --env production",
     "migrate:latest": "knex migrate:latest --env development",
     "migrate:rollback": "knex migrate:rollback --env development",
     "seed": "knex seed:run",
@@ -43,6 +43,7 @@
     "morgan": "^1.10.0",
     "node-schedule": "^2.1.0",
     "pg": "^8.8.0",
+    "pm2": "^5.2.2",
     "serve-favicon": "^2.5.0",
     "swagger-ui-express": "^4.5.0",
     "uuid": "^9.0.0",
