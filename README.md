@@ -2,7 +2,7 @@
 
 ![Logo](https://i.imgur.com/7q8TLfc.png)
 
-CubosFi é uma REST API desenvolvida para a aplicação frontend [CubosFi](https://github.com/jonathan-lopes/front-integral-m05-desafio).
+API-CubosFi é uma REST API desenvolvida para a aplicação frontend [CubosFi](https://github.com/jonathan-lopes/front-integral-m05-desafio), nessa api você pode cadastrar os clientes e as suas cobranças.
 
 [![CircleCI](https://dl.circleci.com/status-badge/img/gh/jonathan-lopes/api-cubosfi/tree/develop.svg?style=shield)](https://dl.circleci.com/status-badge/redirect/gh/jonathan-lopes/api-cubosfi/tree/develop) [![Commitizen friendly](https://img.shields.io/badge/commitizen-friendly-brightgreen.svg)](http://commitizen.github.io/cz-cli/) ![Swagger Validator](https://img.shields.io/swagger/valid/3.0?specUrl=https%3A%2F%2Fraw.githubusercontent.com%2Fjonathan-lopes%2Fapi-cubosfi%2Fdevelop%2Fswagger.json) ![GitHub last commit](https://img.shields.io/github/last-commit/jonathan-lopes/api-cubosfi)
 
