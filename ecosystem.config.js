@@ -11,9 +11,6 @@ module.exports = {
       exec_mode: 'cluster',
       ignore_watch: ['[/\\]./', 'node_modules', 'logs', 'test'],
       env: {
-        NODE_ENV: 'development',
-      },
-      env_production: {
         NODE_ENV: 'production',
       },
     },
