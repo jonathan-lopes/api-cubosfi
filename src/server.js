@@ -12,7 +12,7 @@ const loadEnviromentVariables = require('./helpers/loadEnviromentVariables');
 const morganMiddleware = require('./middlewares/morgan');
 
 require('dotenv').config({
-  path: loadEnviromentVariables(),
+  path: loadEnviromentVariables,
 });
 
 const app = express();

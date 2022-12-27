@@ -1,18 +1,11 @@
 const knexfile = require('../../knexfile');
 
-const loadKnexfile = () => {
-  const env = process.env.NODE_ENV;
+const env = process.env.NODE_ENV || 'development';
 
-  switch (env) {
-    case 'test':
-      return knexfile.test;
-    case 'development':
-      return knexfile.development;
-    case 'production':
-      return knexfile.production;
-    default:
-      return knexfile.production;
-  }
+const loadKnexFile = {
+  test: knexfile.test,
+  development: knexfile.development,
+  production: knexfile.production,
 };
 
-module.exports = loadKnexfile;
+module.exports = loadKnexFile[env];

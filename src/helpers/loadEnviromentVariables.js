@@ -1,22 +1,9 @@
-const loadEnviromentVariables = () => {
-  const env = process.env.NODE_ENV;
+const env = process.env.NODE_ENV || 'development';
 
-  const environmentVariables = {
-    test: '.env.test',
-    development: '.env.dev',
-    production: '.env',
-  };
-
-  switch (env) {
-    case 'test':
-      return environmentVariables.test;
-    case 'development':
-      return environmentVariables.development;
-    case 'production':
-      return environmentVariables.production;
-    default:
-      return environmentVariables.production;
-  }
+const environmentVariables = {
+  test: '.env.test',
+  development: '.env.dev',
+  production: '.env',
 };
 
-module.exports = loadEnviromentVariables;
+module.exports = environmentVariables[env];

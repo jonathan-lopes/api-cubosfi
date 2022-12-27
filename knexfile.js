@@ -1,7 +1,7 @@
 const loadEnviromentVariables = require('./src/helpers/loadEnviromentVariables');
 
 require('dotenv').config({
-  path: loadEnviromentVariables(),
+  path: loadEnviromentVariables,
 });
 
 /**
