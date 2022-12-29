@@ -3,12 +3,16 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
+  "private": false,
   "repository": {
     "type": "git",
     "url": "git+https://github.com/jonathan-lopes/api-cubosfi.git"
   },
   "bugs": {
     "url": "https://github.com/jonathan-lopes/api-cubosfi/issues"
+  },
+  "engines": {
+    "node": "18.x"
   },
   "homepage": "https://github.com/jonathan-lopes/api-cubosfi#readme",
   "scripts": {
@@ -25,7 +29,7 @@
     "posttest": "cross-env NODE_ENV=test knex migrate:rollback --all"
   },
   "keywords": [],
-  "author": "",
+  "author": "Jonathan Lopes",
   "license": "ISC",
   "dependencies": {
     "bcrypt": "^5.1.0",
