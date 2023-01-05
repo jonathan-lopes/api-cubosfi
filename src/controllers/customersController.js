@@ -10,13 +10,16 @@ const {
 const create = async (req, res) => {
   const { name, email, cpf, phone, address } = req.body;
 
-  await schemaCustomer.validate({
-    name,
-    email,
-    cpf,
-    phone,
-    address,
-  });
+  await schemaCustomer.validate(
+    {
+      name,
+      email,
+      cpf,
+      phone,
+      address,
+    },
+    { abortEarly: false },
+  );
 
   const customerEmail = await knex('customers').where({ email }).first();
 
@@ -126,13 +129,16 @@ const update = async (req, res) => {
   const { name, email, cpf, phone, address } = req.body;
   const { id } = req.params;
 
-  await schemaCustomer.validate({
-    name,
-    email,
-    cpf,
-    phone,
-    address,
-  });
+  await schemaCustomer.validate(
+    {
+      name,
+      email,
+      cpf,
+      phone,
+      address,
+    },
+    { abortEarly: false },
+  );
 
   const customerEmail = await knex('customers')
     .whereRaw('email = ? AND id <> ?', [email, id])

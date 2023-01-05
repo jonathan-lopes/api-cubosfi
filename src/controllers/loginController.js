@@ -9,7 +9,7 @@ const { BadRequestError } = require('../helpers/apiErrors');
 const login = async (req, res) => {
   const { email, password } = req.body;
 
-  await schemaLogin.validate({ email, password });
+  await schemaLogin.validate({ email, password }, { abortEarly: false });
 
   const user = await knex('users').where({ email }).first();
 

@@ -8,7 +8,10 @@ const { DatabaseError, ConflictError } = require('../helpers/apiErrors');
 const create = async (req, res) => {
   const { name, email, password } = req.body;
 
-  await schemaRegisterUser.validate({ name, email, password });
+  await schemaRegisterUser.validate(
+    { name, email, password },
+    { abortEarly: false },
+  );
 
   const userEmail = await knex('users').where({ email }).first();
 
@@ -41,7 +44,10 @@ const update = async (req, res) => {
   const { user } = req;
   const { name, email, cpf, phone, password } = req.body;
 
-  await schemaEditUser.validate({ name, email, cpf, phone, password });
+  await schemaEditUser.validate(
+    { name, email, cpf, phone, password },
+    { abortEarly: false },
+  );
 
   const userEmail = await knex('users')
     .whereRaw('email = ? AND id <> ?', [email, user.id])
