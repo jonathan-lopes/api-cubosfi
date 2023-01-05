@@ -8,7 +8,9 @@ const limiter = rateLimit({
   handler: (req, res) => {
     res.status(429).json({
       type: 'manyRequestsError',
-      message: 'Muitos pedidos. Por favor tente mais tarde.',
+      message: {
+        error: 'Muitos pedidos. Por favor tente mais tarde.',
+      },
       status: 429,
       dateTime: new Date(),
     });
