@@ -1,8 +1,8 @@
-const { isValid } = require('date-fns');
 const { v4: uuidv4 } = require('uuid');
 const knex = require('../database/connection');
 const schemaRegisterBilling = require('../validations/schemaRegisterBillings');
 const schemaEditBilling = require('../validations/schemaEditBilling');
+const queryBillingSchema = require('../validations/schemaQueryBillings');
 const { isPending } = require('../helpers/paymentStatus');
 const {
   DatabaseError,
@@ -22,7 +22,7 @@ const create = async (req, res) => {
     due,
   };
 
-  await schemaRegisterBilling.validate(body);
+  await schemaRegisterBilling.validate(body, { abortEarly: false });
 
   const insertBilling = await knex('billings').insert(body);
 
@@ -34,15 +34,9 @@ const create = async (req, res) => {
 };
 
 const getAll = async (req, res) => {
-  const {
-    status,
-    is_overdue,
-    due_date,
-    after_due_date,
-    before_due_date,
-    less_than_value,
-    greater_than_value,
-  } = req.query;
+  const queryParams = req.query;
+
+  await queryBillingSchema.validate(req, { abortEarly: false });
 
   const query = knex('billings')
     .join('customers', 'billings.customer_id', '=', 'customers.id')
@@ -58,44 +52,44 @@ const getAll = async (req, res) => {
       'billings.customer_id',
     );
 
-  if (status === 'paid' || status === 'pending') {
+  if (queryParams.status) {
     query.where({
-      status,
+      status: queryParams.status,
     });
   }
 
-  if (is_overdue === 'false' || is_overdue === 'true') {
+  if (queryParams.is_overdue) {
     query.where({
-      is_overdue,
+      is_overdue: queryParams.is_overdue,
     });
   }
 
-  if (isValid(new Date(due_date))) {
+  if (queryParams.due_date) {
     query.where({
-      due: due_date,
+      due: queryParams.due_date,
     });
   }
 
-  if (isValid(new Date(after_due_date))) {
-    query.where('billings.due', '>', after_due_date);
+  if (queryParams.after_due_date) {
+    query.where('billings.due', '>', queryParams.after_due_date);
   }
 
-  if (isValid(new Date(before_due_date))) {
-    query.where('billings.due', '<', before_due_date);
+  if (queryParams.before_due_date) {
+    query.where('billings.due', '<', queryParams.before_due_date);
   }
 
-  if (Number(less_than_value) && !greater_than_value) {
-    query.where('billings.value', '<', less_than_value);
+  if (queryParams.less_than_value && !queryParams.greater_than_value) {
+    query.where('billings.value', '<', queryParams.less_than_value);
   }
 
-  if (Number(greater_than_value) && !less_than_value) {
-    query.where('billings.value', '>', greater_than_value);
+  if (queryParams.greater_than_value && !queryParams.less_than_value) {
+    query.where('billings.value', '>', queryParams.greater_than_value);
   }
 
-  if (Number(less_than_value) && Number(greater_than_value)) {
+  if (queryParams.less_than_value && queryParams.greater_than_value) {
     query.whereNotBetween('billings.value', [
-      less_than_value,
-      greater_than_value,
+      queryParams.less_than_value,
+      queryParams.greater_than_value,
     ]);
   }
 
@@ -151,7 +145,7 @@ const update = async (req, res) => {
     due,
   };
 
-  await schemaEditBilling.validate(body);
+  await schemaEditBilling.validate(body, { abortEarly: false });
 
   const billing = await knex('billings').where({ id }).first();
 
