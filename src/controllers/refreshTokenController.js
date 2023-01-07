@@ -8,7 +8,7 @@ const refreshTokenSchema = require('../validations/schemaRefreshToken');
 const refreshTokenController = async (req, res) => {
   const { refresh_token } = req.body;
 
-  await refreshTokenSchema.validate({ refresh_token });
+  await refreshTokenSchema.validate({ refresh_token }, { abortEarly: false });
 
   const { id } = jwt.verify(
     refresh_token,
