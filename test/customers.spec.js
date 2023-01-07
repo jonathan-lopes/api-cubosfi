@@ -11,7 +11,7 @@ const sut = new SutCustomer(
   '(96) 93498-1258',
 );
 
-describe('Endpoint Customers', () => {
+describe('Customers Endpoint', () => {
   beforeAll(async () => {
     token = await login(app, 'login', {
       name: 'testman#5',
@@ -30,13 +30,21 @@ describe('Endpoint Customers', () => {
         .set('Authorization', `Bearer ${token}`);
 
       expect(response.statusCode).toBe(400);
-      expect(response.body).toHaveProperty(
-        'message',
-        'phone é um campo obrigatório',
-      );
       expect(response.body).toHaveProperty('status', 400);
       expect(response.body).toHaveProperty('type', 'ValidationError');
       expect(response.body).toHaveProperty('dateTime');
+      expect(response.body).toHaveProperty(
+        'message.phone',
+        'phone é um campo obrigatório',
+      );
+      expect(response.body).toHaveProperty(
+        'message.email',
+        'email é um campo obrigatório',
+      );
+      expect(response.body).toHaveProperty(
+        'message.name',
+        'name é um campo obrigatório',
+      );
     });
 
     it('should return status 409 if the email has already been registered', async () => {
@@ -53,7 +61,10 @@ describe('Endpoint Customers', () => {
         .set('Authorization', `Bearer ${token}`);
 
       expect(response.statusCode).toBe(409);
-      expect(response.body).toHaveProperty('message', 'E-mail já cadastrado');
+      expect(response.body).toHaveProperty(
+        'message.error',
+        'E-mail já cadastrado',
+      );
       expect(response.body).toHaveProperty('status', 409);
       expect(response.body).toHaveProperty('type', 'ConflictError');
       expect(response.body).toHaveProperty('dateTime');
@@ -73,7 +84,10 @@ describe('Endpoint Customers', () => {
         .set('Authorization', `Bearer ${token}`);
 
       expect(response.statusCode).toBe(409);
-      expect(response.body).toHaveProperty('message', 'CPF já cadastrado');
+      expect(response.body).toHaveProperty(
+        'message.error',
+        'CPF já cadastrado',
+      );
       expect(response.body).toHaveProperty('status', 409);
       expect(response.body).toHaveProperty('type', 'ConflictError');
       expect(response.body).toHaveProperty('dateTime');
@@ -135,7 +149,10 @@ describe('Endpoint Customers', () => {
         .set('Authorization', `Bearer ${token}`);
 
       expect(response.statusCode).toBe(404);
-      expect(response.body).toHaveProperty('message', 'Cliente não encontrado');
+      expect(response.body).toHaveProperty(
+        'message.error',
+        'Cliente não encontrado',
+      );
       expect(response.body).toHaveProperty('status', 404);
       expect(response.body).toHaveProperty('type', 'NotFoundError');
       expect(response.body).toHaveProperty('dateTime');
@@ -174,7 +191,7 @@ describe('Endpoint Customers', () => {
         .set('Authorization', `Bearer ${token}`);
 
       expect(response.statusCode).toBe(409);
-      expect(response.body).toHaveProperty('message', 'E-mail já cadastrado');
+      expect(response.body).toHaveProperty('message.error', 'E-mail já cadastrado');
       expect(response.body).toHaveProperty('status', 409);
       expect(response.body).toHaveProperty('type', 'ConflictError');
       expect(response.body).toHaveProperty('dateTime');
@@ -205,7 +222,7 @@ describe('Endpoint Customers', () => {
         .set('Authorization', `Bearer ${token}`);
 
       expect(response.statusCode).toBe(409);
-      expect(response.body).toHaveProperty('message', 'CPF já cadastrado');
+      expect(response.body).toHaveProperty('message.error', 'CPF já cadastrado');
       expect(response.body).toHaveProperty('status', 409);
       expect(response.body).toHaveProperty('type', 'ConflictError');
       expect(response.body).toHaveProperty('dateTime');

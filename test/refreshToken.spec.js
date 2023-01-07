@@ -5,33 +5,35 @@ const { SutUser, SutRefreshToken } = require('./helpers/utils');
 
 let sutUser = new SutUser('tesman#6', 'testman#6@email.com', 'testman1234');
 
-describe('Refresh Token', () => {
+describe('Refresh Token Endpoint', () => {
   afterEach(() => sutUser.clear());
 
-  it('should return status 400 if refresh token was not sent or if different from string type', async () => {
-    const response1 = await request(app).post('/refresh-token').send({
+  it('should return status 400 if refresh token was not sent', async () => {
+    const response = await request(app).post('/refresh-token').send({});
+
+    expect(response.statusCode).toBe(400);
+    expect(response.body).toHaveProperty(
+      'message.refresh_token',
+      'refresh_token é um campo obrigatório',
+    );
+    expect(response.body).toHaveProperty('status', 400);
+    expect(response.body).toHaveProperty('type', 'ValidationError');
+    expect(response.body).toHaveProperty('dateTime');
+  });
+
+  it('should return status 400 if refresh token is different from string type', async () => {
+    const response = await request(app).post('/refresh-token').send({
       refresh_token: 1000,
     });
 
-    expect(response1.statusCode).toBe(400);
-    expect(response1.body).toHaveProperty(
-      'message',
+    expect(response.statusCode).toBe(400);
+    expect(response.body).toHaveProperty(
+      'message.refresh_token',
       'refresh_token deve ser um tipo de `string`, Mas o valor final foi: `1000`.',
     );
-    expect(response1.body).toHaveProperty('status', 400);
-    expect(response1.body).toHaveProperty('type', 'ValidationError');
-    expect(response1.body).toHaveProperty('dateTime');
-
-    const response2 = await request(app).post('/refresh-token').send({});
-
-    expect(response2.statusCode).toBe(400);
-    expect(response2.body).toHaveProperty(
-      'message',
-      'refresh_token é um campo obrigatório',
-    );
-    expect(response2.body).toHaveProperty('status', 400);
-    expect(response2.body).toHaveProperty('type', 'ValidationError');
-    expect(response2.body).toHaveProperty('dateTime');
+    expect(response.body).toHaveProperty('status', 400);
+    expect(response.body).toHaveProperty('type', 'ValidationError');
+    expect(response.body).toHaveProperty('dateTime');
   });
 
   it('should return status 401 if refresh token is expired', async () => {
@@ -48,7 +50,10 @@ describe('Refresh Token', () => {
     });
 
     expect(response.statusCode).toBe(401);
-    expect(response.body).toHaveProperty('message', 'refresh_token expirado');
+    expect(response.body).toHaveProperty(
+      'message.error',
+      'refresh_token expirado',
+    );
     expect(response.body).toHaveProperty('status', 401);
     expect(response.body).toHaveProperty('type', 'UnauthorizedError');
     expect(response.body).toHaveProperty('dateTime');
@@ -73,7 +78,7 @@ describe('Refresh Token', () => {
 
     expect(response.statusCode).toBe(404);
     expect(response.body).toHaveProperty(
-      'message',
+      'message.error',
       'refresh_token não encontrado',
     );
     expect(response.body).toHaveProperty('status', 404);

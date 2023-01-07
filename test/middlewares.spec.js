@@ -22,7 +22,7 @@ describe('Middleware verify login', () => {
     expect(response.body).toHaveProperty('status', 401);
     expect(response.body).toHaveProperty('type', 'UnauthorizedError');
     expect(response.body).toHaveProperty('dateTime');
-    expect(response.body).toHaveProperty('message', 'Não autorizado');
+    expect(response.body).toHaveProperty('message.error', 'Não autorizado');
   });
 
   it('should not be able to authenticate with a malformed token', async () => {
@@ -31,7 +31,7 @@ describe('Middleware verify login', () => {
       .set('Authorization', `Bearer ${`aaa${token}`}`);
 
     expect(response.statusCode).toBe(401);
-    expect(response.body).toHaveProperty('message', 'Token malformado');
+    expect(response.body).toHaveProperty('message.error', 'Token malformado');
     expect(response.body).toHaveProperty('status', 401);
     expect(response.body).toHaveProperty('type', 'UnauthorizedError');
     expect(response.body).toHaveProperty('dateTime');
@@ -53,7 +53,7 @@ describe('Middleware verify login', () => {
           .get('/user')
           .set('Authorization', `Bearer ${token}`);
         expect(response.statusCode).toBe(401);
-        expect(response.body).toHaveProperty('message', 'Token expirou');
+        expect(response.body).toHaveProperty('message.error', 'Token expirou');
         expect(response.body).toHaveProperty('status', 401);
         expect(response.body).toHaveProperty('type', 'UnauthorizedError');
         expect(response.body).toHaveProperty('dateTime');
@@ -66,14 +66,20 @@ describe('Middleware verify login', () => {
   });
 
   it('should not be able to authenticate if user does not exist', async () => {
-    const token = jwt.sign({ id: '2772fcbc-07e4-4c9d-bb45-d7303832b102' }, process.env.SECRET_TOKEN);
+    const token = jwt.sign(
+      { id: '2772fcbc-07e4-4c9d-bb45-d7303832b102' },
+      process.env.SECRET_TOKEN,
+    );
 
     const response = await request(app)
       .get('/user')
       .set('Authorization', `Bearer ${token}`);
 
     expect(response.statusCode).toBe(404);
-    expect(response.body).toHaveProperty('message', 'Usuário não encontrado');
+    expect(response.body).toHaveProperty(
+      'message.error',
+      'Usuário não encontrado',
+    );
     expect(response.body).toHaveProperty('status', 404);
     expect(response.body).toHaveProperty('type', 'NotFoundError');
     expect(response.body).toHaveProperty('dateTime');

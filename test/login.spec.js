@@ -4,37 +4,24 @@ const { SutUser } = require('./helpers/utils');
 
 const sut = new SutUser('testman#1', 'testman#1@email.com', 'testman1234');
 
-describe('Enpoint login', () => {
+describe('Login Enpoint', () => {
   afterEach(() => sut.clear());
 
   it('should fail if not send body email and password', async () => {
-    const { email, password } = await sut.create();
+    const response = await request(app).post('/login').send({});
 
-    const responseEmail = await request(app).post('/login').send({
-      email,
-    });
-
-    expect(responseEmail.status).toBe(400);
-    expect(responseEmail.body).toHaveProperty(
-      'message',
+    expect(response.status).toBe(400);
+    expect(response.body).toHaveProperty('status', 400);
+    expect(response.body).toHaveProperty('type', 'ValidationError');
+    expect(response.body).toHaveProperty('dateTime');
+    expect(response.body).toHaveProperty(
+      'message.password',
       'password é um campo obrigatório',
     );
-    expect(responseEmail.body).toHaveProperty('status', 400);
-    expect(responseEmail.body).toHaveProperty('type', 'ValidationError');
-    expect(responseEmail.body).toHaveProperty('dateTime');
-
-    const responsePasswd = await request(app).post('/login').send({
-      password,
-    });
-
-    expect(responsePasswd.status).toBe(400);
-    expect(responsePasswd.body).toHaveProperty(
-      'message',
+    expect(response.body).toHaveProperty(
+      'message.email',
       'email é um campo obrigatório',
     );
-    expect(responsePasswd.body).toHaveProperty('status', 400);
-    expect(responsePasswd.body).toHaveProperty('type', 'ValidationError');
-    expect(responsePasswd.body).toHaveProperty('dateTime');
   });
 
   it('should fail if email not exist', async () => {
@@ -45,7 +32,7 @@ describe('Enpoint login', () => {
 
     expect(response.status).toBe(400);
     expect(response.body).toHaveProperty(
-      'message',
+      'message.error',
       'E-mail ou senha inválidos',
     );
     expect(response.body).toHaveProperty('status', 400);
@@ -63,7 +50,7 @@ describe('Enpoint login', () => {
 
     expect(response.status).toBe(400);
     expect(response.body).toHaveProperty(
-      'message',
+      'message.error',
       'E-mail ou senha inválidos',
     );
     expect(response.body).toHaveProperty('status', 400);

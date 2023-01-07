@@ -13,45 +13,61 @@ const customer = new SutCustomer(
 let id_customer = '';
 let token = '';
 
-describe('Endpoint Billings', () => {
+describe('Billings Endpoint', () => {
+  beforeAll(async () => {
+    token = await login(app, 'login', {
+      name: 'testman#4',
+      email: 'testman#4@email.com',
+      password: 'testman1234',
+    });
+
+    const { id } = await customer.create();
+    id_customer = id;
+  });
+
+  beforeEach(async () => {
+    sutBilling = new SutBilling(
+      id_customer,
+      'Lorem ipsum ullamcorper taciti, inceptos.',
+      'paid',
+      5000,
+      '2022-08-05',
+    );
+  });
+
+  afterEach(() => sutBilling.clear());
+
   describe('Create Billing', () => {
-    beforeAll(async () => {
-      token = await login(app, 'login', {
-        name: 'testman#4',
-        email: 'testman#4@email.com',
-        password: 'testman1234',
-      });
-
-      const { id } = await customer.create();
-      id_customer = id;
-    });
-
-    beforeEach(async () => {
-      sutBilling = new SutBilling(
-        id_customer,
-        'Lorem ipsum ullamcorper taciti, inceptos.',
-        'paid',
-        5000,
-        '2022-08-05',
-      );
-    });
-
-    afterEach(() => sutBilling.clear());
-
     it('should return status 400 if no customer_id, description, status, value, and due are sent in the request body', async () => {
       const response = await request(app)
         .post('/billings')
         .send({})
         .set('Authorization', `Bearer ${token}`);
 
-      expect(response.body).toHaveProperty(
-        'message',
-        'due é um campo obrigatório',
-      );
       expect(response.statusCode).toBe(400);
       expect(response.body).toHaveProperty('status', 400);
       expect(response.body).toHaveProperty('type', 'ValidationError');
       expect(response.body).toHaveProperty('dateTime');
+      expect(response.body).toHaveProperty(
+        'message.due',
+        'due é um campo obrigatório',
+      );
+      expect(response.body).toHaveProperty(
+        'message.customer_id',
+        'customer_id é um campo obrigatório',
+      );
+      expect(response.body).toHaveProperty(
+        'message.description',
+        'description é um campo obrigatório',
+      );
+      expect(response.body).toHaveProperty(
+        'message.status',
+        'status é um campo obrigatório',
+      );
+      expect(response.body).toHaveProperty(
+        'message.value',
+        'value é um campo obrigatório',
+      );
     });
 
     it('should return status 201 if a billing has been registered', async () => {
@@ -94,7 +110,7 @@ describe('Endpoint Billings', () => {
 
       expect(response.statusCode).toBe(404);
       expect(response.body).toHaveProperty(
-        'message',
+        'message.error',
         'Cobrança não encontrada',
       );
       expect(response.body).toHaveProperty('status', 404);
@@ -102,23 +118,25 @@ describe('Endpoint Billings', () => {
       expect(response.body).toHaveProperty('dateTime');
     });
 
-    it('should return status 400 if the charge is paid or overdue', async () => {
-      const { id: id1 } = await sutBilling.create();
+    it('should return status 400 if the bill is paid', async () => {
+      const { id } = await sutBilling.create();
 
-      const response1 = await request(app)
-        .del(`/billings/${id1}`)
+      const response = await request(app)
+        .del(`/billings/${id}`)
         .set('Authorization', `Bearer ${token}`);
 
-      expect(response1.statusCode).toBe(400);
-      expect(response1.body).toHaveProperty(
-        'message',
+      expect(response.statusCode).toBe(400);
+      expect(response.body).toHaveProperty(
+        'message.error',
         'Esta cobrança não pode ser excluída!',
       );
-      expect(response1.body).toHaveProperty('status', 400);
-      expect(response1.body).toHaveProperty('type', 'BadRequestError');
-      expect(response1.body).toHaveProperty('dateTime');
+      expect(response.body).toHaveProperty('status', 400);
+      expect(response.body).toHaveProperty('type', 'BadRequestError');
+      expect(response.body).toHaveProperty('dateTime');
+    });
 
-      const sutBilling2 = new SutBilling(
+    it('should return status 400 if the bill is overdue', async () => {
+      const sutBilling = new SutBilling(
         id_customer,
         'lorem lorem lorem',
         'pending',
@@ -126,20 +144,20 @@ describe('Endpoint Billings', () => {
         '2020-04-25',
       );
 
-      const { id: id2 } = await sutBilling2.create();
+      const { id } = await sutBilling.create();
 
-      const response2 = await request(app)
-        .del(`/billings/${id2}`)
+      const response = await request(app)
+        .del(`/billings/${id}`)
         .set('Authorization', `Bearer ${token}`);
 
-      expect(response2.statusCode).toBe(400);
-      expect(response2.body).toHaveProperty(
-        'message',
+      expect(response.statusCode).toBe(400);
+      expect(response.body).toHaveProperty('status', 400);
+      expect(response.body).toHaveProperty('type', 'BadRequestError');
+      expect(response.body).toHaveProperty('dateTime');
+      expect(response.body).toHaveProperty(
+        'message.error',
         'Esta cobrança não pode ser excluída!',
       );
-      expect(response2.body).toHaveProperty('status', 400);
-      expect(response2.body).toHaveProperty('type', 'BadRequestError');
-      expect(response2.body).toHaveProperty('dateTime');
     });
 
     it('should be possible to delete a charge that is pending', async () => {
@@ -149,13 +167,15 @@ describe('Endpoint Billings', () => {
         'lorem lorem lorem',
         'pending',
         4000,
-        `${date.getFullYear() + 1}-${date.getMonth()}-${date.getDate()}`,
+        `${date.getFullYear() + 1}-10-${date.getDate()}`,
       );
 
       const { id } = await sutBilling.create();
       const response = await request(app)
         .del(`/billings/${id}`)
         .set('Authorization', `Bearer ${token}`);
+
+      console.log(response.body);
 
       expect(response.statusCode).toBe(204);
     });
@@ -168,13 +188,13 @@ describe('Endpoint Billings', () => {
         .set('Authorization', `Bearer ${token}`);
 
       expect(response.statusCode).toBe(404);
-      expect(response.body).toHaveProperty(
-        'message',
-        'Cobrança não encontrada',
-      );
       expect(response.body).toHaveProperty('status', 404);
       expect(response.body).toHaveProperty('type', 'NotFoundError');
       expect(response.body).toHaveProperty('dateTime');
+      expect(response.body).toHaveProperty(
+        'message.error',
+        'Cobrança não encontrada',
+      );
     });
 
     it('should return billing', async () => {
@@ -201,30 +221,43 @@ describe('Endpoint Billings', () => {
         .set('Authorization', `Bearer ${token}`);
 
       expect(response.statusCode).toBe(404);
-      expect(response.body).toHaveProperty(
-        'message',
-        'Cobrança não encontrada',
-      );
       expect(response.body).toHaveProperty('status', 404);
       expect(response.body).toHaveProperty('type', 'NotFoundError');
       expect(response.body).toHaveProperty('dateTime');
+      expect(response.body).toHaveProperty(
+        'message.error',
+        'Cobrança não encontrada',
+      );
     });
 
-    it('should return status 400 if description, status, value and expiration are not sent in the body', async () => {
+    it('should return status 400 if description, status, value and due are not sent in the body', async () => {
       const { id } = await sutBilling.create();
+
       const response = await request(app)
         .put(`/billings/${id}`)
         .send({})
         .set('Authorization', `Bearer ${token}`);
 
       expect(response.statusCode).toBe(400);
-      expect(response.body).toHaveProperty(
-        'message',
-        'due é um campo obrigatório',
-      );
       expect(response.body).toHaveProperty('status', 400);
       expect(response.body).toHaveProperty('type', 'ValidationError');
       expect(response.body).toHaveProperty('dateTime');
+      expect(response.body).toHaveProperty(
+        'message.due',
+        'due é um campo obrigatório',
+      );
+      expect(response.body).toHaveProperty(
+        'message.description',
+        'description é um campo obrigatório',
+      );
+      expect(response.body).toHaveProperty(
+        'message.status',
+        'status é um campo obrigatório',
+      );
+      expect(response.body).toHaveProperty(
+        'message.value',
+        'value é um campo obrigatório',
+      );
     });
 
     it('should be possible to update a billing', async () => {

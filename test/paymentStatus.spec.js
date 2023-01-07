@@ -9,10 +9,7 @@ describe('Payment Status', () => {
     const date = new Date();
 
     expect(
-      paymentStatus.isPending(
-        `${date.getFullYear() + 1}-${date.getMonth()}-05`,
-        'pending',
-      ),
+      paymentStatus.isPending(`${date.getFullYear() + 1}-10-05`, 'pending'),
     ).toBe(true);
   });
 
