@@ -147,17 +147,51 @@
         "type": "object",
         "properties": {
           "type": {
-            "type": "string"
+            "type": "string",
+            "description": "type of error that occurred"
           },
           "message": {
-            "type": "string"
+            "type": "object",
+            "description": "object containing the errors",
+            "anyOf": [
+              {
+                "properties": {
+                  "error": {
+                    "type": "string"
+                  }
+                }
+              },
+              {
+                "properties": {
+                  "<fieldName>": {
+                    "type": "string",
+                    "description": "API validation errors"
+                  }
+                }
+              },
+              {
+                "properties": {
+                  "query": {
+                    "type": "object",
+                    "properties": {
+                      "queryName": {
+                        "type": "string",
+                        "description": "query validation errors"
+                      }
+                    }
+                  }
+                }
+              }
+            ]
           },
           "status": {
-            "type": "integer"
+            "type": "integer",
+            "description": "http status code"
           },
           "dateTime": {
             "type": "string",
-            "format": "YYYY-MM-DDTHH:mm:ss.sTZD"
+            "format": "YYYY-MM-DDTHH:mm:ss.sTZD",
+            "description": "date and time the error occurred"
           }
         }
       },
@@ -411,7 +445,9 @@
                   "Name Field": {
                     "value": {
                       "type": "ValidationError",
-                      "message": "name deve ser no máximo 128 caracteres",
+                      "message": {
+                        "name": "name deve ser no máximo 128 caracteres"
+                      },
                       "status": 400,
                       "dateTime": "2022-11-22T03:50:44.269Z"
                     },
@@ -420,7 +456,9 @@
                   "Email Field": {
                     "value": {
                       "type": "ValidationError",
-                      "message": "Formato de e-mail inválido",
+                      "message": {
+                        "email": "Formato de e-mail inválido"
+                      },
                       "status": 400,
                       "dateTime": "2022-11-22T03:50:44.269Z"
                     },
@@ -429,11 +467,26 @@
                   "Password Field": {
                     "value": {
                       "type": "ValidationError",
-                      "message": "password deve ser pelo menos 8 caracteres",
+                      "message": {
+                        "password": "password deve ser pelo menos 8 caracteres"
+                      },
                       "status": 400,
                       "dateTime": "2022-11-22T03:50:44.269Z"
                     },
                     "description": "must send a password between 8 and 56 characters"
+                  },
+                  "several fields with error": {
+                    "value": {
+                      "type": "ValidationError",
+                      "message": {
+                        "password": "password deve ser pelo menos 8 caracteres",
+                        "email": "Formato de e-mail inválido",
+                        "name": "name deve ser no máximo 128 caracteres"
+                      },
+                      "status": 400,
+                      "dateTime": "2022-11-22T03:50:44.269Z"
+                    },
+                    "description": "if there is more than one with error"
                   }
                 }
               }
@@ -469,7 +522,9 @@
                 },
                 "example": {
                   "type": "ConflictError",
-                  "message": "E-mail já cadastrado",
+                  "message": {
+                    "error": "E-mail já cadastrado"
+                  },
                   "status": 409,
                   "dateTime": "2022-11-22T03:50:44.269Z"
                 }
@@ -506,7 +561,9 @@
                 },
                 "example": {
                   "type": "manyRequestsError",
-                  "message": "Muitos pedidos. Por favor tente mais tarde.",
+                  "message": {
+                    "error": "Muitos pedidos. Por favor tente mais tarde."
+                  },
                   "status": 249,
                   "dateTime": "2022-11-24T01:02:29Z"
                 }
@@ -545,7 +602,9 @@
                   "Internal Server Error": {
                     "value": {
                       "type": "Error",
-                      "message": "Internal Server Error",
+                      "message": {
+                        "error": "Internal Server Error"
+                      },
                       "status": 500,
                       "dateTime": "2022-11-23T23:25:25Z"
                     }
@@ -553,7 +612,9 @@
                   "Database Error": {
                     "value": {
                       "type": "DatabaseError",
-                      "message": "Não foi possível cadastrar o usuário",
+                      "message": {
+                        "error": "Não foi possível cadastrar o usuário"
+                      },
                       "status": 500,
                       "dateTime": "2022-11-23T23:22:48Z"
                     }
@@ -683,7 +744,9 @@
                   "Unauthorized": {
                     "value": {
                       "type": "UnauthorizedError",
-                      "message": "Não autorizado",
+                      "message": {
+                        "error": "Não autorizado"
+                      },
                       "status": 401,
                       "dateTime": "2022-11-23T23:30:10Z"
                     },
@@ -693,7 +756,9 @@
                     "description": "malformed token",
                     "value": {
                       "type": "UnauthorizedError",
-                      "message": "Token malformado",
+                      "message": {
+                        "error": "Token malformado"
+                      },
                       "status": 401,
                       "dateTime": "2022-11-23T23:31:43Z"
                     }
@@ -701,7 +766,12 @@
                   "Token Expired Error": {
                     "description": "expired token",
                     "value": {
-                      "message": "Token expirou"
+                      "type": "UnauthorizedError",
+                      "message": {
+                        "error": "Token expirou"
+                      },
+                      "status": 401,
+                      "dateTime": "2022-11-23T20:11:25Z"
                     }
                   }
                 }
@@ -738,7 +808,9 @@
                 },
                 "example": {
                   "type": "NotFoundError",
-                  "message": "Usuário não encontrado",
+                  "message": {
+                    "error": "Usuário não encontrado"
+                  },
                   "status": 404,
                   "dateTime": "2022-11-23T23:33:32Z"
                 }
@@ -775,7 +847,9 @@
                 },
                 "example": {
                   "type": "manyRequestsError",
-                  "message": "Muitos pedidos. Por favor tente mais tarde.",
+                  "message": {
+                    "error": "Muitos pedidos. Por favor tente mais tarde."
+                  },
                   "status": 249,
                   "dateTime": "2022-11-24T01:02:29Z"
                 }
@@ -812,7 +886,9 @@
                 },
                 "example": {
                   "type": "DatabaseError",
-                  "message": "Internal Server Error",
+                  "message": {
+                    "error": "Internal Server Error"
+                  },
                   "status": 500,
                   "dateTime": "2022-11-23T23:41:47Z"
                 }
@@ -900,7 +976,9 @@
                   "CPF Field": {
                     "value": {
                       "type": "ValidationError",
-                      "message": "Formato de CPF inválido",
+                      "message": {
+                        "cpf": "Formato de CPF inválido"
+                      },
                       "status": 400,
                       "dateTime": "2022-11-24T00:12:28Z"
                     },
@@ -909,7 +987,9 @@
                   "Phone Field": {
                     "value": {
                       "type": "ValidationError",
-                      "message": "Fomato de telefone inválido",
+                      "message": {
+                        "phone": "Fomato de telefone inválido"
+                      },
                       "status": 400,
                       "dateTime": "2022-11-24T00:14:05Z"
                     },
@@ -951,7 +1031,9 @@
                   "unauthorized": {
                     "value": {
                       "type": "UnauthorizedError",
-                      "message": "Não autorizado",
+                      "message": {
+                        "error": "Não autorizado"
+                      },
                       "status": 401,
                       "dateTime": "2022-11-23T23:56:45Z"
                     }
@@ -960,7 +1042,9 @@
                     "description": "malformed token",
                     "value": {
                       "type": "UnauthorizedError",
-                      "message": "Token malformado",
+                      "message": {
+                        "error": "Token malformado"
+                      },
                       "status": 401,
                       "dateTime": "2022-11-23T23:58:24Z"
                     }
@@ -969,7 +1053,9 @@
                     "description": "expired token",
                     "value": {
                       "type": "UnauthorizedError",
-                      "message": "Token expirou",
+                      "message": {
+                        "error": "Token expirou"
+                      },
                       "status": 401,
                       "dateTime": "2022-11-23T23:58:50Z"
                     }
@@ -1008,7 +1094,9 @@
                 },
                 "example": {
                   "type": "NotFoundError",
-                  "message": "Usuário não encontrado",
+                  "message": {
+                    "error": "Usuário não encontrado"
+                  },
                   "status": 404,
                   "dateTime": "2022-11-24T00:04:14Z"
                 }
@@ -1047,7 +1135,9 @@
                   "Email Conflict": {
                     "value": {
                       "type": "ConflictError",
-                      "message": "E-mail já cadastrado",
+                      "message": {
+                        "error": "E-mail já cadastrado"
+                      },
                       "status": 409,
                       "dateTime": "2022-11-24T00:00:21Z"
                     },
@@ -1056,7 +1146,9 @@
                   "CPF Conflict": {
                     "value": {
                       "type": "ConflictError",
-                      "message": "CPF já cadastrado",
+                      "message": {
+                        "error": "CPF já cadastrado"
+                      },
                       "status": 409,
                       "dateTime": "2022-11-24T00:00:36Z"
                     },
@@ -1096,7 +1188,9 @@
                 },
                 "example": {
                   "type": "manyRequestsError",
-                  "message": "Muitos pedidos. Por favor tente mais tarde.",
+                  "message": {
+                    "error": "Muitos pedidos. Por favor tente mais tarde."
+                  },
                   "status": 249,
                   "dateTime": "2022-11-24T01:02:29Z"
                 }
@@ -1135,7 +1229,9 @@
                   "Internal Server Error": {
                     "value": {
                       "type": "Error",
-                      "message": "Internal Server Error",
+                      "message": {
+                        "error": "Internal Server Error"
+                      },
                       "status": 500,
                       "dateTime": "2022-11-24T00:00:36Z"
                     }
@@ -1143,7 +1239,9 @@
                   "Database Error": {
                     "value": {
                       "type": "DatabaseError",
-                      "message": "Não foi possível atualizar o usuário",
+                      "message": {
+                        "error": "Não foi possível atualizar o usuário"
+                      },
                       "status": 500,
                       "dateTime": "2022-11-24T00:07:44Z"
                     }
@@ -1269,7 +1367,9 @@
                   "Email Field": {
                     "value": {
                       "type": "ValidationError",
-                      "messege": "Formato de e-mail inválido",
+                      "messege": {
+                        "email": "Formato de e-mail inválido"
+                      },
                       "status": 400,
                       "dateTime": "2022-11-24T00:53:42Z"
                     },
@@ -1278,16 +1378,20 @@
                   "Password Field": {
                     "value": {
                       "type": "ValidationError",
-                      "messege": "password deve ser pelo menos 8 caracteres",
+                      "messege": {
+                        "password": "password deve ser pelo menos 8 caracteres"
+                      },
                       "status": 400,
                       "dateTime": "2022-11-24T00:53:42Z"
                     },
                     "description": "must send a registered password between 8 to 56 characters"
                   },
-                  "BadRequest": {
+                  "wrong password or email": {
                     "value": {
                       "type": "BadRequestError",
-                      "messege": "E-mail ou senha inválidos",
+                      "messege": {
+                        "error": "E-mail ou senha inválidos"
+                      },
                       "status": 400,
                       "dateTime": "2022-11-24T00:59:21Z"
                     }
@@ -1326,7 +1430,9 @@
                 },
                 "example": {
                   "type": "manyRequestsError",
-                  "message": "Muitos pedidos. Por favor tente mais tarde.",
+                  "message": {
+                    "error": "Muitos pedidos. Por favor tente mais tarde."
+                  },
                   "status": 249,
                   "dateTime": "2022-11-24T01:02:29Z"
                 }
@@ -1363,7 +1469,9 @@
                 },
                 "example": {
                   "type": "DatabaseError",
-                  "message": "Internal Server Error",
+                  "message": {
+                    "error": "Internal Server Error"
+                  },
                   "status": 500,
                   "dateTime": "2022-11-24T01:02:29Z"
                 }
@@ -1481,7 +1589,9 @@
                 },
                 "example": {
                   "type": "ValidationError",
-                  "message": "refresh_token deve ser um tipo de string",
+                  "message": {
+                    "refresh_token": "refresh_token deve ser um tipo de string"
+                  },
                   "status": 400,
                   "dateTime": "2022-11-24T01:13:43Z"
                 }
@@ -1518,7 +1628,9 @@
                 },
                 "example": {
                   "type": "UnauthorizedError",
-                  "message": "refresh_token expirado",
+                  "message": {
+                    "error": "refresh_token expirado"
+                  },
                   "status": 401,
                   "dateTime": "2022-11-23T23:22:48Z"
                 }
@@ -1555,7 +1667,9 @@
                 },
                 "example": {
                   "type": "NotFoundError",
-                  "message": "refresh_token não encontrado",
+                  "message": {
+                    "error": "refresh_token não encontrado"
+                  },
                   "status": 404,
                   "dateTime": "2022-11-24T01:20:12Z"
                 }
@@ -1592,7 +1706,9 @@
                 },
                 "example": {
                   "type": "manyRequestsError",
-                  "message": "Muitos pedidos. Por favor tente mais tarde.",
+                  "message": {
+                    "error": "Muitos pedidos. Por favor tente mais tarde."
+                  },
                   "status": 249,
                   "dateTime": "2022-11-24T01:02:29Z"
                 }
@@ -1629,7 +1745,9 @@
                 },
                 "example": {
                   "type": "DatabaseError",
-                  "message": "Internal Server Error",
+                  "message": {
+                    "error": "Internal Server Error"
+                  },
                   "status": 500,
                   "dateTime": "2022-11-24T01:20:12Z"
                 }
@@ -1737,7 +1855,9 @@
                   "Name Field": {
                     "value": {
                       "type": "ValidationError",
-                      "message": "name deve ser no máximo 80 caracteres",
+                      "message": {
+                        "name": "name deve ser no máximo 80 caracteres"
+                      },
                       "status": 400,
                       "dateTime": "2022-11-24T02:49:00Z"
                     }
@@ -1745,7 +1865,9 @@
                   "Email Field": {
                     "value": {
                       "type": "ValidationError",
-                      "message": "Formato de e-mail inválido",
+                      "message": {
+                        "email": "Formato de e-mail inválido"
+                      },
                       "status": 400,
                       "dateTime": "2022-11-24T02:53:47Z"
                     },
@@ -1754,7 +1876,9 @@
                   "CPF Field": {
                     "value": {
                       "type": "ValidationError",
-                      "message": "Formato de CPF inválido",
+                      "message": {
+                        "cpf": "Formato de CPF inválido"
+                      },
                       "status": 400,
                       "dateTime": "2022-11-24T02:55:39Z"
                     },
@@ -1763,7 +1887,9 @@
                   "Phone Field": {
                     "value": {
                       "type": "ValidationError",
-                      "message": "Fomato de telefone inválido",
+                      "message": {
+                        "phone": "Fomato de telefone inválido"
+                      },
                       "status": 400,
                       "dateTime": "2022-11-24T02:55:39Z"
                     },
@@ -1772,7 +1898,9 @@
                   "Address CEP Field": {
                     "value": {
                       "type": "ValidationError",
-                      "message": "Formato de address.cep inválido",
+                      "message": {
+                        "address.cep": "Formato de address.cep inválido"
+                      },
                       "status": 400,
                       "dateTime": "2022-11-24T02:55:39Z"
                     }
@@ -1781,7 +1909,9 @@
                     "summary": "address.uf field",
                     "value": {
                       "type": "ValidationError",
-                      "message": "address.uf deve ter exatamente 2 caracteres em maiúsculo",
+                      "message": {
+                        "address.uf": "address.uf deve ter exatamente 2 caracteres em maiúsculo"
+                      },
                       "status": 400,
                       "dateTime": "2022-11-24T03:11:22Z"
                     }
@@ -1822,7 +1952,9 @@
                   "Unauthorized": {
                     "value": {
                       "type": "UnauthorizedError",
-                      "message": "Não autorizado",
+                      "message": {
+                        "error": "Não autorizado"
+                      },
                       "status": 401,
                       "dateTime": "2022-11-23T23:30:10Z"
                     },
@@ -1832,7 +1964,9 @@
                     "description": "malformed token",
                     "value": {
                       "type": "UnauthorizedError",
-                      "message": "Token malformado",
+                      "message": {
+                        "error": "Token malformado"
+                      },
                       "status": 401,
                       "dateTime": "2022-11-23T23:31:43Z"
                     }
@@ -1840,7 +1974,12 @@
                   "Token Expired Error": {
                     "description": "expired token",
                     "value": {
-                      "message": "Token expirou"
+                      "type": "UnauthorizedError",
+                      "message": {
+                        "error": "Token expirou"
+                      },
+                      "status": 401,
+                      "dateTime": "2022-11-23T23:31:43Z"
                     }
                   }
                 }
@@ -1880,7 +2019,9 @@
                     "summary": "email with conflict",
                     "value": {
                       "type": "ConflictError",
-                      "message": "E-mail já cadastrado",
+                      "message": {
+                        "error": "E-mail já cadastrado"
+                      },
                       "status": 409,
                       "dateTime": "2022-11-24T03:16:27Z"
                     }
@@ -1889,7 +2030,9 @@
                     "summary": "cpf with conflict",
                     "value": {
                       "type": "ConflictError",
-                      "message": "CPF já cadastrado",
+                      "message": {
+                        "error": "CPF já cadastrado"
+                      },
                       "status": 409,
                       "dateTime": "2022-11-24T03:17:04Z"
                     }
@@ -1928,7 +2071,9 @@
                 },
                 "example": {
                   "type": "manyRequestsError",
-                  "message": "Muitos pedidos. Por favor tente mais tarde.",
+                  "message": {
+                    "error": "Muitos pedidos. Por favor tente mais tarde."
+                  },
                   "status": 249,
                   "dateTime": "2022-11-24T01:02:29Z"
                 }
@@ -1967,7 +2112,9 @@
                   "Database Error": {
                     "value": {
                       "type": "DatabaseError",
-                      "message": "Não foi possível cadastrar o cliente",
+                      "message": {
+                        "error": "Não foi possível cadastrar o cliente"
+                      },
                       "status": 500,
                       "dateTime": "2022-11-24T03:16:27Z"
                     }
@@ -1975,7 +2122,9 @@
                   "Internal Server Error": {
                     "value": {
                       "type": "Error",
-                      "message": "Internal Server Error",
+                      "message": {
+                        "error": "Internal Server Error"
+                      },
                       "status": 500,
                       "dateTime": "2022-11-24T03:19:53Z"
                     }
@@ -2139,7 +2288,9 @@
                   "Unauthorized": {
                     "value": {
                       "type": "UnauthorizedError",
-                      "message": "Não autorizado",
+                      "message": {
+                        "error": "Não autorizado"
+                      },
                       "status": 401,
                       "dateTime": "2022-11-23T23:30:10Z"
                     },
@@ -2149,7 +2300,9 @@
                     "description": "malformed token",
                     "value": {
                       "type": "UnauthorizedError",
-                      "message": "Token malformado",
+                      "message": {
+                        "error": "Token malformado"
+                      },
                       "status": 401,
                       "dateTime": "2022-11-23T23:31:43Z"
                     }
@@ -2157,7 +2310,12 @@
                   "Token Expired Error": {
                     "description": "expired token",
                     "value": {
-                      "message": "Token expirou"
+                      "type": "UnauthorizedError",
+                      "message": {
+                        "error": "Token expirou"
+                      },
+                      "status": 401,
+                      "dateTime": "2022-11-23T21:31:43Z"
                     }
                   }
                 }
@@ -2194,7 +2352,9 @@
                 },
                 "example": {
                   "type": "manyRequestsError",
-                  "message": "Muitos pedidos. Por favor tente mais tarde.",
+                  "message": {
+                    "error": "Muitos pedidos. Por favor tente mais tarde."
+                  },
                   "status": 249,
                   "dateTime": "2022-11-24T01:02:29Z"
                 }
@@ -2232,7 +2392,9 @@
                 "example": {
                   "value": {
                     "type": "Error",
-                    "message": "Internal Server Error",
+                    "message": {
+                      "error": "Internal Server Error"
+                    },
                     "status": 500,
                     "dateTime": "2022-11-24T03:29:45Z"
                   }
@@ -2389,7 +2551,9 @@
                   "Unauthorized": {
                     "value": {
                       "type": "UnauthorizedError",
-                      "message": "Não autorizado",
+                      "message": {
+                        "error": "Não autorizado"
+                      },
                       "status": 401,
                       "dateTime": "2022-11-23T23:30:10Z"
                     },
@@ -2399,7 +2563,9 @@
                     "description": "malformed token",
                     "value": {
                       "type": "UnauthorizedError",
-                      "message": "Token malformado",
+                      "message": {
+                        "error": "Token malformado"
+                      },
                       "status": 401,
                       "dateTime": "2022-11-23T23:31:43Z"
                     }
@@ -2407,7 +2573,12 @@
                   "Token Expired Error": {
                     "description": "expired token",
                     "value": {
-                      "message": "Token expirou"
+                      "type": "UnauthorizedError",
+                      "message": {
+                        "error": "Token expirou"
+                      },
+                      "status": 401,
+                      "dateTime": "2022-11-23T23:31:43Z"
                     }
                   }
                 }
@@ -2444,7 +2615,9 @@
                 },
                 "example": {
                   "type": "NotFoundError",
-                  "message": "Cliente não encontrado",
+                  "message": {
+                    "error": "Cliente não encontrado"
+                  },
                   "status": 404,
                   "dateTime": "2022-11-24T04:22:58Z"
                 }
@@ -2481,7 +2654,9 @@
                 },
                 "example": {
                   "type": "manyRequestsError",
-                  "message": "Muitos pedidos. Por favor tente mais tarde.",
+                  "message": {
+                    "error": "Muitos pedidos. Por favor tente mais tarde."
+                  },
                   "status": 249,
                   "dateTime": "2022-11-24T01:02:29Z"
                 }
@@ -2520,7 +2695,9 @@
                   "Internal Server Error": {
                     "value": {
                       "type": "Error",
-                      "message": "Internal Server Error",
+                      "message": {
+                        "error": "Internal Server Error"
+                      },
                       "status": 500,
                       "dateTime": "2022-11-24T00:00:36Z"
                     }
@@ -2528,7 +2705,9 @@
                   "Database Error": {
                     "value": {
                       "type": "DatabaseError",
-                      "message": "Não foi possível atualizar o usuário",
+                      "message": {
+                        "error": "Não foi possível atualizar o usuário"
+                      },
                       "status": 500,
                       "dateTime": "2022-11-24T00:07:44Z"
                     }
@@ -2626,7 +2805,9 @@
                   "Name Field": {
                     "value": {
                       "type": "ValidationError",
-                      "message": "name deve ser no máximo 80 caracteres",
+                      "message": {
+                        "name": "name deve ser no máximo 80 caracteres"
+                      },
                       "status": 400,
                       "dateTime": "2022-11-24T02:49:00Z"
                     }
@@ -2634,7 +2815,9 @@
                   "Email Field": {
                     "value": {
                       "type": "ValidationError",
-                      "message": "Formato de e-mail inválido",
+                      "message": {
+                        "email": "Formato de e-mail inválido"
+                      },
                       "status": 400,
                       "dateTime": "2022-11-24T02:53:47Z"
                     },
@@ -2643,7 +2826,9 @@
                   "CPF Field": {
                     "value": {
                       "type": "ValidationError",
-                      "message": "Formato de CPF inválido",
+                      "message": {
+                        "cpf": "Formato de CPF inválido"
+                      },
                       "status": 400,
                       "dateTime": "2022-11-24T02:55:39Z"
                     },
@@ -2652,17 +2837,20 @@
                   "Phone Field": {
                     "value": {
                       "type": "ValidationError",
-                      "message": "Fomato de telefone inválido",
+                      "message": {
+                        "phone": "Fomato de telefone inválido"
+                      },
                       "status": 400,
                       "dateTime": "2022-11-24T02:55:39Z"
                     },
                     "description": "must send a valid CPF"
                   },
                   "Address CEP Field": {
-                    "summary": "address.cep field",
                     "value": {
                       "type": "ValidationError",
-                      "message": "Formato de address.cep inválido",
+                      "message": {
+                        "address.cep": "Formato de address.cep inválido"
+                      },
                       "status": 400,
                       "dateTime": "2022-11-24T02:55:39Z"
                     }
@@ -2670,7 +2858,9 @@
                   "Address UF Field": {
                     "value": {
                       "type": "ValidationError",
-                      "message": "address.uf deve ter exatamente 2 caracteres em maiúsculo",
+                      "message": {
+                        "address.uf": "address.uf deve ter exatamente 2 caracteres em maiúsculo"
+                      },
                       "status": 400,
                       "dateTime": "2022-11-24T03:11:22Z"
                     }
@@ -2711,7 +2901,9 @@
                   "Unauthorized": {
                     "value": {
                       "type": "UnauthorizedError",
-                      "message": "Não autorizado",
+                      "message": {
+                        "error": "Não autorizado"
+                      },
                       "status": 401,
                       "dateTime": "2022-11-23T23:30:10Z"
                     },
@@ -2721,7 +2913,9 @@
                     "description": "malformed token",
                     "value": {
                       "type": "UnauthorizedError",
-                      "message": "Token malformado",
+                      "message": {
+                        "error": "Token malformado"
+                      },
                       "status": 401,
                       "dateTime": "2022-11-23T23:31:43Z"
                     }
@@ -2729,7 +2923,10 @@
                   "Token Expired Error": {
                     "description": "expired token",
                     "value": {
-                      "message": "Token expirou"
+                      "type": "UnauthorizedError",
+                      "message": "Token expirou",
+                      "status": 401,
+                      "dateTime": "2022-11-23T23:31:43Z"
                     }
                   }
                 }
@@ -2769,7 +2966,9 @@
                     "summary": "email with conflict",
                     "value": {
                       "type": "ConflictError",
-                      "message": "E-mail já cadastrado",
+                      "message": {
+                        "error": "E-mail já cadastrado"
+                      },
                       "status": 409,
                       "dateTime": "2022-11-24T03:16:27Z"
                     }
@@ -2817,7 +3016,9 @@
                 },
                 "example": {
                   "type": "manyRequestsError",
-                  "message": "Muitos pedidos. Por favor tente mais tarde.",
+                  "message": {
+                    "error": "Muitos pedidos. Por favor tente mais tarde."
+                  },
                   "status": 249,
                   "dateTime": "2022-11-24T01:02:29Z"
                 }
@@ -2856,7 +3057,9 @@
                   "Database Error": {
                     "value": {
                       "type": "DatabaseError",
-                      "message": "Não foi possível cadastrar o cliente",
+                      "message": {
+                        "error": "Não foi possível cadastrar o cliente"
+                      },
                       "status": 500,
                       "dateTime": "2022-11-24T03:16:27Z"
                     }
@@ -2864,7 +3067,9 @@
                   "Internal Server Error": {
                     "value": {
                       "type": "Error",
-                      "message": "Internal Server Error",
+                      "message": {
+                        "error": "Internal Server Error"
+                      },
                       "status": 500,
                       "dateTime": "2022-11-24T03:19:53Z"
                     }
@@ -2990,7 +3195,9 @@
                   "Description Field": {
                     "value": {
                       "type": "ValidationError",
-                      "message": "description deve ser no máximo 128 caracteres",
+                      "message": {
+                        "description": "description deve ser no máximo 128 caracteres"
+                      },
                       "status": 400,
                       "dateTime": "2022-11-30T00:47:52.816Z"
                     }
@@ -2998,7 +3205,9 @@
                   "Status Field": {
                     "value": {
                       "type": "ValidationError",
-                      "message": "status devem ser paid ou pending",
+                      "message": {
+                        "status": "status devem ser paid ou pending"
+                      },
                       "status": 400,
                       "dateTime": "2022-11-30T00:49:43.875Z"
                     }
@@ -3006,7 +3215,9 @@
                   "Value Field": {
                     "value": {
                       "type": "ValidationError",
-                      "message": "value deve ser um número positivo",
+                      "message": {
+                        "value": "value deve ser um número positivo"
+                      },
                       "status": 400,
                       "dateTime": "2022-11-30T03:02:21.282Z"
                     }
@@ -3014,7 +3225,9 @@
                   "Due Field": {
                     "value": {
                       "type": "ValidationError",
-                      "message": "Campo due deve ser mais tarde do que 1900-01-01",
+                      "message": {
+                        "due": "Campo due deve ser mais tarde do que 1900-01-01"
+                      },
                       "status": 400,
                       "dateTime": "2022-11-30T02:02:08.016Z"
                     }
@@ -3055,7 +3268,9 @@
                   "Unauthorized": {
                     "value": {
                       "type": "UnauthorizedError",
-                      "message": "Não autorizado",
+                      "message": {
+                        "error": "Não autorizado"
+                      },
                       "status": 401,
                       "dateTime": "2022-11-23T23:30:10Z"
                     },
@@ -3065,7 +3280,9 @@
                     "description": "malformed token",
                     "value": {
                       "type": "UnauthorizedError",
-                      "message": "Token malformado",
+                      "message": {
+                        "error": "Token malformado"
+                      },
                       "status": 401,
                       "dateTime": "2022-11-23T23:31:43Z"
                     }
@@ -3073,7 +3290,12 @@
                   "Token Expired Error": {
                     "description": "expired token",
                     "value": {
-                      "message": "Token expirou"
+                      "type": "UnauthorizedError",
+                      "message": {
+                        "error": "Token expirou"
+                      },
+                      "status": 401,
+                      "dateTime": "2022-11-23T23:31:43Z"
                     }
                   }
                 }
@@ -3110,7 +3332,9 @@
                 },
                 "example": {
                   "type": "manyRequestsError",
-                  "message": "Muitos pedidos. Por favor tente mais tarde.",
+                  "message": {
+                    "error": "Muitos pedidos. Por favor tente mais tarde."
+                  },
                   "status": 249,
                   "dateTime": "2022-11-24T01:02:29Z"
                 }
@@ -3149,7 +3373,9 @@
                   "Database Error": {
                     "value": {
                       "type": "DatabaseError",
-                      "message": "Não foi possível cadastrar a cobrança",
+                      "message": {
+                        "error": "Não foi possível cadastrar a cobrança"
+                      },
                       "status": 500,
                       "dateTime": "2022-11-24T03:16:27Z"
                     }
@@ -3157,7 +3383,9 @@
                   "Internal Server Error": {
                     "value": {
                       "type": "Error",
-                      "message": "Internal Server Error",
+                      "message": {
+                        "error": "Internal Server Error"
+                      },
                       "status": 500,
                       "dateTime": "2022-11-24T03:19:53Z"
                     }
@@ -3337,6 +3565,123 @@
               }
             }
           },
+          "400": {
+            "description": "Bad Request",
+            "headers": {
+              "X-RateLimit-Limit": {
+                "schema": {
+                  "type": "integer"
+                },
+                "description": "Request limit per hour."
+              },
+              "X-RateLimit-Remaining": {
+                "schema": {
+                  "type": "integer"
+                },
+                "description": "The number of requests left for the time window."
+              },
+              "X-RateLimit-Reset": {
+                "schema": {
+                  "type": "integer",
+                  "format": "timestamp"
+                },
+                "description": "timestamp at which the current rate limit window is reset."
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/responses/BadRequest"
+                },
+                "examples": {
+                  "status Query Parameters": {
+                    "value": {
+                      "type": "ValidationError",
+                      "message": {
+                        "query": {
+                          "status": "status devem ser paid ou pending"
+                        }
+                      },
+                      "status": 400,
+                      "dateTime": "2023-01-11T23:01:28.889Z"
+                    }
+                  },
+                  "is_overdue Query Parameters": {
+                    "value": {
+                      "type": "ValidationError",
+                      "message": {
+                        "query": {
+                          "is_overdue": "query.is_overdue deve ser um tipo de `boolean`, Mas o valor final foi: `\"truee\"`."
+                        }
+                      },
+                      "status": 400,
+                      "dateTime": "2023-01-11T23:07:05.992Z"
+                    }
+                  },
+                  "due_date Query Parameters": {
+                    "value": {
+                      "type": "ValidationError",
+                      "message": {
+                        "query": {
+                          "due_date": "data inválida, formato deve ser yyyy-dd-mm"
+                        }
+                      },
+                      "status": 400,
+                      "dateTime": "2023-01-11T23:11:47.773Z"
+                    }
+                  },
+                  "after_due_date Query Parameters": {
+                    "value": {
+                      "type": "ValidationError",
+                      "message": {
+                        "query": {
+                          "due_date": "data inválida, formato deve ser yyyy-dd-mm"
+                        }
+                      },
+                      "status": 400,
+                      "dateTime": "2023-01-11T23:11:47.773Z"
+                    }
+                  },
+                  "before_due_date Query Parameters": {
+                    "value": {
+                      "type": "ValidationError",
+                      "message": {
+                        "query": {
+                          "due_date": "data inválida, formato deve ser yyyy-dd-mm"
+                        }
+                      },
+                      "status": 400,
+                      "dateTime": "2023-01-11T23:11:47.773Z"
+                    }
+                  },
+                  "less_than_value Query Parameters": {
+                    "value": {
+                      "type": "ValidationError",
+                      "message": {
+                        "query": {
+                          "less_than_value": "query.less_than_value deve ser um inteiro"
+                        }
+                      },
+                      "status": 400,
+                      "dateTime": "2023-01-11T23:20:42.365Z"
+                    }
+                  },
+                  "greater_than_value Query Parameters": {
+                    "value": {
+                      "type": "ValidationError",
+                      "message": {
+                        "query": {
+                          "less_than_value": "query.greater_than_value deve ser um inteiro"
+                        }
+                      },
+                      "status": 400,
+                      "dateTime": "2023-01-11T23:20:42.365Z"
+                    }
+                  }
+                }
+              }
+            }
+          },
           "401": {
             "description": "Unauthorized",
             "headers": {
@@ -3369,7 +3714,9 @@
                   "Unauthorized": {
                     "value": {
                       "type": "UnauthorizedError",
-                      "message": "Não autorizado",
+                      "message": {
+                        "error": "Não autorizado"
+                      },
                       "status": 401,
                       "dateTime": "2022-11-23T23:30:10Z"
                     },
@@ -3379,7 +3726,9 @@
                     "description": "malformed token",
                     "value": {
                       "type": "UnauthorizedError",
-                      "message": "Token malformado",
+                      "message": {
+                        "error": "Token malformado"
+                      },
                       "status": 401,
                       "dateTime": "2022-11-23T23:31:43Z"
                     }
@@ -3387,7 +3736,12 @@
                   "TokenExpiredError": {
                     "description": "expired token",
                     "value": {
-                      "message": "Token expirou"
+                      "type": "UnauthorizedError",
+                      "message": {
+                        "error": "Token expirou"
+                      },
+                      "status": 401,
+                      "dateTime": "2022-11-23T23:31:43Z"
                     }
                   }
                 }
@@ -3424,7 +3778,9 @@
                 },
                 "example": {
                   "type": "manyRequestsError",
-                  "message": "Muitos pedidos. Por favor tente mais tarde.",
+                  "message": {
+                    "error": "Muitos pedidos. Por favor tente mais tarde."
+                  },
                   "status": 249,
                   "dateTime": "2022-11-24T01:02:29Z"
                 }
@@ -3459,7 +3815,9 @@
                 "schema": {
                   "example": {
                     "type": "Error",
-                    "message": "Internal Server Error",
+                    "message": {
+                      "error": "Internal Server Error"
+                    },
                     "status": 500,
                     "dateTime": "2022-11-24T03:19:53Z"
                   }
@@ -3557,7 +3915,9 @@
                 },
                 "example": {
                   "type": "BadRequestError",
-                  "message": "Esta cobrança não pode ser excluída!",
+                  "message": {
+                    "error": "Esta cobrança não pode ser excluída!"
+                  },
                   "status": 400,
                   "dateTime": "2022-11-24T04:22:58Z"
                 }
@@ -3596,7 +3956,9 @@
                   "Unauthorized": {
                     "value": {
                       "type": "UnauthorizedError",
-                      "message": "Não autorizado",
+                      "message": {
+                        "error": "Não autorizado"
+                      },
                       "status": 401,
                       "dateTime": "2022-11-23T23:30:10Z"
                     },
@@ -3606,7 +3968,9 @@
                     "description": "malformed token",
                     "value": {
                       "type": "UnauthorizedError",
-                      "message": "Token malformado",
+                      "message": {
+                        "error": "Token malformado"
+                      },
                       "status": 401,
                       "dateTime": "2022-11-23T23:31:43Z"
                     }
@@ -3614,7 +3978,12 @@
                   "Token Expired Error": {
                     "description": "expired token",
                     "value": {
-                      "message": "Token expirou"
+                      "type": "UnauthorizedError",
+                      "message": {
+                        "error": "Token expirou"
+                      },
+                      "status": 401,
+                      "dateTime": "2022-11-23T23:31:43Z"
                     }
                   }
                 }
@@ -3651,7 +4020,9 @@
                 },
                 "example": {
                   "type": "NotFoundError",
-                  "message": "Cobrança não encontrada",
+                  "message": {
+                    "error": "Cobrança não encontrada"
+                  },
                   "status": 404,
                   "dateTime": "2022-11-24T04:22:58Z"
                 }
@@ -3688,7 +4059,9 @@
                 },
                 "example": {
                   "type": "manyRequestsError",
-                  "message": "Muitos pedidos. Por favor tente mais tarde.",
+                  "message": {
+                    "error": "Muitos pedidos. Por favor tente mais tarde."
+                  },
                   "status": 249,
                   "dateTime": "2022-11-24T01:02:29Z"
                 }
@@ -3725,7 +4098,9 @@
                 },
                 "example": {
                   "type": "DatabaseError",
-                  "message": "Não foi possível excluir a cobrança",
+                  "message": {
+                    "error": "Não foi possível excluir a cobrança"
+                  },
                   "status": 500,
                   "dateTime": "2022-11-24T03:19:53Z"
                 }
@@ -3837,7 +4212,9 @@
                   "Unauthorized": {
                     "value": {
                       "type": "UnauthorizedError",
-                      "message": "Não autorizado",
+                      "message": {
+                        "error": "Não autorizado"
+                      },
                       "status": 401,
                       "dateTime": "2022-11-23T23:30:10Z"
                     },
@@ -3847,7 +4224,9 @@
                     "description": "malformed token",
                     "value": {
                       "type": "UnauthorizedError",
-                      "message": "Token malformado",
+                      "message": {
+                        "error": "Token malformado"
+                      },
                       "status": 401,
                       "dateTime": "2022-11-23T23:31:43Z"
                     }
@@ -3855,7 +4234,12 @@
                   "Token Expired Error": {
                     "description": "expired token",
                     "value": {
-                      "message": "Token expirou"
+                      "type": "UnauthorizedError",
+                      "message": {
+                        "error": "Token expirou"
+                      },
+                      "status": 401,
+                      "dateTime": "2022-11-23T23:31:43Z"
                     }
                   }
                 }
@@ -3892,7 +4276,9 @@
                 },
                 "example": {
                   "type": "NotFoundError",
-                  "message": "Cobrança não encontrada",
+                  "message": {
+                    "error": "Cobrança não encontrada"
+                  },
                   "status": 404,
                   "dateTime": "2022-11-24T04:22:58Z"
                 }
@@ -3929,7 +4315,9 @@
                 },
                 "example": {
                   "type": "manyRequestsError",
-                  "message": "Muitos pedidos. Por favor tente mais tarde.",
+                  "message": {
+                    "error": "Muitos pedidos. Por favor tente mais tarde."
+                  },
                   "status": 249,
                   "dateTime": "2022-11-24T01:02:29Z"
                 }
@@ -3963,7 +4351,9 @@
               "application/json": {
                 "example": {
                   "type": "Error",
-                  "message": "Internal Server Error",
+                  "message": {
+                    "error": "Internal Server Error"
+                  },
                   "status": 500,
                   "dateTime": "2022-11-24T03:19:53Z"
                 }
@@ -4058,7 +4448,9 @@
                   "Description Field": {
                     "value": {
                       "type": "ValidationError",
-                      "message": "description deve ser no máximo 128 caracteres",
+                      "message": {
+                        "description": "description deve ser no máximo 128 caracteres"
+                      },
                       "status": 400,
                       "dateTime": "2022-11-30T00:47:52.816Z"
                     }
@@ -4066,7 +4458,9 @@
                   "Status Field": {
                     "value": {
                       "type": "ValidationError",
-                      "message": "status devem ser paid ou pending",
+                      "message": {
+                        "status": "status devem ser paid ou pending"
+                      },
                       "status": 400,
                       "dateTime": "2022-11-30T00:49:43.875Z"
                     }
@@ -4074,7 +4468,9 @@
                   "Value Field": {
                     "value": {
                       "type": "ValidationError",
-                      "message": "value deve ser um número positivo",
+                      "message": {
+                        "value": "value deve ser um número positivo"
+                      },
                       "status": 400,
                       "dateTime": "2022-11-30T03:02:21.282Z"
                     }
@@ -4082,7 +4478,9 @@
                   "Due Field": {
                     "value": {
                       "type": "ValidationError",
-                      "message": "Campo due deve ser mais tarde do que 1900-01-01",
+                      "message": {
+                        "due": "Campo due deve ser mais tarde do que 1900-01-01"
+                      },
                       "status": 400,
                       "dateTime": "2022-11-30T02:02:08.016Z"
                     }
@@ -4123,7 +4521,9 @@
                   "Unauthorized": {
                     "value": {
                       "type": "UnauthorizedError",
-                      "message": "Não autorizado",
+                      "message": {
+                        "error": "Não autorizado"
+                      },
                       "status": 401,
                       "dateTime": "2022-11-23T23:30:10Z"
                     },
@@ -4133,7 +4533,9 @@
                     "description": "malformed token",
                     "value": {
                       "type": "UnauthorizedError",
-                      "message": "Token malformado",
+                      "message": {
+                        "error": "Token malformado"
+                      },
                       "status": 401,
                       "dateTime": "2022-11-23T23:31:43Z"
                     }
@@ -4141,7 +4543,12 @@
                   "Token Expired Error": {
                     "description": "expired token",
                     "value": {
-                      "message": "Token expirou"
+                      "type": "UnauthorizedError",
+                      "message": {
+                        "error": "Token expirou"
+                      },
+                      "status": 401,
+                      "dateTime": "2022-11-23T23:31:43Z"
                     }
                   }
                 }
@@ -4178,7 +4585,9 @@
                 },
                 "example": {
                   "type": "NotFoundError",
-                  "message": "Cobrança não encontrada",
+                  "message": {
+                    "error": "Cobrança não encontrada"
+                  },
                   "status": 404,
                   "dateTime": "2022-11-24T04:22:58Z"
                 }
@@ -4215,7 +4624,9 @@
                 },
                 "example": {
                   "type": "manyRequestsError",
-                  "message": "Muitos pedidos. Por favor tente mais tarde.",
+                  "message": {
+                    "error": "Muitos pedidos. Por favor tente mais tarde."
+                  },
                   "status": 249,
                   "dateTime": "2022-11-24T01:02:29Z"
                 }
@@ -4254,7 +4665,9 @@
                   "Database Error": {
                     "value": {
                       "type": "DatabaseError",
-                      "message": "Não foi possível atualizar a cobrança",
+                      "message": {
+                        "error": "Não foi possível atualizar a cobrança"
+                      },
                       "status": 500,
                       "dateTime": "2022-11-24T04:22:58Z"
                     }
@@ -4262,7 +4675,9 @@
                   "Internal Server Error": {
                     "value": {
                       "type": "Error",
-                      "message": "Internal Server Error",
+                      "message": {
+                        "error": "Internal Server Error"
+                      },
                       "status": 500,
                       "dateTime": "2022-11-24T04:22:58Z"
                     }
