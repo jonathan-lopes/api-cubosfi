@@ -41,6 +41,11 @@ class ConflictError extends ApiError {
     super(message, 409);
   }
 }
+class MethodNotImplementedError extends ApiError {
+  constructor(message) {
+    super(message, 405);
+  }
+}
 
 module.exports = {
   ApiError,
@@ -50,4 +55,5 @@ module.exports = {
   UnauthorizedError,
   DatabaseError,
   ConflictError,
+  MethodNotImplementedError,
 };
