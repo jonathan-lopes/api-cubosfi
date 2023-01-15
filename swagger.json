@@ -79,6 +79,10 @@
       "Conflict": {
         "description": "Conflict",
         "$ref": "#/components/schemas/Error"
+      },
+      "MethodNotAllowed": {
+        "description": "Method Not Allowed",
+        "$ref": "#/components/schemas/Error"
       }
     },
     "schemas": {
@@ -492,6 +496,51 @@
               }
             }
           },
+          "405": {
+            "description": "Method Not Allowed",
+            "headers": {
+              "X-RateLimit-Limit": {
+                "schema": {
+                  "type": "integer"
+                },
+                "description": "Request limit per hour."
+              },
+              "X-RateLimit-Remaining": {
+                "schema": {
+                  "type": "integer"
+                },
+                "description": "The number of requests left for the time window."
+              },
+              "X-RateLimit-Reset": {
+                "schema": {
+                  "type": "integer",
+                  "format": "timestamp"
+                },
+                "description": "timestamp at which the current rate limit window is reset."
+              },
+              "Allow": {
+                "schema": {
+                  "type": "string"
+                },
+                "description": "indicate which request methods can be used by a resource"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/responses/NotFound"
+                },
+                "example": {
+                  "type": "MethodNotImplementedError",
+                  "message": {
+                    "error": "Método não é suportado"
+                  },
+                  "status": 405,
+                  "dateTime": "2023-01-15T01:57:12.590Z"
+                }
+              }
+            }
+          },
           "409": {
             "description": "Conflict",
             "headers": {
@@ -774,6 +823,51 @@
                       "dateTime": "2022-11-23T20:11:25Z"
                     }
                   }
+                }
+              }
+            }
+          },
+          "405": {
+            "description": "Method Not Allowed",
+            "headers": {
+              "X-RateLimit-Limit": {
+                "schema": {
+                  "type": "integer"
+                },
+                "description": "Request limit per hour."
+              },
+              "X-RateLimit-Remaining": {
+                "schema": {
+                  "type": "integer"
+                },
+                "description": "The number of requests left for the time window."
+              },
+              "X-RateLimit-Reset": {
+                "schema": {
+                  "type": "integer",
+                  "format": "timestamp"
+                },
+                "description": "timestamp at which the current rate limit window is reset."
+              },
+              "Allow": {
+                "schema": {
+                  "type": "string"
+                },
+                "description": "indicate which request methods can be used by a resource"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/responses/NotFound"
+                },
+                "example": {
+                  "type": "MethodNotImplementedError",
+                  "message": {
+                    "error": "Método não é suportado"
+                  },
+                  "status": 405,
+                  "dateTime": "2023-01-15T01:57:12.590Z"
                 }
               }
             }
@@ -1103,6 +1197,51 @@
               }
             }
           },
+          "405": {
+            "description": "Method Not Allowed",
+            "headers": {
+              "X-RateLimit-Limit": {
+                "schema": {
+                  "type": "integer"
+                },
+                "description": "Request limit per hour."
+              },
+              "X-RateLimit-Remaining": {
+                "schema": {
+                  "type": "integer"
+                },
+                "description": "The number of requests left for the time window."
+              },
+              "X-RateLimit-Reset": {
+                "schema": {
+                  "type": "integer",
+                  "format": "timestamp"
+                },
+                "description": "timestamp at which the current rate limit window is reset."
+              },
+              "Allow": {
+                "schema": {
+                  "type": "string"
+                },
+                "description": "indicate which request methods can be used by a resource"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/responses/NotFound"
+                },
+                "example": {
+                  "type": "MethodNotImplementedError",
+                  "message": {
+                    "error": "Método não é suportado"
+                  },
+                  "status": 405,
+                  "dateTime": "2023-01-15T01:57:12.590Z"
+                }
+              }
+            }
+          },
           "409": {
             "description": "Conflict",
             "headers": {
@@ -1400,6 +1539,51 @@
               }
             }
           },
+          "405": {
+            "description": "Method Not Allowed",
+            "headers": {
+              "X-RateLimit-Limit": {
+                "schema": {
+                  "type": "integer"
+                },
+                "description": "Request limit per hour."
+              },
+              "X-RateLimit-Remaining": {
+                "schema": {
+                  "type": "integer"
+                },
+                "description": "The number of requests left for the time window."
+              },
+              "X-RateLimit-Reset": {
+                "schema": {
+                  "type": "integer",
+                  "format": "timestamp"
+                },
+                "description": "timestamp at which the current rate limit window is reset."
+              },
+              "Allow": {
+                "schema": {
+                  "type": "string"
+                },
+                "description": "indicate which request methods can be used by a resource"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/responses/NotFound"
+                },
+                "example": {
+                  "type": "MethodNotImplementedError",
+                  "message": {
+                    "error": "Método não é suportado"
+                  },
+                  "status": 405,
+                  "dateTime": "2023-01-15T01:57:12.590Z"
+                }
+              }
+            }
+          },
           "429": {
             "description": "Too Many Requests",
             "headers": {
@@ -1672,6 +1856,51 @@
                   },
                   "status": 404,
                   "dateTime": "2022-11-24T01:20:12Z"
+                }
+              }
+            }
+          },
+          "405": {
+            "description": "Method Not Allowed",
+            "headers": {
+              "X-RateLimit-Limit": {
+                "schema": {
+                  "type": "integer"
+                },
+                "description": "Request limit per hour."
+              },
+              "X-RateLimit-Remaining": {
+                "schema": {
+                  "type": "integer"
+                },
+                "description": "The number of requests left for the time window."
+              },
+              "X-RateLimit-Reset": {
+                "schema": {
+                  "type": "integer",
+                  "format": "timestamp"
+                },
+                "description": "timestamp at which the current rate limit window is reset."
+              },
+              "Allow": {
+                "schema": {
+                  "type": "string"
+                },
+                "description": "indicate which request methods can be used by a resource"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/responses/NotFound"
+                },
+                "example": {
+                  "type": "MethodNotImplementedError",
+                  "message": {
+                    "error": "Método não é suportado"
+                  },
+                  "status": 405,
+                  "dateTime": "2023-01-15T01:57:12.590Z"
                 }
               }
             }
@@ -1982,6 +2211,51 @@
                       "dateTime": "2022-11-23T23:31:43Z"
                     }
                   }
+                }
+              }
+            }
+          },
+          "405": {
+            "description": "Method Not Allowed",
+            "headers": {
+              "X-RateLimit-Limit": {
+                "schema": {
+                  "type": "integer"
+                },
+                "description": "Request limit per hour."
+              },
+              "X-RateLimit-Remaining": {
+                "schema": {
+                  "type": "integer"
+                },
+                "description": "The number of requests left for the time window."
+              },
+              "X-RateLimit-Reset": {
+                "schema": {
+                  "type": "integer",
+                  "format": "timestamp"
+                },
+                "description": "timestamp at which the current rate limit window is reset."
+              },
+              "Allow": {
+                "schema": {
+                  "type": "string"
+                },
+                "description": "indicate which request methods can be used by a resource"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/responses/NotFound"
+                },
+                "example": {
+                  "type": "MethodNotImplementedError",
+                  "message": {
+                    "error": "Método não é suportado"
+                  },
+                  "status": 405,
+                  "dateTime": "2023-01-15T01:57:12.590Z"
                 }
               }
             }
@@ -2322,6 +2596,51 @@
               }
             }
           },
+          "405": {
+            "description": "Method Not Allowed",
+            "headers": {
+              "X-RateLimit-Limit": {
+                "schema": {
+                  "type": "integer"
+                },
+                "description": "Request limit per hour."
+              },
+              "X-RateLimit-Remaining": {
+                "schema": {
+                  "type": "integer"
+                },
+                "description": "The number of requests left for the time window."
+              },
+              "X-RateLimit-Reset": {
+                "schema": {
+                  "type": "integer",
+                  "format": "timestamp"
+                },
+                "description": "timestamp at which the current rate limit window is reset."
+              },
+              "Allow": {
+                "schema": {
+                  "type": "string"
+                },
+                "description": "indicate which request methods can be used by a resource"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/responses/NotFound"
+                },
+                "example": {
+                  "type": "MethodNotImplementedError",
+                  "message": {
+                    "error": "Método não é suportado"
+                  },
+                  "status": 405,
+                  "dateTime": "2023-01-15T01:57:12.590Z"
+                }
+              }
+            }
+          },
           "429": {
             "description": "Too Many Requests",
             "headers": {
@@ -2620,6 +2939,51 @@
                   },
                   "status": 404,
                   "dateTime": "2022-11-24T04:22:58Z"
+                }
+              }
+            }
+          },
+          "405": {
+            "description": "Method Not Allowed",
+            "headers": {
+              "X-RateLimit-Limit": {
+                "schema": {
+                  "type": "integer"
+                },
+                "description": "Request limit per hour."
+              },
+              "X-RateLimit-Remaining": {
+                "schema": {
+                  "type": "integer"
+                },
+                "description": "The number of requests left for the time window."
+              },
+              "X-RateLimit-Reset": {
+                "schema": {
+                  "type": "integer",
+                  "format": "timestamp"
+                },
+                "description": "timestamp at which the current rate limit window is reset."
+              },
+              "Allow": {
+                "schema": {
+                  "type": "string"
+                },
+                "description": "indicate which request methods can be used by a resource"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/responses/NotFound"
+                },
+                "example": {
+                  "type": "MethodNotImplementedError",
+                  "message": {
+                    "error": "Método não é suportado"
+                  },
+                  "status": 405,
+                  "dateTime": "2023-01-15T01:57:12.590Z"
                 }
               }
             }
@@ -2929,6 +3293,51 @@
                       "dateTime": "2022-11-23T23:31:43Z"
                     }
                   }
+                }
+              }
+            }
+          },
+          "405": {
+            "description": "Method Not Allowed",
+            "headers": {
+              "X-RateLimit-Limit": {
+                "schema": {
+                  "type": "integer"
+                },
+                "description": "Request limit per hour."
+              },
+              "X-RateLimit-Remaining": {
+                "schema": {
+                  "type": "integer"
+                },
+                "description": "The number of requests left for the time window."
+              },
+              "X-RateLimit-Reset": {
+                "schema": {
+                  "type": "integer",
+                  "format": "timestamp"
+                },
+                "description": "timestamp at which the current rate limit window is reset."
+              },
+              "Allow": {
+                "schema": {
+                  "type": "string"
+                },
+                "description": "indicate which request methods can be used by a resource"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/responses/NotFound"
+                },
+                "example": {
+                  "type": "MethodNotImplementedError",
+                  "message": {
+                    "error": "Método não é suportado"
+                  },
+                  "status": 405,
+                  "dateTime": "2023-01-15T01:57:12.590Z"
                 }
               }
             }
@@ -3298,6 +3707,51 @@
                       "dateTime": "2022-11-23T23:31:43Z"
                     }
                   }
+                }
+              }
+            }
+          },
+          "405": {
+            "description": "Method Not Allowed",
+            "headers": {
+              "X-RateLimit-Limit": {
+                "schema": {
+                  "type": "integer"
+                },
+                "description": "Request limit per hour."
+              },
+              "X-RateLimit-Remaining": {
+                "schema": {
+                  "type": "integer"
+                },
+                "description": "The number of requests left for the time window."
+              },
+              "X-RateLimit-Reset": {
+                "schema": {
+                  "type": "integer",
+                  "format": "timestamp"
+                },
+                "description": "timestamp at which the current rate limit window is reset."
+              },
+              "Allow": {
+                "schema": {
+                  "type": "string"
+                },
+                "description": "indicate which request methods can be used by a resource"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/responses/NotFound"
+                },
+                "example": {
+                  "type": "MethodNotImplementedError",
+                  "message": {
+                    "error": "Método não é suportado"
+                  },
+                  "status": 405,
+                  "dateTime": "2023-01-15T01:57:12.590Z"
                 }
               }
             }
@@ -3748,6 +4202,51 @@
               }
             }
           },
+          "405": {
+            "description": "Method Not Allowed",
+            "headers": {
+              "X-RateLimit-Limit": {
+                "schema": {
+                  "type": "integer"
+                },
+                "description": "Request limit per hour."
+              },
+              "X-RateLimit-Remaining": {
+                "schema": {
+                  "type": "integer"
+                },
+                "description": "The number of requests left for the time window."
+              },
+              "X-RateLimit-Reset": {
+                "schema": {
+                  "type": "integer",
+                  "format": "timestamp"
+                },
+                "description": "timestamp at which the current rate limit window is reset."
+              },
+              "Allow": {
+                "schema": {
+                  "type": "string"
+                },
+                "description": "indicate which request methods can be used by a resource"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/responses/NotFound"
+                },
+                "example": {
+                  "type": "MethodNotImplementedError",
+                  "message": {
+                    "error": "Método não é suportado"
+                  },
+                  "status": 405,
+                  "dateTime": "2023-01-15T01:57:12.590Z"
+                }
+              }
+            }
+          },
           "429": {
             "description": "Too Many Requests",
             "headers": {
@@ -4029,6 +4528,51 @@
               }
             }
           },
+          "405": {
+            "description": "Method Not Allowed",
+            "headers": {
+              "X-RateLimit-Limit": {
+                "schema": {
+                  "type": "integer"
+                },
+                "description": "Request limit per hour."
+              },
+              "X-RateLimit-Remaining": {
+                "schema": {
+                  "type": "integer"
+                },
+                "description": "The number of requests left for the time window."
+              },
+              "X-RateLimit-Reset": {
+                "schema": {
+                  "type": "integer",
+                  "format": "timestamp"
+                },
+                "description": "timestamp at which the current rate limit window is reset."
+              },
+              "Allow": {
+                "schema": {
+                  "type": "string"
+                },
+                "description": "indicate which request methods can be used by a resource"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/responses/NotFound"
+                },
+                "example": {
+                  "type": "MethodNotImplementedError",
+                  "message": {
+                    "error": "Método não é suportado"
+                  },
+                  "status": 405,
+                  "dateTime": "2023-01-15T01:57:12.590Z"
+                }
+              }
+            }
+          },
           "429": {
             "description": "Too Many Requests",
             "headers": {
@@ -4281,6 +4825,51 @@
                   },
                   "status": 404,
                   "dateTime": "2022-11-24T04:22:58Z"
+                }
+              }
+            }
+          },
+          "405": {
+            "description": "Method Not Allowed",
+            "headers": {
+              "X-RateLimit-Limit": {
+                "schema": {
+                  "type": "integer"
+                },
+                "description": "Request limit per hour."
+              },
+              "X-RateLimit-Remaining": {
+                "schema": {
+                  "type": "integer"
+                },
+                "description": "The number of requests left for the time window."
+              },
+              "X-RateLimit-Reset": {
+                "schema": {
+                  "type": "integer",
+                  "format": "timestamp"
+                },
+                "description": "timestamp at which the current rate limit window is reset."
+              },
+              "Allow": {
+                "schema": {
+                  "type": "string"
+                },
+                "description": "indicate which request methods can be used by a resource"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/responses/NotFound"
+                },
+                "example": {
+                  "type": "MethodNotImplementedError",
+                  "message": {
+                    "error": "Método não é suportado"
+                  },
+                  "status": 405,
+                  "dateTime": "2023-01-15T01:57:12.590Z"
                 }
               }
             }
@@ -4590,6 +5179,51 @@
                   },
                   "status": 404,
                   "dateTime": "2022-11-24T04:22:58Z"
+                }
+              }
+            }
+          },
+          "405": {
+            "description": "Method Not Allowed",
+            "headers": {
+              "X-RateLimit-Limit": {
+                "schema": {
+                  "type": "integer"
+                },
+                "description": "Request limit per hour."
+              },
+              "X-RateLimit-Remaining": {
+                "schema": {
+                  "type": "integer"
+                },
+                "description": "The number of requests left for the time window."
+              },
+              "X-RateLimit-Reset": {
+                "schema": {
+                  "type": "integer",
+                  "format": "timestamp"
+                },
+                "description": "timestamp at which the current rate limit window is reset."
+              },
+              "Allow": {
+                "schema": {
+                  "type": "string"
+                },
+                "description": "indicate which request methods can be used by a resource"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/responses/NotFound"
+                },
+                "example": {
+                  "type": "MethodNotImplementedError",
+                  "message": {
+                    "error": "Método não é suportado"
+                  },
+                  "status": 405,
+                  "dateTime": "2023-01-15T01:57:12.590Z"
                 }
               }
             }

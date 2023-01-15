@@ -85,3 +85,20 @@ describe('Middleware verify login', () => {
     expect(response.body).toHaveProperty('dateTime');
   });
 });
+
+describe('Middleware allowed methods', () => {
+  it('should return a status 405 (Method Not Allowed) if the route does not support the method', async () => {
+    const response = await request(app).get('/refresh-token');
+
+    expect(response.statusCode).toBe(405);
+    expect(response.headers).toHaveProperty('allow', 'POST');
+
+    expect(response.body).toHaveProperty('type', 'MethodNotImplementedError');
+    expect(response.body).toHaveProperty('status', 405);
+    expect(response.body).toHaveProperty('dateTime');
+    expect(response.body).toHaveProperty(
+      'message.error',
+      'Método não é suportado',
+    );
+  });
+});
