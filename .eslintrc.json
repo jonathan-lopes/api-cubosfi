@@ -13,6 +13,7 @@
   "rules": {
     "camelcase": "off",
     "no-restricted-syntax": "off",
-    "no-plusplus": "off"
+    "no-plusplus": "off",
+    "class-methods-use-this": "off"
   }
 }
