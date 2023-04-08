@@ -1,5 +1,5 @@
 const schedule = require('node-schedule');
-const knex = require('../database/connection');
+const knex = require('../database');
 
 const job = schedule.scheduleJob(
   'deleteExpiredRefreshToken',
