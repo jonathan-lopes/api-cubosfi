@@ -1,8 +1,7 @@
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const { addDays } = require('date-fns');
-const { v4: uuidv4 } = require('uuid');
-const knex = require('../database/connection');
+const knex = require('../database');
 const schemaLogin = require('../validations/schemaLogin');
 const { BadRequestError } = require('../helpers/apiErrors');
 
@@ -41,7 +40,6 @@ const login = async (req, res) => {
   );
 
   await knex('user_token').insert({
-    id: uuidv4(),
     refresh_token: refreshToken,
     expires_date: refreshTokenExpiresDate,
     user_id: user.id,
