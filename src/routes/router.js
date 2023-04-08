@@ -1,8 +1,8 @@
 const { Router } = require('express');
 const verifyLogin = require('../middlewares/verifyLogin');
-const userControllers = require('../controllers/usersController');
-const customerControllers = require('../controllers/customersController');
-const billingControllers = require('../controllers/billingsController');
+const UserController = require('../controllers/UserController');
+const CustomerController = require('../controllers/CustomerController');
+const BillingController = require('../controllers/BillingController');
 const loginController = require('../controllers/loginController');
 const refreshTokenController = require('../controllers/refreshTokenController');
 const methodsAllowed = require('../middlewares/methodsAllowed');
@@ -11,9 +11,9 @@ const routes = Router();
 
 routes
   .route('/user')
-  .post(userControllers.create)
-  .get(verifyLogin, userControllers.get)
-  .put(verifyLogin, userControllers.update)
+  .post(UserController.store)
+  .get(verifyLogin, UserController.show)
+  .put(verifyLogin, UserController.update)
   .all(methodsAllowed(['POST', 'GET', 'PUT']));
 
 routes.all('/login', methodsAllowed(['POST']), loginController);
@@ -24,27 +24,27 @@ routes.use(verifyLogin);
 
 routes
   .route('/customers')
-  .post(customerControllers.create)
-  .get(customerControllers.getAll)
+  .post(CustomerController.store)
+  .get(CustomerController.index)
   .all(methodsAllowed(['POST', 'GET']));
 
 routes
   .route('/customers/:id')
-  .get(customerControllers.getOne)
-  .put(customerControllers.update)
+  .get(CustomerController.show)
+  .put(CustomerController.update)
   .all(methodsAllowed(['GET', 'PUT']));
 
 routes
   .route('/billings')
-  .post(billingControllers.create)
-  .get(billingControllers.getAll)
+  .post(BillingController.store)
+  .get(BillingController.index)
   .all(methodsAllowed(['POST', 'GET']));
 
 routes
   .route('/billings/:id')
-  .delete(billingControllers.del)
-  .get(billingControllers.getOne)
-  .put(billingControllers.update)
+  .delete(BillingController.delete)
+  .get(BillingController.show)
+  .put(BillingController.update)
   .all(methodsAllowed(['DELETE', 'GET', 'PUT']));
 
 module.exports = routes;
