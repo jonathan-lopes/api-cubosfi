@@ -7,7 +7,11 @@ const { onUpdateTrigger } = require('../../../knexfile');
 exports.up = (knex) =>
   knex.schema
     .createTable('users', (table) => {
-      table.uuid('id').primary();
+      table
+        .uuid('id')
+        .primary()
+        .notNullable()
+        .defaultTo(knex.raw('uuid_generate_v4()'));
       table.string('name', 128).notNullable();
       table.string('email', 128).notNullable().unique();
       table.text('password').notNullable();

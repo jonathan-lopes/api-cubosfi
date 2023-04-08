@@ -7,7 +7,11 @@ const { onUpdateTrigger } = require('../../../knexfile');
 exports.up = (knex) =>
   knex.schema
     .createTable('adresses', (table) => {
-      table.uuid('id').primary();
+      table
+        .uuid('id')
+        .primary()
+        .notNullable()
+        .defaultTo(knex.raw('uuid_generate_v4()'));
       table.text('street');
       table.text('complement');
       table.string('cep', 9);
