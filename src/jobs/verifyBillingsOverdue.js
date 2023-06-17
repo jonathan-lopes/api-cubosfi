@@ -9,15 +9,11 @@ const job = schedule.scheduleJob(
       .where('due', '<', knex.fn.now())
       .andWhere('status', 'pending');
 
-    const billsOverdue = [];
-
-    bills.forEach(async (bill) => {
-      billsOverdue.push(
+    await Promise.all(
+      bills.map((bill) =>
         knex('billings').update({ is_overdue: true }).where({ id: bill.id }),
-      );
-    });
-
-    await Promise.all(billsOverdue);
+      ),
+    );
   },
 );
 
