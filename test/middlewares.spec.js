@@ -3,16 +3,13 @@ const jwt = require('jsonwebtoken');
 const app = require('../src/server');
 const { SutUser } = require('./helpers/utils');
 const login = require('./helpers/login');
+const { createRandomUser } = require('./helpers/randomData');
 
 let token = '';
 
 describe('Middleware verify login', () => {
   beforeAll(async () => {
-    token = await login(app, 'login', {
-      name: 'testman#2',
-      email: 'testman#2@email.com',
-      password: 'testman1234',
-    });
+    token = await login(app, createRandomUser(), 'login');
   });
 
   it('should return status code 401 (unauthorized) if token is not sent', async () => {
@@ -38,8 +35,9 @@ describe('Middleware verify login', () => {
   });
 
   it('should not be able to authenticate with a expired token', async () => {
-    const sut = new SutUser('Jack', 'jack@email.com', 'jack12346545');
+    const sut = new SutUser(createRandomUser());
     const { id } = await sut.create();
+
     const token = jwt.sign({ id }, process.env.SECRET_TOKEN, {
       expiresIn: '3s',
     });
