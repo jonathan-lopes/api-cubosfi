@@ -2,8 +2,9 @@ const request = require('supertest');
 const app = require('../src/server');
 const jwt = require('jsonwebtoken');
 const { SutUser, SutRefreshToken } = require('./helpers/utils');
+const { createRandomUser } = require('./helpers/randomData');
 
-let sutUser = new SutUser('tesman#6', 'testman#6@email.com', 'testman1234');
+let sutUser = new SutUser(createRandomUser());
 
 describe('Refresh Token Endpoint', () => {
   afterEach(() => sutUser.clear());
@@ -14,7 +15,7 @@ describe('Refresh Token Endpoint', () => {
     expect(response.statusCode).toBe(400);
     expect(response.body).toHaveProperty(
       'message.refresh_token',
-      'refresh_token é um campo obrigatório',
+      'refresh_token é obrigatório',
     );
     expect(response.body).toHaveProperty('status', 400);
     expect(response.body).toHaveProperty('type', 'ValidationError');
@@ -29,7 +30,7 @@ describe('Refresh Token Endpoint', () => {
     expect(response.statusCode).toBe(400);
     expect(response.body).toHaveProperty(
       'message.refresh_token',
-      'refresh_token deve ser um tipo de `string`, Mas o valor final foi: `1000`.',
+      'refresh_token deve ser do tipo `string`, mas o valor final foi: `1000`.',
     );
     expect(response.body).toHaveProperty('status', 400);
     expect(response.body).toHaveProperty('type', 'ValidationError');
@@ -69,8 +70,8 @@ describe('Refresh Token Endpoint', () => {
     );
 
     const { id } = await sutUser.create();
-    const sut = new SutRefreshToken(refresh_token, new Date(), id);
-    await sut.create();
+    const sutRefreshToken = new SutRefreshToken(refresh_token, new Date(), id);
+    await sutRefreshToken.create();
 
     const response = await request(app).post('/refresh-token').send({
       refresh_token,
