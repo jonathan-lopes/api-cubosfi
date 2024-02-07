@@ -1,8 +1,9 @@
 const request = require('supertest');
 const app = require('../src/server');
 const { SutUser } = require('./helpers/utils');
+const { createRandomUser } = require('./helpers/randomData');
 
-const sut = new SutUser('testman#1', 'testman#1@email.com', 'testman1234');
+const sut = new SutUser(createRandomUser());
 
 describe('Login Enpoint', () => {
   afterEach(() => sut.clear());
@@ -16,19 +17,16 @@ describe('Login Enpoint', () => {
     expect(response.body).toHaveProperty('dateTime');
     expect(response.body).toHaveProperty(
       'message.password',
-      'password é um campo obrigatório',
+      'password é obrigatório',
     );
     expect(response.body).toHaveProperty(
       'message.email',
-      'email é um campo obrigatório',
+      'email é obrigatório',
     );
   });
 
   it('should fail if email not exist', async () => {
-    const response = await request(app).post('/login').send({
-      email: 'jonhTest@email.com',
-      password: 'jonh1234',
-    });
+    const response = await request(app).post('/login').send(createRandomUser());
 
     expect(response.status).toBe(400);
     expect(response.body).toHaveProperty(
