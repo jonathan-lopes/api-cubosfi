@@ -1,94 +1,80 @@
 const bcrypt = require('bcrypt');
-const knex = require('../../src/database/connection');
+const knex = require('../../src/database');
 const { v4: uuidv4 } = require('uuid');
 
 class SutUser {
-  #name = '';
-  #email = '';
-  #password = '';
+  #user;
 
-  constructor(name, email, password) {
-    this.#name = name;
-    this.#email = email;
-    this.#password = password;
+  constructor(user) {
+    this.#user = Object.assign({}, user);
   }
 
   async create() {
     const [data] = await knex('users')
       .insert({
         id: uuidv4(),
-        name: this.#name,
-        email: this.#email,
-        password: await bcrypt.hash(this.#password, +process.env.SALT_ROUNDS),
+        name: this.#user.name,
+        email: this.#user.email,
+        password: await bcrypt.hash(
+          this.#user.password,
+          +process.env.SALT_ROUNDS,
+        ),
       })
       .returning(['id', 'name', 'email', 'cpf', 'phone']);
 
-    data.password = this.#password;
+    data.password = this.#user.password;
 
     return data;
   }
 
   async clear() {
-    await knex('users').del().where({ email: this.#email });
+    await knex('users').del().where({ email: this.#user.email });
   }
 }
 
 class SutCustomer {
-  #name;
-  #email;
-  #cpf;
-  #phone;
+  #customer;
 
-  constructor(name, email, cpf, phone) {
-    this.#name = name;
-    this.#email = email;
-    this.#cpf = cpf;
-    this.#phone = phone;
+  constructor(customer) {
+    this.#customer = Object.assign({}, customer);
   }
 
   async create() {
     const [data] = await knex('customers')
       .insert({
         id: uuidv4(),
-        name: this.#name,
-        email: this.#email,
-        cpf: this.#cpf,
-        phone: this.#phone,
+        name: this.#customer.name,
+        email: this.#customer.email,
+        cpf: this.#customer.cpf,
+        phone: this.#customer.phone,
+        address_id: null,
       })
-      .returning(['id', 'name', 'email', 'cpf', 'phone']);
+      .returning(['id', 'name', 'email', 'cpf', 'phone', "address_id"]);
 
     return data;
   }
 
   async clear() {
-    await knex('customers').del().where({ email: this.#email });
+    await knex('customers').del().where({ email: this.#customer.email });
   }
 }
 
 class SutBilling {
-  #customer_id;
-  #description;
-  #status;
-  #value;
-  #due;
+  #billing;
 
-  constructor(customer_id, description, status, value, due) {
-    this.#customer_id = customer_id;
-    this.#description = description;
-    this.#status = status;
-    this.#value = value;
-    this.#due = due;
+  constructor(billing) {
+    this.#billing = Object.assign({}, billing);
   }
 
   async create() {
     const [data] = await knex('billings')
       .insert({
         id: uuidv4(),
-        customer_id: this.#customer_id,
-        description: this.#description,
-        status: this.#status,
-        value: this.#value,
-        due: this.#due,
+        customer_id: this.#billing.customer_id,
+        description: this.#billing.description,
+        status: this.#billing.status,
+        value: this.#billing.value,
+        due: this.#billing.due,
       })
       .returning([
         'id',
@@ -104,7 +90,9 @@ class SutBilling {
   }
 
   async clear() {
-    await knex('billings').del().where({ customer_id: this.#customer_id });
+    await knex('billings')
+      .del()
+      .where({ customer_id: this.#billing.customer_id });
   }
 }
 
