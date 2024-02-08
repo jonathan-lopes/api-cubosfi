@@ -49,7 +49,7 @@ class SutCustomer {
         phone: this.#customer.phone,
         address_id: null,
       })
-      .returning(['id', 'name', 'email', 'cpf', 'phone', "address_id"]);
+      .returning(['id', 'name', 'email', 'cpf', 'phone', 'address_id']);
 
     return data;
   }
