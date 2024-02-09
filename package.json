@@ -21,7 +21,7 @@
     "migrate:latest": "knex migrate:latest --env development",
     "migrate:rollback": "knex migrate:rollback --env development",
     "seed": "knex seed:run",
-    "gen-swagger": "node ./swaggerAutoGen.js",
+    "lint": "eslint . --ext js,--report-unused-disable-directives --max-warnings 0",
     "commit": "cz",
     "prepare": "husky install",
     "pretest": "cross-env NODE_ENV=test knex migrate:latest",
