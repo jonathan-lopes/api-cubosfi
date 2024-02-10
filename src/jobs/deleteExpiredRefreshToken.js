@@ -1,5 +1,5 @@
 const schedule = require('node-schedule');
-const knex = require('../database/connection');
+const knex = require('../database');
 
 const job = schedule.scheduleJob(
   'deleteExpiredRefreshToken',
@@ -11,13 +11,9 @@ const job = schedule.scheduleJob(
       knex.fn.now(),
     );
 
-    const expiredTokens = [];
-
-    tokens.forEach(async (token) => {
-      expiredTokens.push(knex('user_token').del().where({ id: token.id }));
-    });
-
-    await Promise.all(expiredTokens);
+    await Promise.all(
+      tokens.map((token) => knex('user_token').del().where({ id: token.id })),
+    );
   },
 );
 

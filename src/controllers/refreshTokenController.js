@@ -1,7 +1,6 @@
 const { addDays } = require('date-fns');
 const jwt = require('jsonwebtoken');
-const { v4: uuidv4 } = require('uuid');
-const knex = require('../database/connection');
+const knex = require('../database');
 const { NotFoundError, UnauthorizedError } = require('../helpers/apiErrors');
 const refreshTokenSchema = require('../validations/schemaRefreshToken');
 
@@ -47,7 +46,6 @@ const refreshTokenController = async (req, res) => {
   );
 
   await knex('user_token').insert({
-    id: uuidv4(),
     refresh_token: newRefreshToken,
     expires_date: refreshTokenExpiresDate,
     user_id: id,

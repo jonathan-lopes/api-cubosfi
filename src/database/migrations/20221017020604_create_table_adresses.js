@@ -7,19 +7,17 @@ const { onUpdateTrigger } = require('../../../knexfile');
 exports.up = (knex) =>
   knex.schema
     .createTable('adresses', (table) => {
-      table.uuid('id').primary();
+      table
+        .uuid('id')
+        .primary()
+        .notNullable()
+        .defaultTo(knex.raw('uuid_generate_v4()'));
       table.text('street');
       table.text('complement');
       table.string('cep', 9);
       table.text('district');
       table.text('city');
       table.string('uf', 2);
-      table.uuid('customer_id');
-      table
-        .foreign('customer_id')
-        .references('id')
-        .inTable('customers')
-        .onDelete('CASCADE');
       table.timestamp('created_at').defaultTo(knex.fn.now());
       table.timestamp('updated_at').defaultTo(knex.fn.now());
     })

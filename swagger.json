@@ -720,13 +720,21 @@
         "summary": "Get user details",
         "parameters": [
           {
-            "name": "authorization",
+            "name": "Authorization",
             "required": true,
             "in": "header",
             "schema": {
               "type": "string",
               "format": "JWT"
             }
+          },
+          {
+            "name": "X-No-Compression",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Does not compress the data in the response"
           }
         ],
         "responses": {
@@ -1004,7 +1012,7 @@
         "summary": "Update User",
         "parameters": [
           {
-            "name": "authorization",
+            "name": "Authorization",
             "required": true,
             "in": "header",
             "schema": {
@@ -2018,7 +2026,7 @@
         "summary": "Create a new customer",
         "parameters": [
           {
-            "name": "authorization",
+            "name": "Authorization",
             "required": true,
             "in": "header",
             "schema": {
@@ -2458,13 +2466,21 @@
         "summary": "Get all customers",
         "parameters": [
           {
-            "name": "authorization",
+            "name": "Authorization",
             "required": true,
             "in": "header",
             "schema": {
               "type": "string",
               "format": "JWT"
             }
+          },
+          {
+            "name": "X-No-Compression",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Does not compress the data in the response"
           }
         ],
         "responses": {
@@ -2746,13 +2762,21 @@
             }
           },
           {
-            "name": "authorization",
+            "name": "Authorization",
             "required": true,
             "in": "header",
             "schema": {
               "type": "string",
               "format": "JWT"
             }
+          },
+          {
+            "name": "X-No-Compression",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Does not compress the data in the response"
           }
         ],
         "responses": {
@@ -3103,7 +3127,7 @@
             }
           },
           {
-            "name": "authorization",
+            "name": "Authorization",
             "required": true,
             "in": "header",
             "schema": {
@@ -3539,7 +3563,7 @@
         "summary": "Create a new billing",
         "parameters": [
           {
-            "name": "authorization",
+            "name": "Authorization",
             "required": true,
             "in": "header",
             "schema": {
@@ -3880,13 +3904,21 @@
         "description": "You can merge queries to get more specific results.",
         "parameters": [
           {
-            "name": "authorization",
+            "name": "Authorization",
             "in": "header",
             "required": true,
             "schema": {
               "type": "string",
               "format": "JWT"
             }
+          },
+          {
+            "name": "X-No-Compression",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Does not compress the data in the response"
           },
           {
             "name": "status",
@@ -4351,7 +4383,7 @@
           },
           {
             "required": true,
-            "name": "authorization",
+            "name": "Authorization",
             "in": "header",
             "schema": {
               "type": "string",
@@ -4674,13 +4706,21 @@
             }
           },
           {
-            "name": "authorization",
+            "name": "Authorization",
             "required": true,
             "in": "header",
             "schema": {
               "type": "string",
               "format": "JWT"
             }
+          },
+          {
+            "name": "X-No-Compression",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Does not compress the data in the response"
           }
         ],
         "responses": {
@@ -4972,7 +5012,7 @@
             }
           },
           {
-            "name": "authorization",
+            "name": "Authorization",
             "required": true,
             "in": "header",
             "schema": {

@@ -25,7 +25,6 @@ Pela rota `/api-docs` disponibilizada pela própria api que utilizar Swagger UI 
 
 A outra forma é pelo serviço da [bump.sh](https://bump.sh/) que gera a documentação apartir das especificações OpenAPI, para acessar [clique aqui](https://bump.sh/jonathan-lopes/doc/api-cubosfi).
 
-
 ## Variáveis de Ambiente
 
 Para rodar esse projeto, você vai precisar adicionar as seguintes variáveis de ambiente no seu .env

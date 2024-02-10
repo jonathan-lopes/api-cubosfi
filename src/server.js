@@ -21,7 +21,8 @@ app.use(
   compression({
     threshold: 10 * 1024,
     filter: (req, res) => {
-      if (req.headers['x-no-compression']) {
+      res.setHeader('Access-Control-Allow-Headers', 'X-No-Compression');
+      if (req.get('X-No-Compression')) {
         return false;
       }
       return compression.filter(req, res);

@@ -7,7 +7,11 @@ const { onUpdateTrigger } = require('../../../knexfile');
 exports.up = (knex) =>
   knex.schema
     .createTable('billings', (table) => {
-      table.uuid('id').primary();
+      table
+        .uuid('id')
+        .primary()
+        .notNullable()
+        .defaultTo(knex.raw('uuid_generate_v4()'));
       table.string('description', 128).notNullable();
       table.enu('status', ['paid', 'pending']).notNullable();
       table.integer('value').notNullable();

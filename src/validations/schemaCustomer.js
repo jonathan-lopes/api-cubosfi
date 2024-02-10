@@ -38,11 +38,6 @@ const schemaCustomer = yup.object().shape({
         }),
     })
     .test(
-      'is-empty',
-      '${path} object is empty',
-      (value) => Object.keys(value).length,
-    )
-    .test(
       'is-unknown',
       '${path} com propriedades não suportadas',
       (value, context) => {
