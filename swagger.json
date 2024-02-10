@@ -116,7 +116,10 @@
             "description": "new password for user"
           }
         },
-        "required": ["name", "email"]
+        "required": [
+          "name",
+          "email"
+        ]
       },
       "ResponseUser": {
         "properties": {
@@ -248,7 +251,12 @@
             }
           }
         },
-        "required": ["name", "email", "cpf", "phone"]
+        "required": [
+          "name",
+          "email",
+          "cpf",
+          "phone"
+        ]
       },
       "ResponseCustomer": {
         "properties": {
@@ -315,7 +323,10 @@
           },
           "status": {
             "type": "string",
-            "enum": ["paid", "pending"]
+            "enum": [
+              "paid",
+              "pending"
+            ]
           },
           "value": {
             "type": "integer",
@@ -326,7 +337,13 @@
             "format": "yyyy-mm-dd"
           }
         },
-        "required": ["customer_id", "description", "status", "value", "due"]
+        "required": [
+          "customer_id",
+          "description",
+          "status",
+          "value",
+          "due"
+        ]
       },
       "ResponseBilling": {
         "properties": {
@@ -345,7 +362,10 @@
           },
           "status": {
             "type": "string",
-            "enum": ["paid", "pending"]
+            "enum": [
+              "paid",
+              "pending"
+            ]
           },
           "value": {
             "type": "integer",
@@ -366,7 +386,9 @@
   "paths": {
     "/user": {
       "post": {
-        "tags": ["User"],
+        "tags": [
+          "User"
+        ],
         "description": "on this endpoint create a new user",
         "summary": " Create a new user",
         "parameters": [],
@@ -675,14 +697,20 @@
                     "maxLength": 56
                   }
                 },
-                "required": ["name", "email", "password"]
+                "required": [
+                  "name",
+                  "email",
+                  "password"
+                ]
               }
             }
           }
         }
       },
       "get": {
-        "tags": ["User"],
+        "tags": [
+          "User"
+        ],
         "security": [
           {
             "bearerAuth": []
@@ -692,13 +720,21 @@
         "summary": "Get user details",
         "parameters": [
           {
-            "name": "authorization",
+            "name": "Authorization",
             "required": true,
             "in": "header",
             "schema": {
               "type": "string",
               "format": "JWT"
             }
+          },
+          {
+            "name": "X-No-Compression",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Does not compress the data in the response"
           }
         ],
         "responses": {
@@ -964,7 +1000,9 @@
         }
       },
       "put": {
-        "tags": ["User"],
+        "tags": [
+          "User"
+        ],
         "security": [
           {
             "bearerAuth": []
@@ -974,7 +1012,7 @@
         "summary": "Update User",
         "parameters": [
           {
-            "name": "authorization",
+            "name": "Authorization",
             "required": true,
             "in": "header",
             "schema": {
@@ -1392,7 +1430,9 @@
     },
     "/login": {
       "post": {
-        "tags": ["Login"],
+        "tags": [
+          "Login"
+        ],
         "summary": "Log in",
         "parameters": [],
         "responses": {
@@ -1650,7 +1690,10 @@
                     "maxLength": 56
                   }
                 },
-                "required": ["email", "password"]
+                "required": [
+                  "email",
+                  "password"
+                ]
               }
             }
           }
@@ -1659,7 +1702,9 @@
     },
     "/refresh-token": {
       "post": {
-        "tags": ["Refresh Token"],
+        "tags": [
+          "Refresh Token"
+        ],
         "summary": "Refresh Token",
         "parameters": [],
         "responses": {
@@ -1957,7 +2002,9 @@
                     "type": "string",
                     "format": "JWT",
                     "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiSm9obiBEb2UiLCJpYXQiOjE1MTYyMzkwMjJ9.hqWGSaFpvbrXkOWc6lrnffhNWR19W_S1YKFBx2arWBk",
-                    "required": ["true"]
+                    "required": [
+                      "true"
+                    ]
                   }
                 }
               }
@@ -1968,7 +2015,9 @@
     },
     "/customers": {
       "post": {
-        "tags": ["Customers"],
+        "tags": [
+          "Customers"
+        ],
         "security": [
           {
             "bearerAuth": []
@@ -1977,7 +2026,7 @@
         "summary": "Create a new customer",
         "parameters": [
           {
-            "name": "authorization",
+            "name": "Authorization",
             "required": true,
             "in": "header",
             "schema": {
@@ -2406,7 +2455,9 @@
         }
       },
       "get": {
-        "tags": ["Customers"],
+        "tags": [
+          "Customers"
+        ],
         "security": [
           {
             "bearerAuth": []
@@ -2415,13 +2466,21 @@
         "summary": "Get all customers",
         "parameters": [
           {
-            "name": "authorization",
+            "name": "Authorization",
             "required": true,
             "in": "header",
             "schema": {
               "type": "string",
               "format": "JWT"
             }
+          },
+          {
+            "name": "X-No-Compression",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Does not compress the data in the response"
           }
         ],
         "responses": {
@@ -2683,7 +2742,9 @@
     },
     "/customers/{id}": {
       "get": {
-        "tags": ["Customers"],
+        "tags": [
+          "Customers"
+        ],
         "security": [
           {
             "bearerAuth": []
@@ -2701,13 +2762,21 @@
             }
           },
           {
-            "name": "authorization",
+            "name": "Authorization",
             "required": true,
             "in": "header",
             "schema": {
               "type": "string",
               "format": "JWT"
             }
+          },
+          {
+            "name": "X-No-Compression",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Does not compress the data in the response"
           }
         ],
         "responses": {
@@ -3038,7 +3107,9 @@
         }
       },
       "put": {
-        "tags": ["Customers"],
+        "tags": [
+          "Customers"
+        ],
         "security": [
           {
             "bearerAuth": []
@@ -3056,7 +3127,7 @@
             }
           },
           {
-            "name": "authorization",
+            "name": "Authorization",
             "required": true,
             "in": "header",
             "schema": {
@@ -3481,7 +3552,9 @@
     },
     "/billings": {
       "post": {
-        "tags": ["Billings"],
+        "tags": [
+          "Billings"
+        ],
         "security": [
           {
             "bearerAuth": []
@@ -3490,7 +3563,7 @@
         "summary": "Create a new billing",
         "parameters": [
           {
-            "name": "authorization",
+            "name": "Authorization",
             "required": true,
             "in": "header",
             "schema": {
@@ -3819,7 +3892,9 @@
         }
       },
       "get": {
-        "tags": ["Billings"],
+        "tags": [
+          "Billings"
+        ],
         "security": [
           {
             "bearerAuth": []
@@ -3829,7 +3904,7 @@
         "description": "You can merge queries to get more specific results.",
         "parameters": [
           {
-            "name": "authorization",
+            "name": "Authorization",
             "in": "header",
             "required": true,
             "schema": {
@@ -3838,13 +3913,24 @@
             }
           },
           {
+            "name": "X-No-Compression",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Does not compress the data in the response"
+          },
+          {
             "name": "status",
             "in": "query",
             "example": "http://localhost:3333/billings?status=pending",
             "description": "Gets all billings based on a paid or pending status",
             "schema": {
               "type": "string",
-              "enum": ["paid", "pending"]
+              "enum": [
+                "paid",
+                "pending"
+              ]
             }
           },
           {
@@ -4275,7 +4361,9 @@
     },
     "/billings/{id}": {
       "delete": {
-        "tags": ["Billings"],
+        "tags": [
+          "Billings"
+        ],
         "security": [
           {
             "bearerAuth": []
@@ -4295,7 +4383,7 @@
           },
           {
             "required": true,
-            "name": "authorization",
+            "name": "Authorization",
             "in": "header",
             "schema": {
               "type": "string",
@@ -4598,7 +4686,9 @@
         }
       },
       "get": {
-        "tags": ["Billings"],
+        "tags": [
+          "Billings"
+        ],
         "security": [
           {
             "bearerAuth": []
@@ -4616,13 +4706,21 @@
             }
           },
           {
-            "name": "authorization",
+            "name": "Authorization",
             "required": true,
             "in": "header",
             "schema": {
               "type": "string",
               "format": "JWT"
             }
+          },
+          {
+            "name": "X-No-Compression",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Does not compress the data in the response"
           }
         ],
         "responses": {
@@ -4894,7 +4992,9 @@
         }
       },
       "put": {
-        "tags": ["Billings"],
+        "tags": [
+          "Billings"
+        ],
         "security": [
           {
             "bearerAuth": []
@@ -4912,7 +5012,7 @@
             }
           },
           {
-            "name": "authorization",
+            "name": "Authorization",
             "required": true,
             "in": "header",
             "schema": {
@@ -5275,7 +5375,10 @@
                   },
                   "status": {
                     "type": "string",
-                    "enum": ["paid", "pending"]
+                    "enum": [
+                      "paid",
+                      "pending"
+                    ]
                   },
                   "value": {
                     "type": "integer",
@@ -5286,7 +5389,12 @@
                     "format": "yyyy-mm-dd"
                   }
                 },
-                "required": ["description", "status", "value", "due"]
+                "required": [
+                  "description",
+                  "status",
+                  "value",
+                  "due"
+                ]
               },
               "example": {
                 "description": "Parcela da Moto",
