@@ -1,5 +1,5 @@
 const jwt = require('jsonwebtoken');
-const knex = require('../database/connection');
+const knex = require('../database');
 const { UnauthorizedError, NotFoundError } = require('../helpers/apiErrors');
 
 const verifyLogin = async (req, res, next) => {
@@ -11,7 +11,7 @@ const verifyLogin = async (req, res, next) => {
 
   const token = authorization.replace('Bearer ', '').trim();
 
-  const { id } = jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
+  const { id } = jwt.verify(token, process.env.SECRET_TOKEN, (err, decoded) => {
     if (err) {
       if (err.name === 'JsonWebTokenError') {
         throw new UnauthorizedError('Token malformado');
@@ -29,7 +29,7 @@ const verifyLogin = async (req, res, next) => {
     throw new NotFoundError('Usuário não encontrado');
   }
 
-  const { password: _, ...loggedUser } = existingUser;
+  const { password, created_at, updated_at, ...loggedUser } = existingUser;
 
   req.user = loggedUser;
 

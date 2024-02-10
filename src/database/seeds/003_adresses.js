@@ -7,7 +7,7 @@ exports.seed = async (knex) => {
   await knex('adresses').insert([
     {
       cep: '04002-010',
-      address: 'Rua Treze de Maio',
+      street: 'Rua Treze de Maio',
       complement: 'Apartamento',
       district: 'Paraíso',
       city: 'São Paulo',
@@ -15,7 +15,7 @@ exports.seed = async (knex) => {
     },
     {
       cep: '40170-110',
-      address: ' Avenida Adhemar de Barros ',
+      street: 'Avenida Adhemar de Barros',
       complement: 'Ondina',
       district: 'Ondina',
       city: 'Salvador',

@@ -1,47 +1,41 @@
 const request = require('supertest');
 const app = require('../src/server');
 const { SutUser } = require('./helpers/utils');
+const { createRandomUser } = require('./helpers/randomData');
 
-const sut = new SutUser('testman#1', 'testman#1@email.com', 'testman1234');
+const sut = new SutUser(createRandomUser());
 
-describe('Enpoint login', () => {
+describe('Login Enpoint', () => {
   afterEach(() => sut.clear());
 
   it('should fail if not send body email and password', async () => {
-    const { email, password } = await sut.create();
+    const response = await request(app).post('/login').send({});
 
-    const responseEmail = await request(app).post('/login').send({
-      email,
-    });
-
-    expect(responseEmail.status).toBe(400);
-    expect(responseEmail.body).toHaveProperty(
-      'message',
-      'password é um campo obrigatório',
+    expect(response.status).toBe(400);
+    expect(response.body).toHaveProperty('status', 400);
+    expect(response.body).toHaveProperty('type', 'ValidationError');
+    expect(response.body).toHaveProperty('dateTime');
+    expect(response.body).toHaveProperty(
+      'message.password',
+      'password é obrigatório',
     );
-
-    const responsePasswd = await request(app).post('/login').send({
-      password,
-    });
-
-    expect(responsePasswd.status).toBe(400);
-    expect(responsePasswd.body).toHaveProperty(
-      'message',
-      'email é um campo obrigatório',
+    expect(response.body).toHaveProperty(
+      'message.email',
+      'email é obrigatório',
     );
   });
 
   it('should fail if email not exist', async () => {
-    const response = await request(app).post('/login').send({
-      email: 'jonhTest@email.com',
-      password: 'jonh1234',
-    });
+    const response = await request(app).post('/login').send(createRandomUser());
 
     expect(response.status).toBe(400);
     expect(response.body).toHaveProperty(
-      'message',
+      'message.error',
       'E-mail ou senha inválidos',
     );
+    expect(response.body).toHaveProperty('status', 400);
+    expect(response.body).toHaveProperty('type', 'BadRequestError');
+    expect(response.body).toHaveProperty('dateTime');
   });
 
   it('should fail if password is incorrect', async () => {
@@ -54,12 +48,15 @@ describe('Enpoint login', () => {
 
     expect(response.status).toBe(400);
     expect(response.body).toHaveProperty(
-      'message',
+      'message.error',
       'E-mail ou senha inválidos',
     );
+    expect(response.body).toHaveProperty('status', 400);
+    expect(response.body).toHaveProperty('type', 'BadRequestError');
+    expect(response.body).toHaveProperty('dateTime');
   });
 
-  it('should returning user with token', async () => {
+  it('should returning user with token and refresh token', async () => {
     const { email, password } = await sut.create();
 
     const response = await request(app).post('/login').send({
@@ -69,6 +66,7 @@ describe('Enpoint login', () => {
 
     expect(response.status).toBe(200);
     expect(response.body).toHaveProperty('token');
+    expect(response.body).toHaveProperty('refresh_token');
     expect(response.body).toHaveProperty('user');
   });
 });

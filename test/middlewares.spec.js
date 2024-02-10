@@ -2,37 +2,43 @@ const request = require('supertest');
 const jwt = require('jsonwebtoken');
 const app = require('../src/server');
 const { SutUser } = require('./helpers/utils');
+const login = require('./helpers/login');
+const { createRandomUser } = require('./helpers/randomData');
 
-const sut = new SutUser('testman#2', 'testman#2@email.com', 'testman1234');
+let token = '';
 
 describe('Middleware verify login', () => {
-  afterEach(() => sut.clear());
+  beforeAll(async () => {
+    token = await login(app, createRandomUser(), 'login');
+  });
 
   it('should return status code 401 (unauthorized) if token is not sent', async () => {
-    await sut.create();
-
     const response = await request(app).get('/user');
-    expect(response.status).toBe(401);
-    expect(response.body).toHaveProperty('message', 'Não autorizado');
+
+    expect(response.statusCode).toBe(401);
+    expect(response.body).toHaveProperty('status', 401);
+    expect(response.body).toHaveProperty('type', 'UnauthorizedError');
+    expect(response.body).toHaveProperty('dateTime');
+    expect(response.body).toHaveProperty('message.error', 'Não autorizado');
   });
 
   it('should not be able to authenticate with a malformed token', async () => {
-    const { email, password } = await sut.create();
-    const responseLogin = await request(app)
-      .post('/login')
-      .send({ email, password });
-
     const response = await request(app)
       .get('/user')
-      .set('Authorization', `Bearer ${`aaa${responseLogin.body.token}`}`);
+      .set('Authorization', `Bearer ${`aaa${token}`}`);
 
-    expect(response.status).toBe(401);
-    expect(response.body).toHaveProperty('message', 'Token malformado');
+    expect(response.statusCode).toBe(401);
+    expect(response.body).toHaveProperty('message.error', 'Token malformado');
+    expect(response.body).toHaveProperty('status', 401);
+    expect(response.body).toHaveProperty('type', 'UnauthorizedError');
+    expect(response.body).toHaveProperty('dateTime');
   });
 
   it('should not be able to authenticate with a expired token', async () => {
+    const sut = new SutUser(createRandomUser());
     const { id } = await sut.create();
-    const token = jwt.sign({ id }, process.env.JWT_SECRET, {
+
+    const token = jwt.sign({ id }, process.env.SECRET_TOKEN, {
       expiresIn: '3s',
     });
 
@@ -45,22 +51,52 @@ describe('Middleware verify login', () => {
           .get('/user')
           .set('Authorization', `Bearer ${token}`);
         expect(response.statusCode).toBe(401);
-        expect(response.body).toHaveProperty('message', 'Token expirou');
+        expect(response.body).toHaveProperty('message.error', 'Token expirou');
+        expect(response.body).toHaveProperty('status', 401);
+        expect(response.body).toHaveProperty('type', 'UnauthorizedError');
+        expect(response.body).toHaveProperty('dateTime');
       }, 4000);
     }
     timer();
     expect(setTimeout).toHaveBeenCalledTimes(1);
     expect(setTimeout).toHaveBeenLastCalledWith(expect.any(Function), 4000);
+    await sut.clear();
   });
 
   it('should not be able to authenticate if user does not exist', async () => {
-    const token = jwt.sign({ id: 1000 }, process.env.JWT_SECRET);
+    const token = jwt.sign(
+      { id: '2772fcbc-07e4-4c9d-bb45-d7303832b102' },
+      process.env.SECRET_TOKEN,
+    );
 
     const response = await request(app)
       .get('/user')
       .set('Authorization', `Bearer ${token}`);
 
     expect(response.statusCode).toBe(404);
-    expect(response.body).toHaveProperty('message', 'Usuário não encontrado');
+    expect(response.body).toHaveProperty(
+      'message.error',
+      'Usuário não encontrado',
+    );
+    expect(response.body).toHaveProperty('status', 404);
+    expect(response.body).toHaveProperty('type', 'NotFoundError');
+    expect(response.body).toHaveProperty('dateTime');
+  });
+});
+
+describe('Middleware allowed methods', () => {
+  it('should return a status 405 (Method Not Allowed) if the route does not support the method', async () => {
+    const response = await request(app).get('/refresh-token');
+
+    expect(response.statusCode).toBe(405);
+    expect(response.headers).toHaveProperty('allow', 'POST');
+
+    expect(response.body).toHaveProperty('type', 'MethodNotImplementedError');
+    expect(response.body).toHaveProperty('status', 405);
+    expect(response.body).toHaveProperty('dateTime');
+    expect(response.body).toHaveProperty(
+      'message.error',
+      'Método não é suportado',
+    );
   });
 });

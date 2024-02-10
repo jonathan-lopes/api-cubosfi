@@ -1,29 +1,50 @@
 const { Router } = require('express');
 const verifyLogin = require('../middlewares/verifyLogin');
-const userControllers = require('../controllers/usersController');
-const customerControllers = require('../controllers/customersController');
-const billingControllers = require('../controllers/billingsController');
+const UserController = require('../controllers/UserController');
+const CustomerController = require('../controllers/CustomerController');
+const BillingController = require('../controllers/BillingController');
 const loginController = require('../controllers/loginController');
+const refreshTokenController = require('../controllers/refreshTokenController');
+const methodsAllowed = require('../middlewares/methodsAllowed');
 
 const routes = Router();
 
-routes.post('/user', userControllers.create);
-routes.post('/login', loginController);
+routes
+  .route('/user')
+  .post(UserController.store)
+  .get(verifyLogin, UserController.show)
+  .put(verifyLogin, UserController.update)
+  .all(methodsAllowed(['POST', 'GET', 'PUT']));
+
+routes.all('/login', methodsAllowed(['POST']), loginController);
+
+routes.all('/refresh-token', methodsAllowed(['POST']), refreshTokenController);
 
 routes.use(verifyLogin);
 
-routes.get('/user', userControllers.getUser);
-routes.put('/user', userControllers.update);
+routes
+  .route('/customers')
+  .post(CustomerController.store)
+  .get(CustomerController.index)
+  .all(methodsAllowed(['POST', 'GET']));
 
-routes.post('/customer', customerControllers.create);
-routes.get('/customers', customerControllers.getAll);
-routes.get('/customer/:id', customerControllers.getOne);
-routes.put('/customer/:id', customerControllers.update);
+routes
+  .route('/customers/:id')
+  .get(CustomerController.show)
+  .put(CustomerController.update)
+  .all(methodsAllowed(['GET', 'PUT']));
 
-routes.post('/billing', billingControllers.create);
-routes.get('/billings', billingControllers.getAll);
-routes.delete('/billing/:id', billingControllers.del);
-routes.get('/billing/:id', billingControllers.getOne);
-routes.put('/billing/:id', billingControllers.update);
+routes
+  .route('/billings')
+  .post(BillingController.store)
+  .get(BillingController.index)
+  .all(methodsAllowed(['POST', 'GET']));
+
+routes
+  .route('/billings/:id')
+  .delete(BillingController.delete)
+  .get(BillingController.show)
+  .put(BillingController.update)
+  .all(methodsAllowed(['DELETE', 'GET', 'PUT']));
 
 module.exports = routes;

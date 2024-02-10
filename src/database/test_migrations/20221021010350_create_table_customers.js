@@ -4,12 +4,12 @@
  */
 exports.up = (knex) =>
   knex.schema.createTable('customers', (table) => {
-    table.increments('id');
+    table.uuid('id').primary();
     table.string('name', 80).notNullable();
     table.string('email', 80).unique().notNullable();
     table.text('cpf').unique().notNullable();
     table.text('phone').notNullable();
-    table.integer('address_id').nullable();
+    table.uuid('address_id');
     table
       .foreign('address_id')
       .references('id')

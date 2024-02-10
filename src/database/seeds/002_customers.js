@@ -10,14 +10,12 @@ exports.seed = async (knex) => {
       email: 'sit.amet.orci@yahoo.com',
       cpf: '793.463.148-04',
       phone: '71492753129',
-      address_id: 1,
     },
     {
       name: 'Georgia Hines',
       email: 'nulla.facilisi.sed@yahoo.net',
       cpf: '895.551.397-86',
       phone: '71535354803',
-      address_id: 2,
     },
     {
       name: 'Wyatt Peck',

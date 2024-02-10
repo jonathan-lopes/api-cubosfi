@@ -30,7 +30,7 @@ class ForbiddenError extends ApiError {
   }
 }
 
-class CrudError extends ApiError {
+class DatabaseError extends ApiError {
   constructor(message) {
     super(message, 500);
   }
@@ -41,6 +41,11 @@ class ConflictError extends ApiError {
     super(message, 409);
   }
 }
+class MethodNotImplementedError extends ApiError {
+  constructor(message) {
+    super(message, 405);
+  }
+}
 
 module.exports = {
   ApiError,
@@ -48,6 +53,7 @@ module.exports = {
   ForbiddenError,
   NotFoundError,
   UnauthorizedError,
-  CrudError,
+  DatabaseError,
   ConflictError,
+  MethodNotImplementedError,
 };

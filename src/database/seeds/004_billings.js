@@ -3,6 +3,8 @@
  * @returns { Promise<void> }
  */
 exports.seed = async (knex) => {
+  const customersIDs = await knex('customers').select('id');
+
   await knex('billings').del();
   await knex('billings').insert([
     {
@@ -11,7 +13,7 @@ exports.seed = async (knex) => {
       status: 'paid',
       value: 40000,
       due: '2023-03-10',
-      customer_id: 1,
+      customer_id: customersIDs[0].id,
     },
     {
       description:
@@ -19,7 +21,7 @@ exports.seed = async (knex) => {
       status: 'paid',
       value: 40350,
       due: '2021-06-08',
-      customer_id: 1,
+      customer_id: customersIDs[0].id,
     },
     {
       description:
@@ -27,7 +29,7 @@ exports.seed = async (knex) => {
       status: 'pending',
       value: 95600,
       due: '2022-03-18',
-      customer_id: 2,
+      customer_id: customersIDs[1].id,
     },
     {
       description:
@@ -35,7 +37,7 @@ exports.seed = async (knex) => {
       status: 'pending',
       value: 75600,
       due: '2021-04-29',
-      customer_id: 2,
+      customer_id: customersIDs[1].id,
     },
     {
       description:
@@ -43,7 +45,7 @@ exports.seed = async (knex) => {
       status: 'pending',
       value: 25500,
       due: '2022-03-11',
-      customer_id: 2,
+      customer_id: customersIDs[2].id,
     },
   ]);
 };
