@@ -39,20 +39,20 @@ DB_NAME
 DB_PORT
 DB_CLIENT
 
-# url do mongodb
+# Url do mongodb
 MONGO_DB
 
 SECRET_TOKEN
 
-# tempo em segundos ou uma string descrevendo um intervalo de tempo ex: 10m
+# Tempo em segundos ou uma string descrevendo um intervalo de tempo ex: 10m
 EXPIRES_IN_TOKEN
 
 SECRET_REFRESH_TOKEN
 
-# tempo em segundos ou uma string descrevendo um intervalo de tempo ex: 5d
+# Tempo em segundos ou uma string descrevendo um intervalo de tempo ex: 5d
 EXPIRES_IN_REFRESH_TOKEN
 
-# número de dias para expirar o token ex: 10
+# Número de dias para expirar o token ex: 10
 EXPIRES_REFRESH_TOKEN_DAYS
 
 # O salto a ser usado na criptografia ex: 10
