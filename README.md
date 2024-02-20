@@ -109,5 +109,5 @@ SALT_ROUNDS
 Rode o seguinte comando
 
 ```bash
-  npm t ou npm run test
+  npm t ou npm test
 ```
