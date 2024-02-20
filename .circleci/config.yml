@@ -11,7 +11,7 @@ jobs:
       - checkout
       - when:
           condition:
-            equal: [master, << pipeline.git.branch >>]
+            equal: [main, << pipeline.git.branch >>]
           steps:
             - node/install-packages
             - run:
