@@ -35,11 +35,19 @@ const errorMiddleware = (err, req, res, next) => {
   const logErrorDescription =
     statusCode === 500 ? err.message : Object.values(apiErrors);
 
-  logger.error({
-    message: `${req.ip} ${req.get('User-Agent')} ${req.method} ${req.path} ${
-      req.user?.id || '-'
-    } ${err.constructor.name} ${logErrorDescription} ${statusCode}`,
-  });
+  const errorMsg = {
+    remote_address: req.ip,
+    http_version: Number.parseFloat(req.httpVersion),
+    user_agent: req.get('User-Agent'),
+    method: req.method,
+    url: req.path,
+    user_id: req.user?.id,
+    error_name: err.constructor.name,
+    message: logErrorDescription,
+    status: statusCode,
+  };
+
+  logger.error(errorMsg);
 
   return res.status(statusCode).json({
     type: err.constructor.name,
