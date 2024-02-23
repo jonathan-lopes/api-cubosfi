@@ -17,7 +17,7 @@
   "homepage": "https://github.com/jonathan-lopes/api-cubosfi#readme",
   "scripts": {
     "dev": "cross-env NODE_ENV=development nodemon ./src/index.js",
-    "start": "pm2-runtime start ecosystem.config.js --env production",
+    "start": "pm2 start ecosystem.config.js",
     "migrate:latest": "knex migrate:latest --env development",
     "migrate:rollback": "knex migrate:rollback --env development",
     "seed": "knex seed:run",
