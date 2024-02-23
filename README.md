@@ -39,9 +39,6 @@ DB_NAME
 DB_PORT
 DB_CLIENT
 
-# Url do mongodb
-MONGO_DB
-
 SECRET_TOKEN
 
 # Tempo em segundos ou uma string descrevendo um intervalo de tempo ex: 10m
