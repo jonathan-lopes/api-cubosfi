@@ -1,5 +1,10 @@
 const winston = require('winston');
-require('winston-mongodb');
+const { Logtail } = require('@logtail/node');
+const { LogtailTransport } = require('@logtail/winston');
+
+const { combine, timestamp, json, errors } = winston.format;
+
+require('winston-daily-rotate-file');
 
 const levels = {
   error: 0,
@@ -25,47 +30,68 @@ const colors = {
 
 winston.addColors(colors);
 
-const format = winston.format.combine(
-  winston.format.colorize({ all: true }),
-  winston.format.timestamp({ format: 'YYYY-MM-DD HH:mm:ss:msZ' }),
-  winston.format.printf(
-    (info) => `${info.timestamp} ${info.level}: ${info.message}`,
-  ),
-);
+const errorFilter = winston.format((info) => {
+  return info.level === 'error' ? info : false;
+});
 
-const transports = () => {
-  const loggers = [
-    new winston.transports.Console(),
-    new winston.transports.File({
-      filename: 'logs/error.log',
-      level: 'error',
-    }),
-    new winston.transports.File({ filename: 'logs/access.log', level: 'http' }),
-    new winston.transports.File({ filename: 'logs/all.log' }),
-  ];
+const infoFilter = winston.format((info) => {
+  return info.level === 'info' ? info : false;
+});
 
-  if (process.env.NODE_ENV !== 'test') {
-    const mongoLogger = new winston.transports.MongoDB({
-      db: process.env.MONGO_DB,
-      level: 'error',
-      dbName: 'cubosfi',
-      tryReconnect: true,
-      collection: 'logs',
-      decolorize: true,
-      options: { useNewUrlParser: true, useUnifiedTopology: true, poolSize: 2 },
-    });
+const accessFilter = winston.format((info) => {
+  return info.level === 'http' ? info : false;
+});
 
-    return [...loggers, mongoLogger];
-  }
+const format = combine(errors({ stack: true }), timestamp(), json());
 
-  return loggers;
-};
+const transports = () => [
+  new winston.transports.DailyRotateFile({
+    filename: 'logs/error-%DATE%.log',
+    level: 'error',
+    datePattern: 'YYYY-MM',
+    maxSize: '20m',
+    maxFiles: '15d',
+    zippedArchive: true,
+    format: errorFilter(),
+  }),
+  new winston.transports.DailyRotateFile({
+    filename: 'logs/access-%DATE%.log',
+    level: 'http',
+    datePattern: 'YYYY-MM',
+    maxSize: '20m',
+    maxFiles: '15d',
+    format: accessFilter(),
+  }),
+  new winston.transports.DailyRotateFile({
+    filename: 'logs/info-%DATE%.log',
+    level: 'info',
+    datePattern: 'YYYY-MM',
+    maxSize: '20m',
+    maxFiles: '15d',
+    format: infoFilter(),
+  }),
+];
 
 const logger = winston.createLogger({
   level: level(),
   levels,
   format,
   transports: transports(),
+  exceptionHandlers: [
+    new winston.transports.File({ filename: 'logs/exception.log' }),
+  ],
+  rejectionHandlers: [
+    new winston.transports.File({ filename: 'logs/rejections.log' }),
+  ],
 });
+
+if (process.env.NODE_ENV === 'development') {
+  logger.add(new winston.transports.Console());
+}
+
+if (process.env.NODE_ENV === 'production') {
+  const logtail = new Logtail(process.env.LOGTAIL_TOKEN);
+  logger.add(new LogtailTransport(logtail));
+}
 
 module.exports = logger;
