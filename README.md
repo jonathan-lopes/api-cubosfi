@@ -91,7 +91,7 @@ Primeiro crie um arquivo .env.test adicione as seguintes variáveis de ambiente
 ```properties
 PORT
 
-DB_CLIENT=sqlite3
+DB_CLIENT=better-sqlite3
 
 SECRET_TOKEN
 EXPIRES_IN_TOKEN
