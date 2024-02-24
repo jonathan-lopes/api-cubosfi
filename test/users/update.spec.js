@@ -1,7 +1,10 @@
 const request = require('supertest');
 const app = require('../../src/server');
 const { SutUser } = require('../helpers/utils');
-const { createRandomUser } = require('../helpers/randomData');
+const {
+  createRandomUser,
+  createRandomCustomer,
+} = require('../helpers/randomData');
 const login = require('../helpers/login');
 
 let token = '';
@@ -112,9 +115,7 @@ describe('Update User', () => {
     const newPasswd = 'newPass123456';
 
     const updatedUser = {
-      ...createRandomUser(),
-      cpf: '976.546.286-44',
-      phone: '(82) 98784-2630',
+      ...createRandomCustomer(),
       password: newPasswd,
     };
 
