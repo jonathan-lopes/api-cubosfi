@@ -22,7 +22,7 @@ const createRandomCustomer = () => {
     name: faker.person.fullName(),
     email: faker.internet.email(),
     cpf: faker.string.numeric(11, { allowLeadingZeros: true }),
-    phone: faker.helpers.fromRegExp(/[1-9]{2} 9[0-9]{8}/),
+    phone: faker.helpers.fromRegExp(/[1-9]{2} 9[1-9]{8}/),
   };
 };
 
