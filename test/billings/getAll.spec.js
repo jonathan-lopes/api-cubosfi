@@ -13,15 +13,15 @@ let token = '';
 
 describe('List All Billings', () => {
   beforeAll(async () => {
-    token = await login(app, createRandomUser(), 'login');
+    token = await login(app, createRandomUser());
   });
 
-  it('should return all registered billings', async () => {
-    await knex('billings').truncate();
+  afterAll(async () => await knex.destroy());
 
-    const { id: customerID } = await new SutCustomer(
-      createRandomCustomer(),
-    ).create();
+  it('should return all registered billings', async () => {
+    const customer = new SutCustomer(createRandomCustomer());
+
+    const { id: customerID } = await customer.create();
 
     for (let i = 0; i < 2; i++) {
       const randomBill = createRandomBilling('2021-01-05');
@@ -37,11 +37,13 @@ describe('List All Billings', () => {
         .set('Authorization', `Bearer ${token}`);
     }
 
+    const { count } = await knex('billings').count({ count: '*' }).first();
+
     const allBillings = await request(app)
       .get('/billings')
       .set('Authorization', `Bearer ${token}`);
 
     expect(allBillings.statusCode).toBe(200);
-    expect(allBillings.body).toHaveLength(2);
+    expect(allBillings.body).toHaveLength(count);
   });
 });

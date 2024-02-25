@@ -7,13 +7,16 @@ const {
   createRandomCustomer,
 } = require('../helpers/randomData');
 const { SutBilling, SutCustomer } = require('../helpers/utils');
+const knex = require('../../src/database');
 
 let token = '';
 
 describe('Get One Billing', () => {
   beforeAll(async () => {
-    token = await login(app, createRandomUser(), 'login');
+    token = await login(app, createRandomUser());
   });
+
+  afterAll(async () => await knex.destroy());
 
   it('should return status 404 if billing does not exist', async () => {
     const response = await request(app)

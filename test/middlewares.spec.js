@@ -4,13 +4,16 @@ const app = require('../src/server');
 const { SutUser } = require('./helpers/utils');
 const login = require('./helpers/login');
 const { createRandomUser } = require('./helpers/randomData');
+const knex = require('../src/database');
 
 let token = '';
 
 describe('Middleware verify login', () => {
   beforeAll(async () => {
-    token = await login(app, createRandomUser(), 'login');
+    token = await login(app, createRandomUser());
   });
+
+  afterAll(async () => await knex.destroy());
 
   it('should return status code 401 (unauthorized) if token is not sent', async () => {
     const response = await request(app).get('/user');

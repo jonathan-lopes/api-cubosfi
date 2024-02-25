@@ -6,11 +6,14 @@ const {
   createRandomCustomer,
 } = require('../helpers/randomData');
 const { SutCustomer } = require('../helpers/utils');
+const knex = require('../../src/database');
 
 describe('Get One Customer', () => {
   beforeAll(async () => {
-    token = await login(app, createRandomUser(), 'login');
+    token = await login(app, createRandomUser());
   });
+
+  afterAll(async () => await knex.destroy());
 
   it('should return status 400 if a customer does not exist', async () => {
     const response = await request(app)
