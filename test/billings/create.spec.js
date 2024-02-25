@@ -7,13 +7,16 @@ const {
   createRandomCustomer,
 } = require('../helpers/randomData');
 const { SutBilling, SutCustomer } = require('../helpers/utils');
+const knex = require('../../src/database');
 
 let token = '';
 
 describe('Create Billing', () => {
   beforeAll(async () => {
-    token = await login(app, createRandomUser(), 'login');
+    token = await login(app, createRandomUser());
   });
+
+  afterAll(async () => await knex.destroy());
 
   it('should return status 400 if no customer_id, description, status, value, and due are sent in the request body', async () => {
     const response = await request(app)

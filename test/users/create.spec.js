@@ -1,8 +1,11 @@
 const request = require('supertest');
 const app = require('../../src/server');
 const { createRandomUser } = require('../helpers/randomData');
+const knex = require('../../src/database');
 
 describe('Create User', () => {
+  afterAll(async () => await knex.destroy());
+
   it('should fail if name are not sent in the body', async () => {
     const response = await request(app).post('/user').send({
       email: 'jonh.doe@mail.com',

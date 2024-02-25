@@ -3,11 +3,14 @@ const app = require('../src/server');
 const jwt = require('jsonwebtoken');
 const { SutUser, SutRefreshToken } = require('./helpers/utils');
 const { createRandomUser } = require('./helpers/randomData');
+const knex = require('../src/database');
 
 let sutUser = new SutUser(createRandomUser());
 
 describe('Refresh Token Endpoint', () => {
   afterEach(() => sutUser.clear());
+
+  afterAll(async () => await knex.destroy());
 
   it('should return status 400 if refresh token was not sent', async () => {
     const response = await request(app).post('/refresh-token').send({});

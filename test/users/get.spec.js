@@ -2,13 +2,16 @@ const request = require('supertest');
 const app = require('../../src/server');
 const login = require('../helpers/login');
 const { createRandomUser } = require('../helpers/randomData');
+const knex = require('../../src/database');
 
 let token = '';
 
 describe('Get User', () => {
   beforeAll(async () => {
-    token = await login(app, createRandomUser(), 'login');
+    token = await login(app, createRandomUser());
   });
+
+  afterAll(async () => await knex.destroy());
 
   it('should not return user data if not authenticated', async () => {
     const response = await request(app).get('/user');

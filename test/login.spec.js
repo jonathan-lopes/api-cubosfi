@@ -2,11 +2,14 @@ const request = require('supertest');
 const app = require('../src/server');
 const { SutUser } = require('./helpers/utils');
 const { createRandomUser } = require('./helpers/randomData');
+const knex = require('../src/database');
 
 const sut = new SutUser(createRandomUser());
 
 describe('Login Enpoint', () => {
   afterEach(() => sut.clear());
+
+  afterAll(async () => await knex.destroy());
 
   it('should fail if not send body email and password', async () => {
     const response = await request(app).post('/login').send({});

@@ -6,6 +6,7 @@ const {
   createRandomCustomer,
 } = require('../helpers/randomData');
 const { SutCustomer } = require('../helpers/utils');
+const knex = require('../../src/database');
 
 let token = '';
 
@@ -13,10 +14,12 @@ const sut = new SutCustomer(createRandomCustomer());
 
 describe('Create Customer', () => {
   beforeAll(async () => {
-    token = await login(app, createRandomUser(), 'login');
+    token = await login(app, createRandomUser());
   });
 
   afterEach(() => sut.clear());
+
+  afterAll(async () => await knex.destroy());
 
   it('should return status 400 if name, email, cpf and phone fields are not sent', async () => {
     const response = await request(app)
