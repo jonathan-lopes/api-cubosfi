@@ -6,6 +6,7 @@ const {
   createRandomCustomer,
 } = require('../helpers/randomData');
 const login = require('../helpers/login');
+const knex = require('../../src/database');
 
 let token = '';
 
@@ -13,6 +14,8 @@ describe('Update User', () => {
   beforeAll(async () => {
     token = await login(app, createRandomUser(), 'login');
   });
+
+  afterAll(async () => await knex.destroy());
 
   it('should return status code 400 if required fields (name, email) are not sent', async () => {
     const response = await request(app)

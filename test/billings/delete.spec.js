@@ -7,6 +7,7 @@ const {
   createRandomCustomer,
 } = require('../helpers/randomData');
 const { SutBilling, SutCustomer } = require('../helpers/utils');
+const knex = require('../../src/database');
 
 const customer = new SutCustomer(createRandomCustomer());
 
@@ -15,10 +16,12 @@ let token = '';
 
 describe('Delete Billing', () => {
   beforeAll(async () => {
-    token = await login(app, createRandomUser(), 'login');
+    token = await login(app, createRandomUser());
     const { id } = await customer.create();
     customerID = id;
   });
+
+  afterAll(async () => await knex.destroy());
 
   it('should return 404 if the charge does not exist', async () => {
     const response = await request(app)
