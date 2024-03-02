@@ -22,10 +22,15 @@ const queryBillingSchema = yup.object().shape({
       .matches(validateStatus, 'status devem ser paid ou pending'),
     is_overdue: yup.boolean(),
     due_date: yup.string().validDateFormat(),
+    due_date_start: yup.string().validDateFormat(),
+    due_date_end: yup.string().validDateFormat(),
     after_due_date: yup.string().validDateFormat(),
     before_due_date: yup.string().validDateFormat(),
-    less_than_value: yup.number().positive().integer(),
-    greater_than_value: yup.number().positive().integer(),
+    value: yup.number().positive().integer(),
+    value_lt: yup.number().positive().integer(),
+    value_gt: yup.number().positive().integer(),
+    value_start: yup.number().positive().integer(),
+    value_end: yup.number().positive().integer(),
   }),
 });
 
