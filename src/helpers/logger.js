@@ -89,7 +89,7 @@ if (process.env.NODE_ENV === 'development') {
   logger.add(new winston.transports.Console());
 }
 
-if (process.env.NODE_ENV === 'production') {
+if (process.env.NODE_ENV === 'production' && process.env.LOGTAIL_TOKEN) {
   const logtail = new Logtail(process.env.LOGTAIL_TOKEN);
   logger.add(new LogtailTransport(logtail));
 }
