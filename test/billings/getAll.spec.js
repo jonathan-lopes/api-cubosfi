@@ -26,15 +26,10 @@ describe('List All Billings', () => {
     for (let i = 0; i < 2; i++) {
       const randomBill = createRandomBilling('2021-01-05');
 
-      const dataBilling = await new SutBilling({
+      new SutBilling({
         customer_id: customerID,
         ...randomBill,
       }).create();
-
-      request(app)
-        .post('/billings')
-        .send(dataBilling)
-        .set('Authorization', `Bearer ${token}`);
     }
 
     const { count } = await knex('billings').count({ count: '*' }).first();
