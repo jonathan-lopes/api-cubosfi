@@ -4,7 +4,7 @@ orbs:
   node: circleci/node@5.0.3
 
 jobs:
-  test-master:
+  test-main:
     executor:
       name: node/default
     steps:
@@ -15,8 +15,6 @@ jobs:
           steps:
             - node/install-packages
             - run:
-                command: npm run posttest
-            - run:
                 command: npm run test
   test-dev:
     executor:
@@ -25,12 +23,10 @@ jobs:
       - checkout
       - node/install-packages
       - run:
-          command: npm run posttest
-      - run:
           command: npm run test
 
 workflows:
   app-test:
     jobs:
       - test-dev
-      - test-master
+      - test-main
