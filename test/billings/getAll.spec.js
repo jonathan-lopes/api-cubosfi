@@ -2,12 +2,7 @@ const request = require('supertest');
 const knex = require('../../src/database');
 const app = require('../../src/server');
 const login = require('../helpers/login');
-const {
-  createRandomBilling,
-  createRandomCustomer,
-  createRandomUser,
-} = require('../helpers/randomData');
-const { SutBilling, SutCustomer } = require('../helpers/utils');
+const { createRandomUser } = require('../helpers/randomData');
 
 let token = '';
 
@@ -19,19 +14,6 @@ describe('List All Billings', () => {
   afterAll(async () => await knex.destroy());
 
   it('should return all registered billings', async () => {
-    const customer = new SutCustomer(createRandomCustomer());
-
-    const { id: customerID } = await customer.create();
-
-    for (let i = 0; i < 2; i++) {
-      const randomBill = createRandomBilling('2021-01-05');
-
-      new SutBilling({
-        customer_id: customerID,
-        ...randomBill,
-      }).create();
-    }
-
     const { count } = await knex('billings').count({ count: '*' }).first();
 
     const allBillings = await request(app)
