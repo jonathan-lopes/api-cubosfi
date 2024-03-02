@@ -48,6 +48,13 @@ class BillingController {
       });
     }
 
+    if (queryParams.due_date_start && queryParams.due_date_end) {
+      query.whereBetween('billings.due', [
+        queryParams.due_date_start,
+        queryParams.due_date_end,
+      ]);
+    }
+
     if (queryParams.after_due_date) {
       query.where('billings.due', '>', queryParams.after_due_date);
     }
@@ -56,18 +63,24 @@ class BillingController {
       query.where('billings.due', '<', queryParams.before_due_date);
     }
 
-    if (queryParams.less_than_value && !queryParams.greater_than_value) {
-      query.where('billings.value', '<', queryParams.less_than_value);
+    if (queryParams.value) {
+      query.where({
+        value: queryParams.value,
+      });
     }
 
-    if (queryParams.greater_than_value && !queryParams.less_than_value) {
-      query.where('billings.value', '>', queryParams.greater_than_value);
+    if (queryParams.value_lt && !queryParams.value_gt) {
+      query.where('billings.value', '<', queryParams.value_lt);
     }
 
-    if (queryParams.less_than_value && queryParams.greater_than_value) {
-      query.whereNotBetween('billings.value', [
-        queryParams.less_than_value,
-        queryParams.greater_than_value,
+    if (queryParams.value_gt && !queryParams.value_lt) {
+      query.where('billings.value', '>', queryParams.value_gt);
+    }
+
+    if (queryParams.value_start && queryParams.value_end) {
+      query.whereBetween('billings.value', [
+        queryParams.value_start,
+        queryParams.value_end,
       ]);
     }
 
