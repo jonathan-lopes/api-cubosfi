@@ -3973,18 +3973,65 @@
             }
           },
           {
-            "name": "less_than_value",
-            "example": "http://127.0.0.1:3333/billings?less_than_value=1000",
-            "description": "Gets all charges with values less than specified and can be used in conjunction with the greater_than_value query to get a range of values",
+            "name": "due_date_start",
+            "example": "http://127.0.0.1:3333/billings?due_date_start=2021-11-20&due_date_end=2022-11-20",
+            "description": "Obtains billings based on a due date range, must be used together with the 'due_date_end' query parameter",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "yyyy-mm-dd"
+            }
+          },
+          {
+            "name": "due_date_end",
+            "example": "http://127.0.0.1:3333/billings?due_date_start=2021-11-01&due_date_end=2022-11-30",
+            "description": "Obtains billings based on a due date range, must be used together with the 'due_date_start' query parameter",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "yyyy-mm-dd"
+            }
+          },
+          {
+            "name": "value",
+            "example": "http://127.0.0.1:3333/billings?value=50000",
+            "description": "Gets all charges based on a specific value",
             "in": "query",
             "schema": {
               "type": "integer"
             }
           },
           {
-            "name": "greater_than_value",
-            "example": "http://127.0.0.1:3333/billings?greater_than_value=6000",
-            "description": "Gets all billings with values greater than specified and can be used in conjunction with the less_than_value query to get a range of values",
+            "name": "value_lt",
+            "example": "http://127.0.0.1:3333/billings?value_lt=1000",
+            "description": "Gets all charges with values less than specified",
+            "in": "query",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "value_gt",
+            "example": "http://127.0.0.1:3333/billings?value_gt=6000",
+            "description": "Gets all billings with values greater than specified",
+            "in": "query",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "value_start",
+            "example": "http://127.0.0.1:3333/billings?value_start=2000",
+            "description": "Gets the charges with the specified initial value this filter is used in conjunction with 'value_end' to return a range of values",
+            "in": "query",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "value_end",
+            "example": "http://127.0.0.1:3333/billings?value_end=5000",
+            "description": "Gets the charges with the specified final value this filter is used in conjunction with 'value_start' to return a range of values",
             "in": "query",
             "schema": {
               "type": "integer"
@@ -4140,24 +4187,36 @@
                       "dateTime": "2023-01-11T23:11:47.773Z"
                     }
                   },
-                  "less_than_value Query Parameters": {
+                  "value Query Parameters": {
                     "value": {
                       "type": "ValidationError",
                       "message": {
                         "query": {
-                          "less_than_value": "query.less_than_value deve ser um inteiro"
+                          "value": "query.value deve ser um inteiro"
+                        }
+                      },
+                      "status": 400,
+                      "dateTime": "2023-05-11T23:20:42.365Z"
+                    }
+                  },
+                  "value_lt Query Parameters": {
+                    "value": {
+                      "type": "ValidationError",
+                      "message": {
+                        "query": {
+                          "value_lt": "query.value_lt deve ser um inteiro"
                         }
                       },
                       "status": 400,
                       "dateTime": "2023-01-11T23:20:42.365Z"
                     }
                   },
-                  "greater_than_value Query Parameters": {
+                  "value_gt Query Parameters": {
                     "value": {
                       "type": "ValidationError",
                       "message": {
                         "query": {
-                          "less_than_value": "query.greater_than_value deve ser um inteiro"
+                          "value_gt": "query.value_gt deve ser um inteiro"
                         }
                       },
                       "status": 400,
