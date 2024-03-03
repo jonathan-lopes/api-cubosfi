@@ -10,14 +10,10 @@ const knex = require('../../src/database');
 
 let token = '';
 
-const sut = new SutCustomer(createRandomCustomer());
-
 describe('Create Customer', () => {
   beforeAll(async () => {
     token = await login(app, createRandomUser());
   });
-
-  afterEach(() => sut.clear());
 
   afterAll(async () => await knex.destroy());
 
@@ -43,7 +39,8 @@ describe('Create Customer', () => {
   });
 
   it('should return status 409 if the email has already been registered', async () => {
-    const { email } = await sut.create();
+    const customer = new SutCustomer(createRandomCustomer());
+    const { email } = await customer.create();
     const data = { ...createRandomCustomer(), email };
 
     const response = await request(app)
@@ -62,7 +59,8 @@ describe('Create Customer', () => {
   });
 
   it('should return status 409 if the cpf has already been registered', async () => {
-    const { cpf } = await sut.create();
+    const customer = new SutCustomer(createRandomCustomer());
+    const { cpf } = await customer.create();
 
     const data = { ...createRandomCustomer(), cpf };
 
