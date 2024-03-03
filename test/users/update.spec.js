@@ -12,7 +12,7 @@ let token = '';
 
 describe('Update User', () => {
   beforeAll(async () => {
-    token = await login(app, createRandomUser(), 'login');
+    token = await login(app, createRandomUser());
   });
 
   afterAll(async () => await knex.destroy());
@@ -56,8 +56,6 @@ describe('Update User', () => {
     expect(response.body).toHaveProperty('status', 409);
     expect(response.body).toHaveProperty('type', 'ConflictError');
     expect(response.body).toHaveProperty('dateTime');
-
-    await user.clear();
   });
 
   it('should not be possible to update a cpf to another already registered', async () => {
@@ -95,8 +93,6 @@ describe('Update User', () => {
     expect(response.body).toHaveProperty('message.error', 'CPF já cadastrado');
     expect(response.body).toHaveProperty('type', 'ConflictError');
     expect(response.body).toHaveProperty('dateTime');
-
-    await newUser.clear();
   });
 
   it('should return status 204 if user has been updated', async () => {

@@ -6,24 +6,8 @@ const knex = require('../../src/database');
 describe('Create User', () => {
   afterAll(async () => await knex.destroy());
 
-  it('should fail if name are not sent in the body', async () => {
-    const response = await request(app).post('/user').send({
-      email: 'jonh.doe@mail.com',
-      password: 'doe12345',
-    });
-
-    expect(response.statusCode).toBe(400);
-    expect(response.body).toHaveProperty('status', 400);
-    expect(response.body).toHaveProperty('type', 'ValidationError');
-    expect(response.body).toHaveProperty('dateTime');
-    expect(response.body).toHaveProperty('message.name', 'name é obrigatório');
-  });
-
-  it('should fail if email are not sent in the body', async () => {
-    const response = await request(app).post('/user').send({
-      name: 'jonh doe',
-      password: 'doe12345',
-    });
+  it('should fail if password, name and email are not sent in the body', async () => {
+    const response = await request(app).post('/user').send({});
 
     expect(response.statusCode).toBe(400);
     expect(response.body).toHaveProperty('status', 400);
@@ -33,22 +17,11 @@ describe('Create User', () => {
       'message.email',
       'email é obrigatório',
     );
-  });
-
-  it('should fail if password are not sent in the body', async () => {
-    const response = await request(app).post('/user').send({
-      name: 'jonh doe',
-      email: 'doe12345',
-    });
-
-    expect(response.statusCode).toBe(400);
-    expect(response.body).toHaveProperty('status', 400);
-    expect(response.body).toHaveProperty('type', 'ValidationError');
-    expect(response.body).toHaveProperty('dateTime');
     expect(response.body).toHaveProperty(
       'message.password',
       'password é obrigatório',
     );
+    expect(response.body).toHaveProperty('message.name', 'name é obrigatório');
   });
 
   it('should return 409 if email has already been registered', async () => {
