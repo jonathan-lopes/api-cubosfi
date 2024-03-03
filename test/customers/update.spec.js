@@ -22,10 +22,11 @@ describe('Update Customer', () => {
   afterAll(async () => await knex.destroy());
 
   it('should return status 409 if the email has already been registered', async () => {
-    const customer = new SutCustomer(createRandomCustomer());
+    const customerWithConflict = new SutCustomer(createRandomCustomer());
+    const randomCustomer = new SutCustomer(createRandomCustomer());
 
     const { email } = await randomCustomer.create();
-    const { id } = await customer.create();
+    const { id } = await customerWithConflict.create();
 
     const response = await request(app)
       .put(`/customers/${id}`)
@@ -43,14 +44,14 @@ describe('Update Customer', () => {
     expect(response.body).toHaveProperty('status', 409);
     expect(response.body).toHaveProperty('type', 'ConflictError');
     expect(response.body).toHaveProperty('dateTime');
-
-    await customer.clear();
   });
 
   it('should return status 409 if the cpf has already been registered', async () => {
-    const customer = new SutCustomer(createRandomCustomer());
+    const customerWithConflict = new SutCustomer(createRandomCustomer());
+    const randomCustomer = new SutCustomer(createRandomCustomer());
 
-    const { address_id: _, ...dataCustomer } = await customer.create();
+    const { address_id: _, ...dataCustomer } =
+      await customerWithConflict.create();
     const { cpf } = await randomCustomer.create();
 
     const body = {
@@ -68,8 +69,6 @@ describe('Update Customer', () => {
     expect(response.body).toHaveProperty('status', 409);
     expect(response.body).toHaveProperty('type', 'ConflictError');
     expect(response.body).toHaveProperty('dateTime');
-
-    customer.clear();
   });
 
   it('should be possible to update a client', async () => {
