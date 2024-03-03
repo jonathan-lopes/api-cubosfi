@@ -23,7 +23,7 @@ describe('Delete Billing', () => {
 
   afterAll(async () => await knex.destroy());
 
-  it('should return 404 if the charge does not exist', async () => {
+  it('should return 404 if the billing does not exist', async () => {
     const response = await request(app)
       .del('/billings/98a760d8-ed4f-4f4f-8b28-844485ac1c0d')
       .set('Authorization', `Bearer ${token}`);
@@ -38,7 +38,7 @@ describe('Delete Billing', () => {
     expect(response.body).toHaveProperty('dateTime');
   });
 
-  it('should return status 400 if the bill is paid', async () => {
+  it('should return status 400 if the billing is paid', async () => {
     const randomBill = createRandomBilling('2020-05-24');
 
     const { id } = await new SutBilling({
