@@ -4,11 +4,7 @@ const { SutUser } = require('./helpers/utils');
 const { createRandomUser } = require('./helpers/randomData');
 const knex = require('../src/database');
 
-const sut = new SutUser(createRandomUser());
-
 describe('Login Enpoint', () => {
-  afterEach(() => sut.clear());
-
   afterAll(async () => await knex.destroy());
 
   it('should fail if not send body email and password', async () => {
@@ -42,7 +38,9 @@ describe('Login Enpoint', () => {
   });
 
   it('should fail if password is incorrect', async () => {
-    const { email } = await sut.create();
+    const user = new SutUser(createRandomUser());
+
+    const { email } = await user.create();
 
     const response = await request(app).post('/login').send({
       email,
@@ -60,7 +58,9 @@ describe('Login Enpoint', () => {
   });
 
   it('should returning user with token and refresh token', async () => {
-    const { email, password } = await sut.create();
+    const user = new SutUser(createRandomUser());
+
+    const { email, password } = await user.create();
 
     const response = await request(app).post('/login').send({
       email,
