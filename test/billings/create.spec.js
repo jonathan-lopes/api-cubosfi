@@ -6,7 +6,7 @@ const {
   createRandomBilling,
   createRandomCustomer,
 } = require('../helpers/randomData');
-const { SutBilling, SutCustomer } = require('../helpers/utils');
+const { SutCustomer } = require('../helpers/utils');
 const knex = require('../../src/database');
 
 let token = '';
@@ -54,12 +54,10 @@ describe('Create Billing', () => {
 
     const bill = createRandomBilling('2022-10-15');
 
-    const sutBilling = new SutBilling({
+    const dataBilling = {
       customer_id: customerID,
       ...bill,
-    });
-
-    const dataBilling = await sutBilling.create();
+    };
 
     const response = await request(app)
       .post('/billings')
