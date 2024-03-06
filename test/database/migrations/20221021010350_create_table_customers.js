@@ -1,3 +1,5 @@
+const { randomUUID } = require('node:crypto');
+
 /**
  * @param { import("knex").Knex } knex
  * @returns { Promise<void> }
