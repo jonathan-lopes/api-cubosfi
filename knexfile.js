@@ -11,12 +11,12 @@ module.exports = {
   test: {
     client: process.env.DB_CLIENT,
     connection: {
-      filename: './test/database.sqlite',
+      filename: `${__dirname}/test/database/db.sqlite`,
     },
     useNullAsDefault: true,
     migrations: {
       tableName: 'knex_migrations',
-      directory: `${__dirname}/src/database/test_migrations`,
+      directory: `${__dirname}/test/database/migrations`,
     },
     seeds: {
       directory: `${__dirname}/src/database/seeds`,
