@@ -1,3 +1,10 @@
+const sqlite = require('better-sqlite3');
+const path = require('node:path');
+
+const db = new sqlite('./test/database/db.sqlite');
+
+db.loadExtension(path.resolve('./', 'extensions', 'uuid.so'));
+
 /**
  * @param { import("knex").Knex } knex
  * @returns { Promise<void> }
