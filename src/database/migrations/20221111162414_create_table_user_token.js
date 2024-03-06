@@ -6,7 +6,7 @@ const { onUpdateTrigger } = require('../../../knexfile');
  */
 exports.up = (knex) =>
   knex.schema
-    .createTable('user_token', (table) => {
+    .createTable('users_tokens', (table) => {
       table
         .uuid('id')
         .primary()
@@ -24,10 +24,10 @@ exports.up = (knex) =>
       table.timestamp('created_at').defaultTo(knex.fn.now());
       table.timestamp('updated_at').defaultTo(knex.fn.now());
     })
-    .then(() => knex.raw(onUpdateTrigger('user_token')));
+    .then(() => knex.raw(onUpdateTrigger('users_tokens')));
 
 /**
  * @param { import("knex").Knex } knex
  * @returns { Promise<void> }
  */
-exports.down = (knex) => knex.schema.dropTable('user_token');
+exports.down = (knex) => knex.schema.dropTable('users_tokens');
