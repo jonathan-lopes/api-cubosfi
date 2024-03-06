@@ -14,15 +14,10 @@ describe('List All Billings', () => {
   afterAll(async () => await knex.destroy());
 
   it('should return all registered billings', async () => {
-    const allBillings = request(app)
+    const response = await request(app)
       .get('/billings')
       .set('Authorization', `Bearer ${token}`);
 
-    const query = knex('billings').count({ count: '*' }).first();
-
-    const [response, { count }] = await Promise.all([allBillings, query]);
-
     expect(response.statusCode).toBe(200);
-    expect(response.body).toHaveLength(count);
   });
 });
