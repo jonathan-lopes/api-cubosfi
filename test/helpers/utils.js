@@ -94,7 +94,7 @@ class SutRefreshToken {
   }
 
   async create() {
-    const [data] = await knex('user_token')
+    const [data] = await knex('users_tokens')
       .insert({
         id: randomUUID(),
         refresh_token: this.#refresh_token,

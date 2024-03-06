@@ -39,7 +39,7 @@ const login = async (req, res) => {
     process.env.EXPIRES_REFRESH_TOKEN_DAYS,
   );
 
-  await knex('user_token').insert({
+  await knex('users_tokens').insert({
     refresh_token: refreshToken,
     expires_date: refreshTokenExpiresDate,
     user_id: user.id,
