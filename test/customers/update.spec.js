@@ -10,14 +10,10 @@ const knex = require('../../src/database');
 
 let token = '';
 
-const randomCustomer = new SutCustomer(createRandomCustomer());
-
 describe('Update Customer', () => {
   beforeAll(async () => {
     token = await login(app, createRandomUser());
   });
-
-  afterEach(() => randomCustomer.clear());
 
   afterAll(async () => await knex.destroy());
 
@@ -71,16 +67,28 @@ describe('Update Customer', () => {
     expect(response.body).toHaveProperty('dateTime');
   });
 
+  it('should return status 400 if the uuid is invalid', async () => {
+    const response = await request(app)
+      .put('/customers/1')
+      .set('Authorization', `Bearer ${token}`);
+
+    expect(response.statusCode).toBe(400);
+    expect(response.body).toHaveProperty('status', 400);
+    expect(response.body).toHaveProperty('type', 'BadRequestError');
+    expect(response.body).toHaveProperty('dateTime');
+    expect(response.body).toHaveProperty(
+      'message.error',
+      'Id de cliente inválido',
+    );
+  });
+
   it('should be possible to update a client', async () => {
+    const randomCustomer = new SutCustomer(createRandomCustomer());
     const customer = await randomCustomer.create();
 
     const response = await request(app)
       .put(`/customers/${customer.id}`)
-      .send({
-        ...customer,
-        name: 'Anny Mary Smith',
-        cpf: '07484496589',
-      })
+      .send(createRandomCustomer())
       .set('Authorization', `Bearer ${token}`);
 
     expect(response.statusCode).toBe(204);
