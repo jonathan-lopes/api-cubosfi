@@ -50,13 +50,13 @@ describe('Delete Billing', () => {
       .del(`/billings/${id}`)
       .set('Authorization', `Bearer ${token}`);
 
-    expect(response.statusCode).toBe(400);
+    expect(response.statusCode).toBe(403);
     expect(response.body).toHaveProperty(
       'message.error',
       'Esta cobrança não pode ser excluída!',
     );
-    expect(response.body).toHaveProperty('status', 400);
-    expect(response.body).toHaveProperty('type', 'BadRequestError');
+    expect(response.body).toHaveProperty('status', 403);
+    expect(response.body).toHaveProperty('type', 'ForbiddenError');
     expect(response.body).toHaveProperty('dateTime');
   });
 
@@ -73,13 +73,28 @@ describe('Delete Billing', () => {
       .del(`/billings/${id}`)
       .set('Authorization', `Bearer ${token}`);
 
+    expect(response.statusCode).toBe(403);
+    expect(response.body).toHaveProperty('status', 403);
+    expect(response.body).toHaveProperty('type', 'ForbiddenError');
+    expect(response.body).toHaveProperty('dateTime');
+    expect(response.body).toHaveProperty(
+      'message.error',
+      'Esta cobrança não pode ser excluída!',
+    );
+  });
+
+  it('should return status 400 if the uuid is invalid', async () => {
+    const response = await request(app)
+      .del('/billings/10')
+      .set('Authorization', `Bearer ${token}`);
+
     expect(response.statusCode).toBe(400);
     expect(response.body).toHaveProperty('status', 400);
     expect(response.body).toHaveProperty('type', 'BadRequestError');
     expect(response.body).toHaveProperty('dateTime');
     expect(response.body).toHaveProperty(
       'message.error',
-      'Esta cobrança não pode ser excluída!',
+      'Id da cobrança inválido',
     );
   });
 
