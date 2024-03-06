@@ -63,7 +63,6 @@ describe('Middleware verify login', () => {
     timer();
     expect(setTimeout).toHaveBeenCalledTimes(1);
     expect(setTimeout).toHaveBeenLastCalledWith(expect.any(Function), 4000);
-    await sut.clear();
   });
 
   it('should not be able to authenticate if user does not exist', async () => {
