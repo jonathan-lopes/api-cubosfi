@@ -93,4 +93,68 @@ describe('Update Customer', () => {
 
     expect(response.statusCode).toBe(204);
   });
+
+  it('should be possible to update customer data with registered address', async () => {
+    const customer = await new SutCustomer(createRandomCustomer()).create();
+
+    const address = {
+      street: 'Praça da Sé',
+      cep: '01001-000',
+      complement: 'lado ímpar',
+      district: 'Sé',
+      city: 'São Paulo',
+      uf: 'SP',
+    };
+
+    const dataWithAddress = {
+      ...customer,
+      address,
+    };
+
+    await request(app)
+      .put(`/customers/${customer.id}`)
+      .send(dataWithAddress)
+      .set('Authorization', `Bearer ${token}`);
+
+    const dataForUpdate = {
+      ...customer,
+      address: {
+        street: 'Avenida Rangel Pestana',
+        cep: '03001-000',
+        complement: 'de 501 ao fim - lado ímpar',
+        district: 'Brás',
+        city: 'São Paulo',
+        uf: 'SP',
+      },
+    };
+
+    const response = await request(app)
+      .put(`/customers/${customer.id}`)
+      .send(dataForUpdate)
+      .set('Authorization', `Bearer ${token}`);
+
+    expect(response.statusCode).toBe(204);
+  });
+
+  it('should be possible to update a customer and register an address', async () => {
+    const customer = await new SutCustomer(createRandomCustomer()).create();
+
+    const data = {
+      ...customer,
+      address: {
+        cep: '02001-000',
+        street: 'Parque Anhembi',
+        district: 'Santana',
+        city: 'São Paulo',
+        uf: 'SP',
+      },
+    };
+
+    const response = await request(app)
+      .put(`/customers/${customer.id}`)
+      .send(data)
+      .set('Authorization', `Bearer ${token}`);
+
+    expect(response.statusCode).toBe(204);
+  });
 });
