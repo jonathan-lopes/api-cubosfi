@@ -24,7 +24,7 @@
     "pretest": "cross-env NODE_ENV=test knex migrate:latest",
     "test": "jest",
     "posttest": "cross-env NODE_ENV=test knex migrate:rollback --all",
-    "test:coverage": "jest --coverage --silent --noStackTrace"
+    "test:coverage": "npm run pretest && jest --coverage --silent --noStackTrace"
   },
   "keywords": [],
   "author": "Jonathan Lopes",
