@@ -23,6 +23,21 @@ describe('Update Billing', () => {
 
   afterAll(async () => await knex.destroy());
 
+  it('should fail if the uuid is invalid', async () => {
+    const response = await request(app)
+      .put('/billings/100')
+      .set('Authorization', `Bearer ${token}`);
+
+    expect(response.statusCode).toBe(400);
+    expect(response.body).toHaveProperty('status', 400);
+    expect(response.body).toHaveProperty('type', 'BadRequestError');
+    expect(response.body).toHaveProperty('dateTime');
+    expect(response.body).toHaveProperty(
+      'message.error',
+      'Id da cobrança inválido',
+    );
+  });
+
   it('should return status 404 if billing does not exist', async () => {
     const response = await request(app)
       .put('/billings/1c53ae80-5042-4db9-aad5-3e2d510c98b3')
