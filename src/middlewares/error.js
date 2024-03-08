@@ -1,5 +1,6 @@
 const logger = require('../helpers/logger');
 
+// eslint-disable-next-line no-unused-vars
 const errorMiddleware = (err, req, res, next) => {
   let statusCode = err.statusCode ?? 500;
   let message = err.statusCode ? err.message : 'Internal Server Error';

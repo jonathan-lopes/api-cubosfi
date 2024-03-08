@@ -30,7 +30,7 @@ describe('List billings based on a range of values', () => {
 
       randomBills.push(bill);
 
-       new SutBilling({
+      new SutBilling({
         customer_id: id,
         ...bill,
       }).create();
@@ -67,7 +67,7 @@ describe('List billings based on a range of values', () => {
   it('should fail if the value passed to the value_end parameter is not a positive integer', async () => {
     const response = await request(app)
       .get('/billings')
-      .query({ value_end: 50.60 })
+      .query({ value_end: 50.6 })
       .set('Authorization', `Bearer ${token}`);
 
     expect(response.statusCode).toBe(400);
