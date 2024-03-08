@@ -61,7 +61,7 @@ class CustomerController {
 
     const bills = await knex('billings')
       .select('id', 'description', 'status', 'value', 'due', 'customer_id')
-      .where('customer_id', id);
+      .where({ customer_id: id });
 
     const { address_id, ...customerWithoutAddress_id } = customer;
 
@@ -100,14 +100,14 @@ class CustomerController {
       throw new ConflictError('CPF já cadastrado');
     }
 
-    let insertedAddress = null;
+    let addressID = '';
 
     if (address) {
-      [insertedAddress] = await knex('adresses')
-        .insert(address)
-        .returning('id');
+      const [data] = await knex('adresses').insert(address).returning('id');
 
-      if (!insertedAddress) {
+      addressID = data.id;
+
+      if (!addressID) {
         throw new DatabaseError('Não foi possível cadastrar o cliente');
       }
     }
@@ -117,7 +117,7 @@ class CustomerController {
       email,
       cpf,
       phone,
-      address_id: insertedAddress?.id || null,
+      address_id: addressID || null,
     };
 
     const insertedCustomer = await knex('customers').insert(body);
@@ -164,7 +164,7 @@ class CustomerController {
       throw new ConflictError('CPF já cadastrado');
     }
 
-    let addressInsertion = null;
+    let addressID = '';
 
     if (address) {
       const customerWithAddress = await knex('customers')
@@ -172,7 +172,7 @@ class CustomerController {
         .where({ id })
         .first();
 
-      if (customerWithAddress) {
+      if (customerWithAddress.address_id) {
         const updateAddress = await knex('adresses')
           .update(address)
           .where({ id: customerWithAddress.address_id });
@@ -184,12 +184,12 @@ class CustomerController {
         return res.sendStatus(204);
       }
 
-      if (!customerWithAddress) {
-        [addressInsertion] = await knex('adresses')
-          .insert(address)
-          .returning('id');
+      if (!customerWithAddress.address_id) {
+        const [data] = await knex('adresses').insert(address).returning('id');
 
-        if (!addressInsertion) {
+        addressID = data.id;
+
+        if (!addressID) {
           throw new DatabaseError('Não foi possível cadastrar o cliente');
         }
       }
@@ -200,7 +200,7 @@ class CustomerController {
       email,
       cpf,
       phone,
-      address_id: addressInsertion?.id || null,
+      address_id: addressID || null,
     };
 
     const updatedCustomer = await knex('customers')
