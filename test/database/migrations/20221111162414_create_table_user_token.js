@@ -1,12 +1,10 @@
-const { randomUUID } = require('node:crypto');
-
 /**
  * @param { import("knex").Knex } knex
  * @returns { Promise<void> }
  */
 exports.up = (knex) =>
   knex.schema.createTable('users_tokens', (table) => {
-    table.string('id').primary();
+    table.uuid('id').primary().defaultTo(knex.fn.uuid());
     table.text('refresh_token').notNullable();
     table.timestamp('expires_date').notNullable();
     table.uuid('user_id').notNullable();
