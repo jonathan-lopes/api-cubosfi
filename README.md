@@ -5,6 +5,7 @@
 API-CubosFi é uma REST API desenvolvida para a aplicação frontend [CubosFi](https://github.com/jonathan-lopes/front-integral-m05-desafio), nessa api você pode cadastrar os clientes e as suas cobranças.
 
 [![CircleCI](https://dl.circleci.com/status-badge/img/gh/jonathan-lopes/api-cubosfi/tree/develop.svg?style=shield)](https://dl.circleci.com/status-badge/redirect/gh/jonathan-lopes/api-cubosfi/tree/develop) [![Commitizen friendly](https://img.shields.io/badge/commitizen-friendly-brightgreen.svg)](http://commitizen.github.io/cz-cli/) ![Swagger Validator](https://img.shields.io/swagger/valid/3.0?specUrl=https%3A%2F%2Fraw.githubusercontent.com%2Fjonathan-lopes%2Fapi-cubosfi%2Fdevelop%2Fswagger.json) ![GitHub last commit](https://img.shields.io/github/last-commit/jonathan-lopes/api-cubosfi)
+[![codecov](https://codecov.io/gh/jonathan-lopes/api-cubosfi/graph/badge.svg?token=XFIMEOED1J)](https://codecov.io/gh/jonathan-lopes/api-cubosfi)
 
 ## Para testa no insomnia
 
@@ -12,7 +13,7 @@ API-CubosFi é uma REST API desenvolvida para a aplicação frontend [CubosFi](h
 
 ## Documentação
 
-Documentação utiliza a especificação OpenAPI (anteriormente Swagger Specification) para descrever os endpoints disponíveis e as operações em cada endpoint deles.
+Documentação utiliza a especificação OpenAPI (anteriormente Swagger Specification) para descrever os endpoints disponíveis e as operações em cada um deles.
 A especificação da API foi escrita em [JSON](https://pt.wikipedia.org/wiki/JSON) e pode ser encontrado no arquivo [swagger.json](https://github.com/jonathan-lopes/api-cubosfi/blob/master/swagger.json) na raiz do repositório.
 
 A duas formas de acessar a documentação:
