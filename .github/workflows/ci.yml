@@ -29,3 +29,12 @@ jobs:
 
       - name: Run tests
         run: npm test
+        env:
+          PORT: ${{ vars.PORT }}
+          DB_CLIENT: ${{ vars.DB_CLIENT }}
+          SECRET_TOKEN: ${{ vars.SECRET_TOKEN }}
+          EXPIRES_IN_TOKEN: ${{ vars.EXPIRES_IN_TOKEN }}
+          SECRET_REFRESH_TOKEN: ${{ vars.SECRET_REFRESH_TOKEN }}
+          EXPIRES_IN_REFRESH_TOKEN: ${{ vars.EXPIRES_IN_REFRESH_TOKEN }}
+          EXPIRES_REFRESH_TOKEN_DAYS: ${{ vars.EXPIRES_REFRESH_TOKEN_DAYS }}
+          SALT_ROUNDS: ${{ vars.SALT_ROUNDS }}
