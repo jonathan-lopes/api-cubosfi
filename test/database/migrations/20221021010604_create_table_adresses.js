@@ -4,7 +4,7 @@
  */
 exports.up = (knex) =>
   knex.schema.createTable('adresses', (table) => {
-    table.uuid('id').primary();
+    table.uuid('id').primary().defaultTo(knex.fn.uuid());
     table.text('street');
     table.text('complement');
     table.string('cep', 9);

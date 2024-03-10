@@ -26,10 +26,6 @@ class SutUser {
 
     return data;
   }
-
-  async clear() {
-    await knex('users').del().where({ email: this.#user.email });
-  }
 }
 
 class SutCustomer {
@@ -52,10 +48,6 @@ class SutCustomer {
       .returning(['id', 'name', 'email', 'cpf', 'phone', 'address_id']);
 
     return data;
-  }
-
-  async clear() {
-    await knex('customers').del().where({ email: this.#customer.email });
   }
 }
 
@@ -88,12 +80,6 @@ class SutBilling {
 
     return data;
   }
-
-  async clear() {
-    await knex('billings')
-      .del()
-      .where({ customer_id: this.#billing.customer_id });
-  }
 }
 
 class SutRefreshToken {
@@ -108,7 +94,7 @@ class SutRefreshToken {
   }
 
   async create() {
-    const [data] = await knex('user_token')
+    const [data] = await knex('users_tokens')
       .insert({
         id: randomUUID(),
         refresh_token: this.#refresh_token,
@@ -118,10 +104,6 @@ class SutRefreshToken {
       .returning(['id', 'refresh_token', 'expires_date', 'user_id']);
 
     return data;
-  }
-
-  async clear() {
-    await knex('user_token').del().where({ user_id: this.#user_id });
   }
 }
 

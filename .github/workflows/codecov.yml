@@ -1,0 +1,41 @@
+name: Running Code Coverage
+
+on: [push, pull_request]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run Lint
+        run: npm run lint
+
+      - name: Run Coverage Tests
+        run: npm run test:coverage
+        env:
+          PORT: ${{ vars.PORT }}
+          DB_CLIENT: ${{ vars.DB_CLIENT }}
+          SECRET_TOKEN: ${{ vars.SECRET_TOKEN }}
+          EXPIRES_IN_TOKEN: ${{ vars.EXPIRES_IN_TOKEN }}
+          SECRET_REFRESH_TOKEN: ${{ vars.SECRET_REFRESH_TOKEN }}
+          EXPIRES_IN_REFRESH_TOKEN: ${{ vars.EXPIRES_IN_REFRESH_TOKEN }}
+          EXPIRES_REFRESH_TOKEN_DAYS: ${{ vars.EXPIRES_REFRESH_TOKEN_DAYS }}
+          SALT_ROUNDS: ${{ vars.SALT_ROUNDS }}
+
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v4
+        with:
+          fail_ci_if_error: true
+          token: ${{ secrets.CODECOV_TOKEN }}
+          slug: jonathan-lopes/api-cubosfi

@@ -7,6 +7,7 @@ const {
   DatabaseError,
   BadRequestError,
   NotFoundError,
+  ForbiddenError,
 } = require('../helpers/apiErrors');
 const isValidUUID = require('../helpers/isValidUUID');
 
@@ -93,7 +94,7 @@ class BillingController {
     const { id } = req.params;
 
     if (!isValidUUID(id)) {
-      throw new BadRequestError('Id de cobrança inválido');
+      throw new BadRequestError('Id da cobrança inválido');
     }
 
     const detailedBilling = await knex('billings').where({ id }).first();
@@ -134,7 +135,7 @@ class BillingController {
     const { id } = req.params;
 
     if (!isValidUUID(id)) {
-      throw new BadRequestError('Id de cobrança inválido');
+      throw new BadRequestError('Id da cobrança inválido');
     }
 
     const body = {
@@ -165,7 +166,7 @@ class BillingController {
     const { id } = req.params;
 
     if (!isValidUUID(id)) {
-      throw new BadRequestError('Id de cobrança inválido');
+      throw new BadRequestError('Id da cobrança inválido');
     }
 
     const billing = await knex('billings').where({ id }).first();
@@ -184,7 +185,7 @@ class BillingController {
       return res.sendStatus(204);
     }
 
-    throw new BadRequestError('Esta cobrança não pode ser excluída!');
+    throw new ForbiddenError('Esta cobrança não pode ser excluída!');
   }
 }
 

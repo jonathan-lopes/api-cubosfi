@@ -23,7 +23,7 @@ const refreshTokenController = async (req, res) => {
     },
   );
 
-  const userToken = await knex('user_token')
+  const userToken = await knex('users_tokens')
     .where({
       refresh_token,
       user_id: id,
@@ -34,7 +34,7 @@ const refreshTokenController = async (req, res) => {
     throw new NotFoundError('refresh_token não encontrado');
   }
 
-  await knex('user_token').del().where({ id: userToken.id });
+  await knex('users_tokens').del().where({ id: userToken.id });
 
   const newRefreshToken = jwt.sign({ id }, process.env.SECRET_REFRESH_TOKEN, {
     expiresIn: process.env.EXPIRES_IN_REFRESH_TOKEN,
@@ -45,7 +45,7 @@ const refreshTokenController = async (req, res) => {
     process.env.EXPIRES_REFRESH_TOKEN_DAYS,
   );
 
-  await knex('user_token').insert({
+  await knex('users_tokens').insert({
     refresh_token: newRefreshToken,
     expires_date: refreshTokenExpiresDate,
     user_id: id,

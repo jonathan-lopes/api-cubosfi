@@ -5,10 +5,8 @@ const { SutUser, SutRefreshToken } = require('./helpers/utils');
 const { createRandomUser } = require('./helpers/randomData');
 const knex = require('../src/database');
 
-let sutUser = new SutUser(createRandomUser());
-
 describe('Refresh Token Endpoint', () => {
-  afterEach(() => sutUser.clear());
+  afterAll(async () => await knex.destroy());
 
   afterAll(async () => await knex.destroy());
 
@@ -72,7 +70,8 @@ describe('Refresh Token Endpoint', () => {
       },
     );
 
-    const { id } = await sutUser.create();
+    const user = new SutUser(createRandomUser());
+    const { id } = await user.create();
     const sutRefreshToken = new SutRefreshToken(refresh_token, new Date(), id);
     await sutRefreshToken.create();
 
@@ -91,7 +90,8 @@ describe('Refresh Token Endpoint', () => {
   });
 
   it('should return a new refresh_token and a new token', async () => {
-    const { id } = await sutUser.create();
+    const user = new SutUser(createRandomUser());
+    const { id } = await user.create();
 
     const refresh_token = jwt.sign(
       { id: id },

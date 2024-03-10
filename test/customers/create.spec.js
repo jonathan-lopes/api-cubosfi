@@ -91,12 +91,11 @@ describe('Create Customer', () => {
     const data = {
       ...createRandomCustomer(),
       address: {
-        street: 'Praça da Sé',
-        cep: '01001-000',
-        complement: 'lado ímpar',
-        district: 'Sé',
-        city: 'São Paulo',
-        uf: 'SP',
+        street: 'Largo do Farol da Barra',
+        cep: '40140-650',
+        district: 'Barra',
+        city: 'Salvador',
+        uf: 'BA',
       },
     };
 

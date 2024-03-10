@@ -3,8 +3,8 @@
  * @returns { Promise<void> }
  */
 exports.up = (knex) =>
-  knex.schema.createTable('user_token', (table) => {
-    table.uuid('id').primary();
+  knex.schema.createTable('users_tokens', (table) => {
+    table.uuid('id').primary().defaultTo(knex.fn.uuid());
     table.text('refresh_token').notNullable();
     table.timestamp('expires_date').notNullable();
     table.uuid('user_id').notNullable();
@@ -22,4 +22,4 @@ exports.up = (knex) =>
  * @param { import("knex").Knex } knex
  * @returns { Promise<void> }
  */
-exports.down = (knex) => knex.schema.dropTable('user_token');
+exports.down = (knex) => knex.schema.dropTable('users_tokens');

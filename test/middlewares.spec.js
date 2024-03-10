@@ -42,28 +42,17 @@ describe('Middleware verify login', () => {
     const { id } = await sut.create();
 
     const token = jwt.sign({ id }, process.env.SECRET_TOKEN, {
-      expiresIn: '3s',
+      expiresIn: '0s',
     });
 
-    jest.useFakeTimers();
-    jest.spyOn(global, 'setTimeout');
-
-    function timer() {
-      setTimeout(async () => {
-        const response = await request(app)
-          .get('/user')
-          .set('Authorization', `Bearer ${token}`);
-        expect(response.statusCode).toBe(401);
-        expect(response.body).toHaveProperty('message.error', 'Token expirou');
-        expect(response.body).toHaveProperty('status', 401);
-        expect(response.body).toHaveProperty('type', 'UnauthorizedError');
-        expect(response.body).toHaveProperty('dateTime');
-      }, 4000);
-    }
-    timer();
-    expect(setTimeout).toHaveBeenCalledTimes(1);
-    expect(setTimeout).toHaveBeenLastCalledWith(expect.any(Function), 4000);
-    await sut.clear();
+    const response = await request(app)
+      .get('/user')
+      .set('Authorization', `Bearer ${token}`);
+    expect(response.statusCode).toBe(401);
+    expect(response.body).toHaveProperty('message.error', 'Token expirou');
+    expect(response.body).toHaveProperty('status', 401);
+    expect(response.body).toHaveProperty('type', 'UnauthorizedError');
+    expect(response.body).toHaveProperty('dateTime');
   });
 
   it('should not be able to authenticate if user does not exist', async () => {
