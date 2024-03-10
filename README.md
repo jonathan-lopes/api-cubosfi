@@ -4,8 +4,11 @@
 
 API-CubosFi é uma REST API desenvolvida para a aplicação frontend [CubosFi](https://github.com/jonathan-lopes/front-integral-m05-desafio), nessa api você pode cadastrar os clientes e as suas cobranças.
 
-[![CircleCI](https://dl.circleci.com/status-badge/img/gh/jonathan-lopes/api-cubosfi/tree/develop.svg?style=shield)](https://dl.circleci.com/status-badge/redirect/gh/jonathan-lopes/api-cubosfi/tree/develop) [![Commitizen friendly](https://img.shields.io/badge/commitizen-friendly-brightgreen.svg)](http://commitizen.github.io/cz-cli/) ![Swagger Validator](https://img.shields.io/swagger/valid/3.0?specUrl=https%3A%2F%2Fraw.githubusercontent.com%2Fjonathan-lopes%2Fapi-cubosfi%2Fdevelop%2Fswagger.json) ![GitHub last commit](https://img.shields.io/github/last-commit/jonathan-lopes/api-cubosfi)
+![GitHub Actions](https://github.com/jonathan-lopes/api-cubosfi/actions/workflows/ci.yml/badge.svg)
 [![codecov](https://codecov.io/gh/jonathan-lopes/api-cubosfi/graph/badge.svg?token=XFIMEOED1J)](https://codecov.io/gh/jonathan-lopes/api-cubosfi)
+[![Commitizen friendly](https://img.shields.io/badge/commitizen-friendly-brightgreen.svg)](http://commitizen.github.io/cz-cli/)
+![Swagger Validator](https://img.shields.io/swagger/valid/3.0?specUrl=https%3A%2F%2Fraw.githubusercontent.com%2Fjonathan-lopes%2Fapi-cubosfi%2Fdevelop%2Fswagger.json) ![GitHub last commit](https://img.shields.io/github/last-commit/jonathan-lopes/api-cubosfi)
+[![semantic-release: angular](https://img.shields.io/badge/semantic--release-angular-e10079?logo=semantic-release)](https://github.com/semantic-release/semantic-release)
 
 ## Para testa no insomnia
 
@@ -109,3 +112,9 @@ Rode o seguinte comando
 ```bash
   npm t ou npm test
 ```
+
+## Versionamento
+
+Usamos [Versionamento Semântico](http://semver.org/) para versionamento. Para as versões
+disponível, veja as [tags neste
+repositório](https://github.com/jonathan-lopes/api-cubosfi/releases).
