@@ -1,7 +1,7 @@
 const yup = require('./yupSettings');
 const { validateCPFCNPJ, validatePhone } = require('../helpers/regex');
 
-const editUserSchema = yup.object().shape({
+const usersEditSchema = yup.object().shape({
   name: yup.string().strict().required().max(128),
   email: yup.string().email('Formato de e-mail inválido').max(128).required(),
   password: yup.string().strict().min(8).max(56),
@@ -17,4 +17,4 @@ const editUserSchema = yup.object().shape({
     .nullable(),
 });
 
-module.exports = editUserSchema;
+module.exports = usersEditSchema;

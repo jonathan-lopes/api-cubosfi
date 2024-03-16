@@ -1,7 +1,7 @@
 const bcrypt = require('bcrypt');
 const knex = require('../database');
-const schemaRegisterUser = require('../validations/schemaRegisterUser');
-const schemaEditUser = require('../validations/schemaEditUser');
+const usersRegisterSchema = require('../validations/usersRegisterSchema');
+const usersEditSchema = require('../validations/usersEditSchema');
 const { DatabaseError, ConflictError } = require('../helpers/apiErrors');
 
 class UserController {
@@ -13,7 +13,7 @@ class UserController {
   async store(req, res) {
     const { name, email, password } = req.body;
 
-    await schemaRegisterUser.validate(
+    await usersRegisterSchema.validate(
       { name, email, password },
       { abortEarly: false },
     );
@@ -46,7 +46,7 @@ class UserController {
     const { user } = req;
     const { name, email, cpf, phone, password } = req.body;
 
-    await schemaEditUser.validate(
+    await usersEditSchema.validate(
       { name, email, cpf, phone, password },
       { abortEarly: false },
     );
