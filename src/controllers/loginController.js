@@ -2,13 +2,13 @@ const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const { addDays } = require('date-fns');
 const knex = require('../database');
-const schemaLogin = require('../validations/schemaLogin');
+const loginSchema = require('../validations/loginSchema');
 const { BadRequestError } = require('../helpers/apiErrors');
 
 const login = async (req, res) => {
   const { email, password } = req.body;
 
-  await schemaLogin.validate({ email, password }, { abortEarly: false });
+  await loginSchema.validate({ email, password }, { abortEarly: false });
 
   const user = await knex('users').where({ email }).first();
 

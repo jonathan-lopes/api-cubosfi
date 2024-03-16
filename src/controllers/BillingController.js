@@ -1,7 +1,7 @@
 const knex = require('../database');
-const schemaRegisterBilling = require('../validations/schemaRegisterBillings');
-const schemaEditBilling = require('../validations/schemaEditBilling');
-const queryBillingSchema = require('../validations/schemaQueryBillings');
+const billingsRegisterSchema = require('../validations/billingsRegisterSchema');
+const billingsEditSchema = require('../validations/billingsEditSchema');
+const queryBillingSchema = require('../validations/billingsQueryParamsSchema');
 const { isPending } = require('../helpers/paymentStatus');
 const {
   DatabaseError,
@@ -18,7 +18,7 @@ class BillingController {
     await queryBillingSchema.validate(req, { abortEarly: false });
 
     const query = knex('billings')
-      .join('customers', 'billings.customer_id', '=', 'customers.id')
+      .join('customers', 'billings.customer_id', 'customers.id')
       .select(
         'customers.name',
         'customers.cpf',
@@ -119,11 +119,11 @@ class BillingController {
       due,
     };
 
-    await schemaRegisterBilling.validate(body, { abortEarly: false });
+    await billingsRegisterSchema.validate(body, { abortEarly: false });
 
     const insertBilling = await knex('billings').insert(body);
 
-    if (insertBilling === 0) {
+    if (!insertBilling) {
       throw new DatabaseError('Não foi possível cadastrar a cobrança');
     }
 
@@ -145,7 +145,7 @@ class BillingController {
       due,
     };
 
-    await schemaEditBilling.validate(body, { abortEarly: false });
+    await billingsEditSchema.validate(body, { abortEarly: false });
 
     const billing = await knex('billings').where({ id }).first();
 

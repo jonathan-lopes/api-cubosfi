@@ -2,7 +2,7 @@ const { addDays } = require('date-fns');
 const jwt = require('jsonwebtoken');
 const knex = require('../database');
 const { NotFoundError, UnauthorizedError } = require('../helpers/apiErrors');
-const refreshTokenSchema = require('../validations/schemaRefreshToken');
+const refreshTokenSchema = require('../validations/refreshTokenSchema');
 
 const refreshTokenController = async (req, res) => {
   const { refresh_token } = req.body;

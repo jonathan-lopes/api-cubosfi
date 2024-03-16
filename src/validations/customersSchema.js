@@ -1,4 +1,3 @@
-/* eslint-disable no-template-curly-in-string */
 const yup = require('./yupSettings');
 const {
   validateCPFCNPJ,
@@ -6,7 +5,7 @@ const {
   validateCEP,
 } = require('../helpers/regex');
 
-const schemaCustomer = yup.object().shape({
+const customersSchema = yup.object().shape({
   name: yup.string().strict().max(80).required(),
   email: yup.string().max(80).email('Formato de e-mail inválido').required(),
   cpf: yup
@@ -38,4 +37,4 @@ const schemaCustomer = yup.object().shape({
   }),
 });
 
-module.exports = schemaCustomer;
+module.exports = customersSchema;

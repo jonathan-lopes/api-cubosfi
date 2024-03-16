@@ -14,7 +14,7 @@ yup.addMethod(yup.StringSchema, 'validDateFormat', function () {
   );
 });
 
-const queryBillingSchema = yup.object().shape({
+const billingsQueryParamsSchema = yup.object().shape({
   query: yup.object({
     status: yup
       .string()
@@ -34,4 +34,4 @@ const queryBillingSchema = yup.object().shape({
   }),
 });
 
-module.exports = queryBillingSchema;
+module.exports = billingsQueryParamsSchema;

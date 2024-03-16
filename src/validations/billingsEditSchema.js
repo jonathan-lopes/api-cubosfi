@@ -1,8 +1,7 @@
-const yup = require('./yupSettings');
 const { validateStatus } = require('../helpers/regex');
+const yup = require('./yupSettings');
 
-const registerBillingSchema = yup.object().shape({
-  customer_id: yup.string().uuid().required(),
+const billingsEditSchema = yup.object().shape({
   description: yup.string().max(128).required(),
   status: yup
     .string()
@@ -12,4 +11,4 @@ const registerBillingSchema = yup.object().shape({
   due: yup.date().min('1900-01-01').required(),
 });
 
-module.exports = registerBillingSchema;
+module.exports = billingsEditSchema;
