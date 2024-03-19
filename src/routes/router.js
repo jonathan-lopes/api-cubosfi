@@ -6,6 +6,7 @@ const BillingController = require('../controllers/BillingController');
 const loginController = require('../controllers/loginController');
 const refreshTokenController = require('../controllers/refreshTokenController');
 const methodsAllowed = require('../middlewares/methodsAllowed');
+const pagination = require('../middlewares/pagination');
 
 const routes = Router();
 
@@ -25,7 +26,7 @@ routes.use(verifyLogin);
 routes
   .route('/customers')
   .post(CustomerController.store)
-  .get(CustomerController.index)
+  .get(pagination('customers'), CustomerController.index)
   .all(methodsAllowed(['POST', 'GET']));
 
 routes
