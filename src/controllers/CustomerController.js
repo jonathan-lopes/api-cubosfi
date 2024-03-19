@@ -1,5 +1,6 @@
 const knex = require('../database');
-const schemaCustomer = require('../validations/schemaCustomer');
+const customersSchema = require('../validations/customersSchema');
+const customersQueryParamsSchema = require('../validations/customersQueryParamsSchema');
 const {
   ConflictError,
   DatabaseError,
@@ -10,20 +11,25 @@ const isValidUUID = require('../helpers/isValidUUID');
 
 class CustomerController {
   async index(req, res) {
+    await customersQueryParamsSchema.validate(req, { abortEarly: false });
+
+    const { offsetSize, limitSize } = req.pagination;
+
     const customersList = [];
-    const customers = await knex('customers').select(
-      'id',
-      'name',
-      'email',
-      'cpf',
-      'phone',
-    );
+
+    const customers = await knex('customers')
+      .select('id', 'name', 'email', 'cpf', 'phone')
+      .offset((offsetSize - 1) * limitSize)
+      .limit(limitSize);
 
     const billsData = await knex('billings').select(
       'id',
       'status',
       'due',
       'customer_id',
+      'description',
+      'value',
+      'is_overdue',
     );
 
     for (let customer of customers) {
@@ -59,16 +65,16 @@ class CustomerController {
       .where({ id: customer.address_id })
       .first();
 
-    const bills = await knex('billings')
+    const billings = await knex('billings')
       .select('id', 'description', 'status', 'value', 'due', 'customer_id')
       .where({ customer_id: id });
 
-    const { address_id, ...customerWithoutAddress_id } = customer;
+    const { address_id, ...customerWithoutAddressID } = customer;
 
     const detailedCustomer = {
-      ...customerWithoutAddress_id,
+      ...customerWithoutAddressID,
       address,
-      billings: bills,
+      billings,
     };
 
     return res.json(detailedCustomer);
@@ -77,7 +83,7 @@ class CustomerController {
   async store(req, res) {
     const { name, email, cpf, phone, address } = req.body;
 
-    await schemaCustomer.validate(
+    await customersSchema.validate(
       {
         name,
         email,
@@ -137,7 +143,7 @@ class CustomerController {
       throw new BadRequestError('Id de cliente inválido');
     }
 
-    await schemaCustomer.validate(
+    await customersSchema.validate(
       {
         name,
         email,
