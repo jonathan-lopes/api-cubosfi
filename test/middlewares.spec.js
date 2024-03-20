@@ -13,8 +13,6 @@ describe('Middleware verify login', () => {
     token = await login(app, createRandomUser());
   });
 
-  afterAll(async () => await knex.destroy());
-
   it('should return status code 401 (unauthorized) if token is not sent', async () => {
     const response = await request(app).get('/user');
 
@@ -89,6 +87,47 @@ describe('Middleware allowed methods', () => {
     expect(response.body).toHaveProperty(
       'message.error',
       'Método não é suportado',
+    );
+  });
+});
+
+describe('Middleware Pagination', () => {
+  beforeAll(async () => {
+    token = await login(app, createRandomUser());
+  });
+
+  afterAll(async () => await knex.destroy());
+
+  it('should return custom x-pagination header', async () => {
+    const response = await request(app)
+      .get('/customers')
+      .set('Authorization', `Bearer ${token}`);
+
+    const pagination = JSON.parse(response.get('x-pagination'));
+
+    expect(pagination).toBeTruthy();
+    expect(pagination).toHaveProperty('total_pages');
+    expect(pagination).toHaveProperty('total_records');
+    expect(pagination).toHaveProperty('current_page');
+    expect(pagination).toHaveProperty('prev_page');
+    expect(pagination).toHaveProperty('next_page');
+  });
+
+  it('should return a badrequest if a page outside the maximum range is requested', async () => {
+    const response = await request(app)
+      .get('/customers')
+      .query({ page: 1000 })
+      .set('Authorization', `Bearer ${token}`);
+
+    const pagination = JSON.parse(response.get('x-pagination'));
+
+    expect(response.statusCode).toBe(400);
+    expect(response.body).toHaveProperty('status', 400);
+    expect(response.body).toHaveProperty('type', 'BadRequestError');
+    expect(response.body).toHaveProperty('dateTime');
+    expect(response.body).toHaveProperty(
+      'message.error',
+      `Página solicitada fora está fora do intervalo, número de páginas máximo é ${pagination.total_pages}`,
     );
   });
 });
