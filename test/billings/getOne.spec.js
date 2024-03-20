@@ -33,8 +33,6 @@ describe('Get One Billing', () => {
     );
   });
 
-  afterAll(async () => await knex.destroy());
-
   it('should return status 404 if billing does not exist', async () => {
     const response = await request(app)
       .get('/billings/1c53ae80-5042-4db9-aad5-3e2d510c98b3')

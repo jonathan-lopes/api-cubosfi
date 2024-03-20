@@ -80,7 +80,7 @@ describe('List Billings Based on "is_overdue" Query Parameter', () => {
     expect(response.body).toHaveProperty('type', 'ValidationError');
     expect(response.body).toHaveProperty(
       'message.query.is_overdue',
-      'query.is_overdue deve ser do tipo `boolean`, mas o valor final foi: `"anything"`.',
+      'is_overdue deve ser do tipo boolean',
     );
   });
 });
