@@ -10,7 +10,9 @@ const pagination = (route) => {
 
     const { count } = await knex(route).count('* as count').first();
 
-    const total_pages = Math.ceil(Number(count) / pageSize);
+    const CalculateTotalPages = Math.ceil(Number(count) / pageSize);
+
+    const total_pages = CalculateTotalPages === 0 ? 1 : CalculateTotalPages;
 
     const paginationMetadata = {
       total_pages,
