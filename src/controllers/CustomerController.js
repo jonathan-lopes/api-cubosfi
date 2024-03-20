@@ -13,14 +13,14 @@ class CustomerController {
   async index(req, res) {
     await customersQueryParamsSchema.validate(req, { abortEarly: false });
 
-    const { offsetSize, limitSize } = req.pagination;
+    const { pageNumber, pageSize } = req.pagination;
 
     const customersList = [];
 
     const customers = await knex('customers')
       .select('id', 'name', 'email', 'cpf', 'phone')
-      .offset((offsetSize - 1) * limitSize)
-      .limit(limitSize);
+      .offset((pageNumber - 1) * pageSize)
+      .limit(pageSize);
 
     const billsData = await knex('billings').select(
       'id',
