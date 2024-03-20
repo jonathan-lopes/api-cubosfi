@@ -2,16 +2,16 @@ const yup = require('./yupSettings');
 
 const customersQueryParamsSchema = yup.object().shape({
   query: yup.object({
-    offset: yup
+    page: yup
       .number()
-      .typeError('offset deve ser do tipo number')
-      .integer('offset deve ser um número inteiro')
-      .positive('offset deve ser um número positivo'),
-    limit: yup
+      .typeError('page deve ser do tipo number')
+      .integer('page deve ser um número inteiro')
+      .positive('page deve ser um número positivo'),
+    page_size: yup
       .number()
-      .typeError('limit deve ser do tipo number')
-      .integer('limit deve ser um número inteiro')
-      .positive('limit deve ser um número positivo'),
+      .typeError('page_size deve ser do tipo number')
+      .integer('page_size deve ser um número inteiro')
+      .positive('page_size deve ser um número positivo'),
   }),
 });
 

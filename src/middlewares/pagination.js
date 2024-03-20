@@ -3,31 +3,32 @@ const knex = require('../database');
 
 const pagination = (route) => {
   return async (req, res, next) => {
-    const { offset = 1, limit = 10 } = req.query;
+    const { page = 1, page_size = 10 } = req.query;
 
-    const offsetSize = Number(offset);
-    const limitSize = Number(limit);
+    const pageNumber = Number(page);
+    const pageSize = Number(page_size);
 
-    const { count } = await knex(route).count('*').first();
+    const { count } = await knex(route).count('* as count').first();
 
-    const total_pages = Math.ceil(Number(count) / limitSize);
+    const total_pages = Math.ceil(Number(count) / pageSize);
 
-    if (offsetSize > total_pages) {
+    const paginationMetadata = {
+      total_pages,
+      total_records: Number(count),
+      current_page: pageNumber,
+      prev_page: pageNumber > 1,
+      next_page: pageNumber < total_pages,
+    };
+
+    res.setHeader('X-Pagination', JSON.stringify(paginationMetadata));
+
+    if (pageNumber > total_pages) {
       throw new BadRequestError(
         `Página solicitada fora está fora do intervalo, número de páginas máximo é ${total_pages}`,
       );
     }
 
-    const paginationMetadata = {
-      total_pages,
-      total_records: Number(count),
-      current_page: offsetSize,
-      prev_page: offsetSize > 1,
-      next_page: offsetSize < total_pages,
-    };
-
-    req.pagination = { offsetSize, limitSize };
-    res.setHeader('X-Pagination', JSON.stringify(paginationMetadata));
+    req.pagination = { pageNumber, pageSize };
 
     next();
   };
