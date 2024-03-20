@@ -20,17 +20,37 @@ const billingsQueryParamsSchema = yup.object().shape({
       .string()
       .strict()
       .matches(validateStatus, 'status devem ser paid ou pending'),
-    is_overdue: yup.boolean(),
+    is_overdue: yup.boolean().typeError('is_overdue deve ser do tipo boolean'),
     due_date: yup.string().validDateFormat(),
     due_date_start: yup.string().validDateFormat(),
     due_date_end: yup.string().validDateFormat(),
     after_due_date: yup.string().validDateFormat(),
     before_due_date: yup.string().validDateFormat(),
-    value: yup.number().positive().integer(),
-    value_lt: yup.number().positive().integer(),
-    value_gt: yup.number().positive().integer(),
-    value_start: yup.number().positive().integer(),
-    value_end: yup.number().positive().integer(),
+    value: yup
+      .number()
+      .typeError('value deve ser do tipo number')
+      .positive()
+      .integer(),
+    value_lt: yup
+      .number()
+      .typeError('value_lt deve ser do tipo number')
+      .positive()
+      .integer(),
+    value_gt: yup
+      .number()
+      .typeError('value_gt deve ser do tipo number')
+      .positive()
+      .integer(),
+    value_start: yup
+      .number()
+      .typeError('value_start deve ser do tipo number')
+      .positive()
+      .integer(),
+    value_end: yup
+      .number()
+      .typeError('value_end deve ser do tipo number')
+      .positive()
+      .integer(),
   }),
 });
 
