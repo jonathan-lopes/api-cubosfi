@@ -31,7 +31,7 @@ describe('Refresh Token Endpoint', () => {
     expect(response.statusCode).toBe(400);
     expect(response.body).toHaveProperty(
       'message.refresh_token',
-      'refresh_token deve ser do tipo `string`, mas o valor final foi: `1000`.',
+      'refresh_token deve ser do tipo string',
     );
     expect(response.body).toHaveProperty('status', 400);
     expect(response.body).toHaveProperty('type', 'ValidationError');
