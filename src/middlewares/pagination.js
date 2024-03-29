@@ -3,7 +3,7 @@ const knex = require('../database');
 
 const pagination = (route) => {
   return async (req, res, next) => {
-    const { page = 1, page_size = 10 } = req.query;
+    const { page = 1, page_size = 20 } = req.query;
 
     const pageNumber = Number(page);
     const pageSize = Number(page_size);
