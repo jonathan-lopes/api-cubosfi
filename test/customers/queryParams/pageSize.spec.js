@@ -17,7 +17,7 @@ describe('List Customers Based on "page_size" Query Parameter', () => {
 
   afterAll(async () => await knex.destroy());
 
-  it('should return a maximum of 10 clients if page_size is not sent in the query parameter', async () => {
+  it('should return a maximum of 20 clients if page_size is not sent in the query parameter', async () => {
     await new SutCustomer(createRandomCustomer()).create();
 
     const response = await request(app)
@@ -25,7 +25,7 @@ describe('List Customers Based on "page_size" Query Parameter', () => {
       .set('Authorization', `Bearer ${token}`);
 
     expect(response.statusCode).toBe(200);
-    expect(response.body.length).toBeLessThanOrEqual(10);
+    expect(response.body.length).toBeLessThanOrEqual(20);
   });
 
   it('should return customers with a page_size of 2', async () => {
