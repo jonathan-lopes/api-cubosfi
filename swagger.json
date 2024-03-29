@@ -2481,6 +2481,24 @@
               "type": "string"
             },
             "description": "Does not compress the data in the response"
+          },
+          {
+            "name": "page",
+            "in": "header",
+            "schema": {
+              "type": "integer",
+              "default": 1
+            },
+            "description": "page number you want to get"
+          },
+          {
+            "name": "page_size",
+            "in": "header",
+            "schema": {
+              "type": "integer",
+              "default": 20
+            },
+            "description": "number of items per page"
           }
         ],
         "responses": {
@@ -2505,6 +2523,36 @@
                   "format": "timestamp"
                 },
                 "description": "timestamp at which the current rate limit window is reset."
+              },
+              "X-Pagination": {
+                "schema": {
+                  "type": "object",
+                  "items": {
+                    "properties": {
+                      "total_pages": {
+                        "type": "integer",
+                        "description": "indicates the total number of pages"
+                      },
+                      "total_records": {
+                        "type": "integer",
+                        "description": "total number of items returned"
+                      },
+                      "current_page": {
+                        "type": "integer",
+                        "description": "number of the current page"
+                      },
+                      "prev_page": {
+                        "type": "boolean",
+                        "description": "if there is a previous page"
+                      },
+                      "next_page": {
+                        "type": "boolean",
+                        "description": "if there is a subsequent page"
+                      }
+                    }
+                  }
+                },
+                "description": "indicates whether there is pagination"
               }
             },
             "content": {
