@@ -117,4 +117,4 @@ Rode o seguinte comando
 
 Usamos [Versionamento Semântico](http://semver.org/) para versionamento. Para as versões
 disponível, veja as [tags neste
-repositório](https://github.com/jonathan-lopes/api-cubosfi/releases).
+repositório](https://github.com/jonathan-lopes/api-cubosfi/tags).
