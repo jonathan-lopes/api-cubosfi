@@ -1,7 +1,7 @@
 {
   "openapi": "3.0.3",
   "info": {
-    "version": "1.0.0",
+    "version": "1.1.0",
     "title": "CUBOSFI API",
     "description": "CubosFi is an API developed for the CubosFi frontend application to register customers and their charges. \n\n Some useful links:\n - [The Cusbosfi repository](https://github.com/jonathan-lopes/api-cubosfi)\n - [The source API definition for the Cubosfi](https://github.com/jonathan-lopes/api-cubosfi/blob/master/swagger.json)"
   },
@@ -2484,7 +2484,7 @@
           },
           {
             "name": "page",
-            "in": "header",
+            "in": "query",
             "schema": {
               "type": "integer",
               "default": 1
@@ -2493,7 +2493,7 @@
           },
           {
             "name": "page_size",
-            "in": "header",
+            "in": "query",
             "schema": {
               "type": "integer",
               "default": 20
@@ -2527,32 +2527,30 @@
               "X-Pagination": {
                 "schema": {
                   "type": "object",
-                  "items": {
-                    "properties": {
-                      "total_pages": {
-                        "type": "integer",
-                        "description": "indicates the total number of pages"
-                      },
-                      "total_records": {
-                        "type": "integer",
-                        "description": "total number of items returned"
-                      },
-                      "current_page": {
-                        "type": "integer",
-                        "description": "number of the current page"
-                      },
-                      "prev_page": {
-                        "type": "boolean",
-                        "description": "if there is a previous page"
-                      },
-                      "next_page": {
-                        "type": "boolean",
-                        "description": "if there is a subsequent page"
-                      }
+                  "properties": {
+                    "total_pages": {
+                      "type": "integer",
+                      "description": "indicates the total number of pages"
+                    },
+                    "total_records": {
+                      "type": "integer",
+                      "description": "total number of items returned"
+                    },
+                    "current_page": {
+                      "type": "integer",
+                      "description": "number of the current page"
+                    },
+                    "prev_page": {
+                      "type": "boolean",
+                      "description": "if there is a previous page"
+                    },
+                    "next_page": {
+                      "type": "boolean",
+                      "description": "if there is a subsequent page"
                     }
                   }
                 },
-                "description": "indicates whether there is pagination"
+                "description": "Header with metadata about pagination, total_pages indicates the total number of pages, total_records total number of items returned, current_page number of the current page, prev_page if there is a previous page, next_page if there is a subsequent page"
               }
             },
             "content": {
@@ -3970,7 +3968,7 @@
           },
           {
             "name": "page",
-            "in": "header",
+            "in": "query",
             "schema": {
               "type": "integer",
               "default": 1
@@ -3979,7 +3977,7 @@
           },
           {
             "name": "page_size",
-            "in": "header",
+            "in": "query",
             "schema": {
               "type": "integer",
               "default": 20
@@ -4130,28 +4128,26 @@
               "X-Pagination": {
                 "schema": {
                   "type": "object",
-                  "items": {
-                    "properties": {
-                      "total_pages": {
-                        "type": "integer",
-                        "description": "indicates the total number of pages"
-                      },
-                      "total_records": {
-                        "type": "integer",
-                        "description": "total number of items returned"
-                      },
-                      "current_page": {
-                        "type": "integer",
-                        "description": "number of the current page"
-                      },
-                      "prev_page": {
-                        "type": "boolean",
-                        "description": "if there is a previous page"
-                      },
-                      "next_page": {
-                        "type": "boolean",
-                        "description": "if there is a subsequent page"
-                      }
+                  "properties": {
+                    "total_pages": {
+                      "type": "integer",
+                      "description": "indicates the total number of pages"
+                    },
+                    "total_records": {
+                      "type": "integer",
+                      "description": "total number of items returned"
+                    },
+                    "current_page": {
+                      "type": "integer",
+                      "description": "number of the current page"
+                    },
+                    "prev_page": {
+                      "type": "boolean",
+                      "description": "if there is a previous page"
+                    },
+                    "next_page": {
+                      "type": "boolean",
+                      "description": "if there is a subsequent page"
                     }
                   }
                 },
