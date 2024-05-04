@@ -17,6 +17,8 @@ class BillingController {
 
     await queryBillingSchema.validate(req, { abortEarly: false });
 
+    const { pageNumber, pageSize } = req.pagination;
+
     const query = knex('billings')
       .join('customers', 'billings.customer_id', 'customers.id')
       .select(
@@ -85,7 +87,9 @@ class BillingController {
       ]);
     }
 
-    const billings = await query;
+    const billings = await query
+      .offset((pageNumber - 1) * pageSize)
+      .limit(pageSize);
 
     return res.json(billings);
   }
