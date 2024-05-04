@@ -1,3 +1,19 @@
+# [1.1.0](https://github.com/jonathan-lopes/api-cubosfi/compare/v1.0.0...v1.1.0) (2024-05-04)
+
+
+### Bug Fixes
+
+* fix the error caused when there is no record in the table by setting total_pages to 1 ([e53c76a](https://github.com/jonathan-lopes/api-cubosfi/commit/e53c76a89e82700513bfce4407f165b40df6f366))
+
+
+### Features
+
+* add middleware for pagination ([752480c](https://github.com/jonathan-lopes/api-cubosfi/commit/752480c78de25ad1cac9f4a388d2a54d7c6bd5d9))
+* add pagination in billings route ([7956d5d](https://github.com/jonathan-lopes/api-cubosfi/commit/7956d5d2a8ec7582c4fb8a533acd247330cacfa2))
+* add pagination to the customer list and make small refactorings ([332d067](https://github.com/jonathan-lopes/api-cubosfi/commit/332d0672ff902c6e989d92c22c78aed82b11cd44))
+* add validation for customer route paging query parameters ([79722fe](https://github.com/jonathan-lopes/api-cubosfi/commit/79722fec4e60784b41d92e58d20510b9b145451d))
+* changes the due field type to datetime ([b5518d9](https://github.com/jonathan-lopes/api-cubosfi/commit/b5518d92e62af685ee92cbde1a9c258d6d94d7ba))
+
 # 1.0.0 (2024-03-12)
 
 
