@@ -38,7 +38,7 @@ routes
 routes
   .route('/billings')
   .post(BillingController.store)
-  .get(BillingController.index)
+  .get(pagination('billings'), BillingController.index)
   .all(methodsAllowed(['POST', 'GET']));
 
 routes
