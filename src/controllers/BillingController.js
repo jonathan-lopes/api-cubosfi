@@ -10,6 +10,7 @@ const {
   ForbiddenError,
 } = require('../helpers/apiErrors');
 const isValidUUID = require('../helpers/isValidUUID');
+const BillingMapper = require('./mappers/BillingMapper');
 
 class BillingController {
   async index(req, res) {
@@ -113,19 +114,11 @@ class BillingController {
   }
 
   async store(req, res) {
-    const { customer_id, description, status, value, due } = req.body;
+    const dataDomain = BillingMapper.toDomain(req.body);
 
-    const body = {
-      customer_id,
-      description,
-      status,
-      value,
-      due,
-    };
+    await billingsRegisterSchema.validate(dataDomain, { abortEarly: false });
 
-    await billingsRegisterSchema.validate(body, { abortEarly: false });
-
-    const insertBilling = await knex('billings').insert(body);
+    const insertBilling = await knex('billings').insert(dataDomain);
 
     if (!insertBilling) {
       throw new DatabaseError('Não foi possível cadastrar a cobrança');
@@ -135,21 +128,14 @@ class BillingController {
   }
 
   async update(req, res) {
-    const { description, status, value, due } = req.body;
+    const dataDomain = BillingMapper.toDomain(req.body);
     const { id } = req.params;
 
     if (!isValidUUID(id)) {
       throw new BadRequestError('Id da cobrança inválido');
     }
 
-    const body = {
-      description,
-      status,
-      value,
-      due,
-    };
-
-    await billingsEditSchema.validate(body, { abortEarly: false });
+    await billingsEditSchema.validate(dataDomain, { abortEarly: false });
 
     const billing = await knex('billings').where({ id }).first();
 
@@ -157,7 +143,9 @@ class BillingController {
       throw new NotFoundError('Cobrança não encontrada');
     }
 
-    const updateBilling = await knex('billings').update(body).where({ id });
+    const updateBilling = await knex('billings')
+      .update(dataDomain)
+      .where({ id });
 
     if (!updateBilling) {
       throw new DatabaseError('Não foi possível atualizar a cobrança');
