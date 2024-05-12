@@ -7,8 +7,9 @@ API-CubosFi é uma REST API desenvolvida para a aplicação frontend [CubosFi](h
 ![GitHub Actions](https://github.com/jonathan-lopes/api-cubosfi/actions/workflows/ci.yml/badge.svg)
 [![codecov](https://codecov.io/gh/jonathan-lopes/api-cubosfi/graph/badge.svg?token=XFIMEOED1J)](https://codecov.io/gh/jonathan-lopes/api-cubosfi)
 [![Commitizen friendly](https://img.shields.io/badge/commitizen-friendly-brightgreen.svg)](http://commitizen.github.io/cz-cli/)
-![Swagger Validator](https://img.shields.io/swagger/valid/3.0?specUrl=https%3A%2F%2Fraw.githubusercontent.com%2Fjonathan-lopes%2Fapi-cubosfi%2Fdevelop%2Fswagger.json) ![GitHub last commit](https://img.shields.io/github/last-commit/jonathan-lopes/api-cubosfi)
+![Swagger Validator](https://img.shields.io/swagger/valid/3.0?specUrl=https%3A%2F%2Fraw.githubusercontent.com%2Fjonathan-lopes%2Fapi-cubosfi%2Fdevelop%2Fswagger.json)
 [![semantic-release: angular](https://img.shields.io/badge/semantic--release-angular-e10079?logo=semantic-release)](https://github.com/semantic-release/semantic-release)
+![Known Vulnerabilities](https://snyk.io/test/github/jonathan-lopes/api-cubosfi/badge.svg)
 
 ## Para testa no insomnia
 
