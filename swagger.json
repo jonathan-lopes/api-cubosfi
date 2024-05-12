@@ -2525,6 +2525,13 @@
                 "description": "timestamp at which the current rate limit window is reset."
               },
               "X-Pagination": {
+                "example": {
+                  "total_pages": 2,
+                  "total_records": 20,
+                  "current_page": 1,
+                  "prev_page": false,
+                  "next_page": true
+                },
                 "schema": {
                   "type": "object",
                   "properties": {
@@ -4126,6 +4133,13 @@
                 "description": "timestamp at which the current rate limit window is reset."
               },
               "X-Pagination": {
+                "example": {
+                  "total_pages": 2,
+                  "total_records": 20,
+                  "current_page": 1,
+                  "prev_page": false,
+                  "next_page": true
+                },
                 "schema": {
                   "type": "object",
                   "properties": {
