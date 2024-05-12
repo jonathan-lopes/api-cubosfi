@@ -8,6 +8,7 @@ const {
   BadRequestError,
 } = require('../helpers/apiErrors');
 const isValidUUID = require('../helpers/isValidUUID');
+const CustomerMapper = require('./mappers/CustomerMapper');
 
 class CustomerController {
   async index(req, res) {
@@ -81,26 +82,21 @@ class CustomerController {
   }
 
   async store(req, res) {
-    const { name, email, cpf, phone, address } = req.body;
+    const dataDomain = CustomerMapper.toDomain(req.body);
 
-    await customersSchema.validate(
-      {
-        name,
-        email,
-        cpf,
-        phone,
-        address,
-      },
-      { abortEarly: false },
-    );
+    await customersSchema.validate(dataDomain, { abortEarly: false });
 
-    const customerEmail = await knex('customers').where({ email }).first();
+    const customerEmail = await knex('customers')
+      .where({ email: dataDomain.email })
+      .first();
 
     if (customerEmail) {
       throw new ConflictError('E-mail já cadastrado');
     }
 
-    const customerCpf = await knex('customers').where({ cpf }).first();
+    const customerCpf = await knex('customers')
+      .where({ cpf: dataDomain.cpf })
+      .first();
 
     if (customerCpf) {
       throw new ConflictError('CPF já cadastrado');
@@ -108,8 +104,10 @@ class CustomerController {
 
     let addressID = '';
 
-    if (address) {
-      const [data] = await knex('adresses').insert(address).returning('id');
+    if (dataDomain.address) {
+      const [data] = await knex('adresses')
+        .insert(dataDomain.address)
+        .returning('id');
 
       addressID = data.id;
 
@@ -118,15 +116,14 @@ class CustomerController {
       }
     }
 
-    const body = {
-      name,
-      email,
-      cpf,
-      phone,
+    const data = {
+      ...dataDomain,
       address_id: addressID || null,
     };
 
-    const insertedCustomer = await knex('customers').insert(body);
+    const { address, ...persistenceData } = data;
+
+    const insertedCustomer = await knex('customers').insert(persistenceData);
 
     if (!insertedCustomer) {
       throw new DatabaseError('Não foi possível cadastrar o cliente');
@@ -136,26 +133,17 @@ class CustomerController {
   }
 
   async update(req, res) {
-    const { name, email, cpf, phone, address } = req.body;
+    const dataDomain = CustomerMapper.toDomain(req.body);
     const { id } = req.params;
 
     if (!isValidUUID(id)) {
       throw new BadRequestError('Id de cliente inválido');
     }
 
-    await customersSchema.validate(
-      {
-        name,
-        email,
-        cpf,
-        phone,
-        address,
-      },
-      { abortEarly: false },
-    );
+    await customersSchema.validate(dataDomain, { abortEarly: false });
 
     const customerEmail = await knex('customers')
-      .whereRaw('email = ? AND id <> ?', [email, id])
+      .whereRaw('email = ? AND id <> ?', [dataDomain.email, id])
       .first();
 
     if (customerEmail) {
@@ -163,7 +151,7 @@ class CustomerController {
     }
 
     const customerCpf = await knex('customers')
-      .whereRaw('cpf = ? AND id <> ?', [cpf, id])
+      .whereRaw('cpf = ? AND id <> ?', [dataDomain.cpf, id])
       .first();
 
     if (customerCpf) {
@@ -172,7 +160,7 @@ class CustomerController {
 
     let addressID = '';
 
-    if (address) {
+    if (dataDomain.address) {
       const customerWithAddress = await knex('customers')
         .select('address_id')
         .where({ id })
@@ -180,7 +168,7 @@ class CustomerController {
 
       if (customerWithAddress.address_id) {
         const updateAddress = await knex('adresses')
-          .update(address)
+          .update(dataDomain.address)
           .where({ id: customerWithAddress.address_id });
 
         if (!updateAddress) {
@@ -191,7 +179,9 @@ class CustomerController {
       }
 
       if (!customerWithAddress.address_id) {
-        const [data] = await knex('adresses').insert(address).returning('id');
+        const [data] = await knex('adresses')
+          .insert(dataDomain.address)
+          .returning('id');
 
         addressID = data.id;
 
@@ -201,16 +191,15 @@ class CustomerController {
       }
     }
 
-    const dataCustomer = {
-      name,
-      email,
-      cpf,
-      phone,
+    const data = {
+      ...dataDomain,
       address_id: addressID || null,
     };
 
+    const { address, ...persistenceData } = data;
+
     const updatedCustomer = await knex('customers')
-      .update(dataCustomer)
+      .update(persistenceData)
       .where({ id });
 
     if (!updatedCustomer) {
