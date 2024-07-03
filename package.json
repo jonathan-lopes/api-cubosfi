@@ -47,7 +47,7 @@
     "morgan": "^1.10.0",
     "node-schedule": "^2.1.1",
     "pg": "^8.11.3",
-    "pm2": "^5.3.1",
+    "pm2": "^5.4.0",
     "serve-favicon": "^2.5.0",
     "swagger-ui-express": "^5.0.0",
     "winston": "^3.12.0",
